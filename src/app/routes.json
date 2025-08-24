@@ -1,30 +1,69 @@
 [
   {
     "path": "/",
-    "description": "Home view with smart search and quick actions"
+    "description": "Home view with smart search and quick actions",
+    "fields": ["Search"]
   },
   {
     "path": "/reports",
-    "description": "View business analytics and financial reports"
+    "description": "View business analytics and financial reports",
+    "fields": []
   },
   {
     "path": "/payments",
-    "description": "View and manage payments to suppliers"
+    "description": "View and manage payments to suppliers",
+    "fields": []
   },
   {
     "path": "/invoice/list",
-    "description": "View and manage existing invoices"
+    "description": "View and manage existing invoices",
+    "fields": []
   },
   {
     "path": "/invoice/create",
-    "description": "Create a new invoice for a customer"
+    "description": "Create a new invoice for a customer",
+    "fields": [
+      "Invoice Number",
+      "Issue Date",
+      "Due Date",
+      "Payment Terms",
+      "Customer Name",
+      "Customer Email",
+      "Customer Phone",
+      "Customer Address",
+      "Item Description",
+      "Item Quantity",
+      "Item Unit Price",
+      "Additional Notes"
+    ]
   },
   {
     "path": "/customers",
-    "description": "View and manage existing customers"
+    "description": "View and manage existing customers",
+    "fields": [
+      "Search customers by name, email, or company",
+      "Filter customers by status"
+    ]
   },
   {
     "path": "/customers/create",
-    "description": "Add a new customer to the system"
+    "description": "Add a new customer to the system",
+    "fields": [
+      "First Name",
+      "Last Name",
+      "Email",
+      "Phone",
+      "Company Name",
+      "Job Title",
+      "Website",
+      "Street Address",
+      "City",
+      "State",
+      "Postal Code",
+      "Country",
+      "Credit Limit",
+      "Tags",
+      "Notes"
+    ]
   }
 ]

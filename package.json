@@ -5,11 +5,13 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "generate:routes": "ts-node printRoutes.ts",
+    "generate:routes": "node generateRouteMap.js",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "@babel/parser": "^7.28.3",
+    "@babel/traverse": "^7.28.3",
     "glob": "^11.0.3",
     "next": "15.5.0",
     "react": "19.1.0",
@@ -19,6 +21,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/babel__traverse": "^7.28.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -243,7 +243,7 @@ export default function CreateInvoice() {
                   Email
                 </label>
                 <input
-                  aria-label="Email"
+                  aria-label="Customer Email"
                   type="email"
                   value={invoiceData.customerEmail}
                   onChange={(e) =>
@@ -265,7 +265,7 @@ export default function CreateInvoice() {
                   Phone
                 </label>
                 <input
-                  aria-label="Phone"
+                  aria-label="Customer Phone"
                   type="tel"
                   value={invoiceData.customerPhone}
                   onChange={(e) =>
