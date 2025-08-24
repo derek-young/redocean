@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { SearchResponse } from "@/types/search";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,66 +16,37 @@ export default function Home() {
 
     setIsSearching(true);
 
-    // Simple keyword-based routing (can be enhanced with LLM later)
-    const term = searchTerm.toLowerCase().trim();
+    try {
+      const response = await fetch("/api/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ searchTerm: searchTerm.trim() }),
+      });
 
-    // Route to invoice creation
-    if (
-      term.includes("invoice") ||
-      term.includes("bill") ||
-      term.includes("create invoice")
-    ) {
-      router.push("/invoice/create");
-      return;
+      if (!response.ok) {
+        throw new Error("Search request failed");
+      }
+
+      const result: SearchResponse = await response.json();
+
+      if (result.route) {
+        // Navigate to the suggested route
+        router.push(result.route);
+      } else {
+        // Show clarification message with suggestions
+        const suggestions = result.suggestions?.join(", ") || "";
+        alert(`${result.message}\n\nTry searching for: ${suggestions}`);
+      }
+    } catch (error) {
+      console.error("Search error:", error);
+      alert(
+        "Sorry, there was an error processing your search. Please try again."
+      );
+    } finally {
+      setIsSearching(false);
     }
-
-    // Route to invoice list/search
-    if (
-      term.includes("invoices") ||
-      term.includes("bills") ||
-      term.includes("find invoice")
-    ) {
-      router.push("/invoice/list");
-      return;
-    }
-
-    // Route to customer management
-    if (
-      term.includes("customer") ||
-      term.includes("client") ||
-      term.includes("contact")
-    ) {
-      router.push("/customers");
-      return;
-    }
-
-    // Route to reports
-    if (
-      term.includes("report") ||
-      term.includes("analytics") ||
-      term.includes("dashboard")
-    ) {
-      router.push("/reports");
-      return;
-    }
-
-    // Route to payments
-    if (
-      term.includes("payment") ||
-      term.includes("pay") ||
-      term.includes("receive")
-    ) {
-      router.push("/payments");
-      return;
-    }
-
-    // If no direct match, show clarification modal or search results
-    // For now, we'll just show an alert (this is where LLM integration would go)
-    alert(
-      `I'm not sure what you're looking for. You searched for: "${searchTerm}". This is where an LLM would help clarify your intent.`
-    );
-
-    setIsSearching(false);
   };
 
   return (
@@ -95,6 +67,7 @@ export default function Home() {
               </label>
               <div className="relative">
                 <input
+                  aria-label="Search"
                   type="text"
                   id="search"
                   value={searchTerm}

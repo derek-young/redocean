@@ -131,6 +131,7 @@ export default function Customers() {
                 Search Customers
               </label>
               <input
+                aria-label="Search customers by name, email, or company"
                 type="text"
                 id="search"
                 value={searchTerm}
@@ -147,6 +148,7 @@ export default function Customers() {
                 Status
               </label>
               <select
+                aria-label="Filter customers by status"
                 id="status"
                 value={statusFilter}
                 onChange={(e) =>
@@ -225,7 +227,16 @@ export default function Customers() {
                     <tr key={customer.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">
+                          <span
+                            className="sr-only"
+                            id={`customer-name-${customer.id}`}
+                          >
+                            Customer name:
+                          </span>
+                          <div
+                            className="text-sm font-medium text-gray-900"
+                            aria-labelledby={`customer-name-${customer.id}`}
+                          >
                             {customer.name}
                           </div>
                           <div className="text-sm text-gray-500">
@@ -235,7 +246,16 @@ export default function Customers() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <div className="text-sm text-gray-900">
+                          <span
+                            className="sr-only"
+                            id={`customer-email-${customer.id}`}
+                          >
+                            Customer email:
+                          </span>
+                          <div
+                            className="text-sm text-gray-900"
+                            aria-labelledby={`customer-email-${customer.id}`}
+                          >
                             {customer.email}
                           </div>
                           <div className="text-sm text-gray-500">
@@ -259,10 +279,16 @@ export default function Customers() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-2">
-                          <button className="text-gray-600 hover:text-gray-900">
+                          <button
+                            aria-label="Edit customer"
+                            className="text-gray-600 hover:text-gray-900"
+                          >
                             Edit
                           </button>
-                          <button className="text-gray-600 hover:text-gray-900">
+                          <button
+                            aria-label="View customer"
+                            className="text-gray-600 hover:text-gray-900"
+                          >
                             View
                           </button>
                         </div>

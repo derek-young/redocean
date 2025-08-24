@@ -122,10 +122,15 @@ export default function CreateCustomer() {
             <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   First Name
                 </label>
                 <input
+                  id="firstName"
+                  aria-label="First Name"
                   type="text"
                   value={customerData.firstName}
                   onChange={(e) =>
@@ -139,10 +144,15 @@ export default function CreateCustomer() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Last Name
                 </label>
                 <input
+                  id="lastName"
+                  aria-label="Last Name"
                   type="text"
                   value={customerData.lastName}
                   onChange={(e) =>
@@ -156,10 +166,15 @@ export default function CreateCustomer() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Email
                 </label>
                 <input
+                  id="email"
+                  aria-label="Email"
                   type="email"
                   value={customerData.email}
                   onChange={(e) =>
@@ -173,10 +188,14 @@ export default function CreateCustomer() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="phone"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Phone
                 </label>
                 <input
+                  aria-label="Phone"
                   type="tel"
                   value={customerData.phone}
                   onChange={(e) =>
@@ -197,10 +216,14 @@ export default function CreateCustomer() {
             <h2 className="text-xl font-semibold mb-4">Company Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="company"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Company Name *
                 </label>
                 <input
+                  aria-label="Company Name"
                   type="text"
                   value={customerData.company}
                   onChange={(e) =>
@@ -215,10 +238,14 @@ export default function CreateCustomer() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="jobTitle"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Job Title
                 </label>
                 <input
+                  aria-label="Job Title"
                   type="text"
                   value={customerData.jobTitle}
                   onChange={(e) =>
@@ -232,10 +259,14 @@ export default function CreateCustomer() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="website"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Website
                 </label>
                 <input
+                  aria-label="Website"
                   type="url"
                   value={customerData.website}
                   onChange={(e) =>
@@ -249,7 +280,10 @@ export default function CreateCustomer() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="status"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Status
                 </label>
                 <select
@@ -274,10 +308,14 @@ export default function CreateCustomer() {
             <h2 className="text-xl font-semibold mb-4">Address</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="street"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Street Address
                 </label>
                 <input
+                  aria-label="Street Address"
                   type="text"
                   value={customerData.address.street}
                   onChange={(e) =>
@@ -288,10 +326,14 @@ export default function CreateCustomer() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="city"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   City
                 </label>
                 <input
+                  aria-label="City"
                   type="text"
                   value={customerData.address.city}
                   onChange={(e) => handleAddressChange("city", e.target.value)}
@@ -300,10 +342,14 @@ export default function CreateCustomer() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  State/Province
+                <label
+                  htmlFor="state"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  State
                 </label>
                 <input
+                  aria-label="State"
                   type="text"
                   value={customerData.address.state}
                   onChange={(e) => handleAddressChange("state", e.target.value)}
@@ -312,10 +358,14 @@ export default function CreateCustomer() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  ZIP/Postal Code
+                <label
+                  htmlFor="zipCode"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  ZIP Code
                 </label>
                 <input
+                  aria-label="Postal Code"
                   type="text"
                   value={customerData.address.zipCode}
                   onChange={(e) =>
@@ -326,10 +376,14 @@ export default function CreateCustomer() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="country"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Country
                 </label>
                 <input
+                  aria-label="Country"
                   type="text"
                   value={customerData.address.country}
                   onChange={(e) =>
@@ -347,7 +401,10 @@ export default function CreateCustomer() {
             <h2 className="text-xl font-semibold mb-4">Business Settings</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="paymentTerms"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Payment Terms
                 </label>
                 <select
@@ -367,10 +424,14 @@ export default function CreateCustomer() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="creditLimit"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Credit Limit ($)
                 </label>
                 <input
+                  aria-label="Credit Limit"
                   type="number"
                   value={customerData.creditLimit}
                   onChange={(e) =>
@@ -394,6 +455,7 @@ export default function CreateCustomer() {
             <div className="space-y-4">
               <div className="flex gap-2">
                 <input
+                  aria-label="Tags"
                   type="text"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
@@ -437,6 +499,7 @@ export default function CreateCustomer() {
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-xl font-semibold mb-4">Notes</h2>
             <textarea
+              aria-label="Notes"
               value={customerData.notes}
               onChange={(e) =>
                 setCustomerData({

@@ -12,6 +12,11 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    plugins: {
+      "jsx-a11y": (await import("eslint-plugin-jsx-a11y")).default,
+    },
+  },
+  {
     ignores: [
       "node_modules/**",
       ".next/**",
@@ -19,6 +24,29 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+  },
+  {
+    files: ["**/*.tsx", "**/*.jsx"],
+    rules: {
+      // Require aria-label or aria-labelledby on form controls
+      "jsx-a11y/control-has-associated-label": [
+        "error",
+        {
+          labelAttributes: ["aria-label", "aria-labelledby"],
+          controlComponents: ["input", "textarea", "select"],
+          ignoreElements: ["button"],
+        },
+      ],
+      // Allow either nesting, id, or aria-label/aria-labelledby
+      "jsx-a11y/label-has-associated-control": [
+        "error",
+        {
+          labelAttributes: ["aria-label", "aria-labelledby"],
+          controlComponents: ["input", "textarea", "select"],
+        },
+      ],
+      "jsx-a11y/label-has-for": "off",
+    },
   },
 ];
 

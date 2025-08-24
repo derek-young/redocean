@@ -125,10 +125,14 @@ export default function CreateInvoice() {
             <h2 className="text-xl font-semibold mb-4">Invoice Details</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="invoiceNumber"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Invoice Number
                 </label>
                 <input
+                  aria-label="Invoice Number"
                   type="text"
                   value={invoiceData.invoiceNumber}
                   onChange={(e) =>
@@ -143,10 +147,14 @@ export default function CreateInvoice() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="issueDate"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Issue Date
                 </label>
                 <input
+                  aria-label="Issue Date"
                   type="date"
                   value={invoiceData.issueDate}
                   onChange={(e) =>
@@ -160,10 +168,14 @@ export default function CreateInvoice() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="dueDate"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Due Date
                 </label>
                 <input
+                  aria-label="Due Date"
                   type="date"
                   value={invoiceData.dueDate}
                   onChange={(e) =>
@@ -174,10 +186,14 @@ export default function CreateInvoice() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="terms"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Payment Terms
                 </label>
                 <select
+                  aria-label="Payment Terms"
                   value={invoiceData.terms}
                   onChange={(e) =>
                     setInvoiceData({ ...invoiceData, terms: e.target.value })
@@ -198,10 +214,14 @@ export default function CreateInvoice() {
             <h2 className="text-xl font-semibold mb-4">Customer Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="customerName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Customer Name
                 </label>
                 <input
+                  aria-label="Customer Name"
                   type="text"
                   value={invoiceData.customerName}
                   onChange={(e) =>
@@ -216,10 +236,14 @@ export default function CreateInvoice() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="customerEmail"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Email
                 </label>
                 <input
+                  aria-label="Email"
                   type="email"
                   value={invoiceData.customerEmail}
                   onChange={(e) =>
@@ -234,10 +258,14 @@ export default function CreateInvoice() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="customerPhone"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Phone
                 </label>
                 <input
+                  aria-label="Phone"
                   type="tel"
                   value={invoiceData.customerPhone}
                   onChange={(e) =>
@@ -251,10 +279,14 @@ export default function CreateInvoice() {
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="customerAddress"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Address
                 </label>
                 <textarea
+                  aria-label="Customer Address"
                   value={invoiceData.customerAddress}
                   onChange={(e) =>
                     setInvoiceData({
@@ -292,6 +324,7 @@ export default function CreateInvoice() {
                 >
                   <div className="col-span-5">
                     <input
+                      aria-label="Item Description"
                       type="text"
                       value={item.description}
                       onChange={(e) =>
@@ -304,6 +337,7 @@ export default function CreateInvoice() {
                   </div>
                   <div className="col-span-2">
                     <input
+                      aria-label="Item Quantity"
                       type="number"
                       value={item.quantity}
                       onChange={(e) =>
@@ -321,6 +355,7 @@ export default function CreateInvoice() {
                   </div>
                   <div className="col-span-2">
                     <input
+                      aria-label="Item Unit Price"
                       type="number"
                       value={item.unitPrice}
                       onChange={(e) =>
@@ -382,6 +417,7 @@ export default function CreateInvoice() {
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-xl font-semibold mb-4">Additional Notes</h2>
             <textarea
+              aria-label="Additional Notes"
               value={invoiceData.notes}
               onChange={(e) =>
                 setInvoiceData({ ...invoiceData, notes: e.target.value })
