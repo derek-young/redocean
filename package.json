@@ -6,14 +6,17 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "generate:routes": "node generateRouteMap.js",
+    "generate:embeddings": "ts-node generateEmbeddings.ts",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
     "@babel/parser": "^7.28.3",
     "@babel/traverse": "^7.28.3",
+    "dotenv": "^17.2.1",
     "glob": "^11.0.3",
     "next": "15.5.0",
+    "openai": "^5.15.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "ts-node": "^10.9.2"

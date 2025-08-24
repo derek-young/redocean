@@ -1,8 +1,6 @@
 export interface SearchResponse {
   route: string | null;
-  action: string;
-  confidence: "high" | "low";
-  message: string;
+  message?: string;
   suggestions?: string[];
 }
 

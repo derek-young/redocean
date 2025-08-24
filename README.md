@@ -2,6 +2,16 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Environment Setup
+
+This project requires an OpenAI API key for generating embeddings. Create a `.env.local` file in the root directory with your API key:
+
+```bash
+OPENAI_API_KEY=your_openai_api_key_here
+```
+
+### Running the Development Server
+
 First, run the development server:
 
 ```bash
@@ -17,6 +27,16 @@ bun dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+### Generating Embeddings
+
+To generate embeddings for route descriptions, run:
+
+```bash
+npm run generate:embeddings
+```
+
+This will create a `src/app/routes-embeddings.json` file with embeddings for all routes defined in `src/app/routes.json`.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
