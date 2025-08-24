@@ -1,0 +1,30 @@
+[
+  {
+    "path": "/",
+    "description": "Home view with smart search and quick actions"
+  },
+  {
+    "path": "/reports",
+    "description": "View business analytics and financial reports"
+  },
+  {
+    "path": "/payments",
+    "description": "View and manage payments to suppliers"
+  },
+  {
+    "path": "/invoice/list",
+    "description": "View and manage existing invoices"
+  },
+  {
+    "path": "/invoice/create",
+    "description": "Create a new invoice for a customer"
+  },
+  {
+    "path": "/customers",
+    "description": "View and manage existing customers"
+  },
+  {
+    "path": "/customers/create",
+    "description": "Add a new customer to the system"
+  }
+]

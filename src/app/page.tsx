@@ -58,16 +58,6 @@ export default function Home() {
       return;
     }
 
-    // Route to expenses
-    if (
-      term.includes("expense") ||
-      term.includes("cost") ||
-      term.includes("spend")
-    ) {
-      router.push("/expenses");
-      return;
-    }
-
     // Route to payments
     if (
       term.includes("payment") ||
@@ -92,9 +82,6 @@ export default function Home() {
       <div className="max-w-2xl w-full">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">AltBooks</h1>
-          <p className="text-xl text-gray-600">
-            Your smart accounting assistant
-          </p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl p-8">
