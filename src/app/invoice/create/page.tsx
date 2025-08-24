@@ -137,7 +137,7 @@ export default function CreateInvoice() {
                       invoiceNumber: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="INV-001"
                   required
                 />
@@ -155,7 +155,7 @@ export default function CreateInvoice() {
                       issueDate: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   required
                 />
               </div>
@@ -169,7 +169,7 @@ export default function CreateInvoice() {
                   onChange={(e) =>
                     setInvoiceData({ ...invoiceData, dueDate: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   required
                 />
               </div>
@@ -182,7 +182,7 @@ export default function CreateInvoice() {
                   onChange={(e) =>
                     setInvoiceData({ ...invoiceData, terms: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                 >
                   <option value="Net 30">Net 30</option>
                   <option value="Net 15">Net 15</option>
@@ -210,7 +210,7 @@ export default function CreateInvoice() {
                       customerName: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="John Doe"
                   required
                 />
@@ -228,7 +228,7 @@ export default function CreateInvoice() {
                       customerEmail: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="john@example.com"
                   required
                 />
@@ -246,7 +246,7 @@ export default function CreateInvoice() {
                       customerPhone: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="+1 (555) 123-4567"
                 />
               </div>
@@ -262,7 +262,7 @@ export default function CreateInvoice() {
                       customerAddress: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   rows={3}
                   placeholder="123 Main St, City, State 12345"
                   required
@@ -278,7 +278,7 @@ export default function CreateInvoice() {
               <button
                 type="button"
                 onClick={addItem}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
               >
                 + Add Item
               </button>
@@ -297,7 +297,7 @@ export default function CreateInvoice() {
                       onChange={(e) =>
                         updateItem(item.id, "description", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                       placeholder="Item description"
                       required
                     />
@@ -313,7 +313,7 @@ export default function CreateInvoice() {
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                       min="0"
                       step="1"
                       required
@@ -330,7 +330,7 @@ export default function CreateInvoice() {
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                       min="0"
                       step="0.01"
                       placeholder="0.00"
@@ -386,7 +386,7 @@ export default function CreateInvoice() {
               onChange={(e) =>
                 setInvoiceData({ ...invoiceData, notes: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
               rows={4}
               placeholder="Any additional notes or terms for this invoice..."
             />
@@ -404,7 +404,7 @@ export default function CreateInvoice() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isSubmitting ? "Creating..." : "Create Invoice"}
             </button>

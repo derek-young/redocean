@@ -134,7 +134,7 @@ export default function CreateCustomer() {
                       firstName: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="John"
                 />
               </div>
@@ -151,7 +151,7 @@ export default function CreateCustomer() {
                       lastName: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="Doe"
                 />
               </div>
@@ -168,7 +168,7 @@ export default function CreateCustomer() {
                       email: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="john@example.com"
                 />
               </div>
@@ -185,7 +185,7 @@ export default function CreateCustomer() {
                       phone: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="+1 (555) 123-4567"
                 />
               </div>
@@ -209,7 +209,7 @@ export default function CreateCustomer() {
                       company: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="Acme Corporation"
                   required
                 />
@@ -227,7 +227,7 @@ export default function CreateCustomer() {
                       jobTitle: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="Manager"
                 />
               </div>
@@ -244,7 +244,7 @@ export default function CreateCustomer() {
                       website: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="https://example.com"
                 />
               </div>
@@ -260,7 +260,7 @@ export default function CreateCustomer() {
                       status: e.target.value as "active" | "inactive",
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                 >
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
@@ -283,7 +283,7 @@ export default function CreateCustomer() {
                   onChange={(e) =>
                     handleAddressChange("street", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="123 Main St"
                 />
               </div>
@@ -295,7 +295,7 @@ export default function CreateCustomer() {
                   type="text"
                   value={customerData.address.city}
                   onChange={(e) => handleAddressChange("city", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="New York"
                 />
               </div>
@@ -307,7 +307,7 @@ export default function CreateCustomer() {
                   type="text"
                   value={customerData.address.state}
                   onChange={(e) => handleAddressChange("state", e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="NY"
                 />
               </div>
@@ -321,7 +321,7 @@ export default function CreateCustomer() {
                   onChange={(e) =>
                     handleAddressChange("zipCode", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="10001"
                 />
               </div>
@@ -335,7 +335,7 @@ export default function CreateCustomer() {
                   onChange={(e) =>
                     handleAddressChange("country", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="United States"
                 />
               </div>
@@ -358,7 +358,7 @@ export default function CreateCustomer() {
                       paymentTerms: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                 >
                   <option value="Net 30">Net 30</option>
                   <option value="Net 15">Net 15</option>
@@ -379,7 +379,7 @@ export default function CreateCustomer() {
                       creditLimit: parseFloat(e.target.value) || 0,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="0"
                   min="0"
                   step="0.01"
@@ -400,13 +400,13 @@ export default function CreateCustomer() {
                   onKeyPress={(e) =>
                     e.key === "Enter" && (e.preventDefault(), addTag())
                   }
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder="Add a tag..."
                 />
                 <button
                   type="button"
                   onClick={addTag}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
                 >
                   Add
                 </button>
@@ -416,13 +416,13 @@ export default function CreateCustomer() {
                   {customerData.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
+                      className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-800"
                     >
                       {tag}
                       <button
                         type="button"
                         onClick={() => removeTag(tag)}
-                        className="ml-2 text-blue-600 hover:text-blue-800"
+                        className="ml-2 text-gray-600 hover:text-gray-800"
                       >
                         ×
                       </button>
@@ -444,7 +444,7 @@ export default function CreateCustomer() {
                   notes: e.target.value,
                 })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
               rows={4}
               placeholder="Add any additional notes about this customer..."
             />
@@ -461,7 +461,7 @@ export default function CreateCustomer() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isSubmitting ? "Creating..." : "Create Customer"}
             </button>

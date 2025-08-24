@@ -84,7 +84,7 @@ export default function Customers() {
 
   const getStatusBadge = (status: string) => {
     return status === "active" ? (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-200 text-gray-800">
         Active
       </span>
     ) : (
@@ -107,7 +107,7 @@ export default function Customers() {
           <div className="flex space-x-4">
             <Link
               href="/customers/create"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
             >
               + New Customer
             </Link>
@@ -136,7 +136,7 @@ export default function Customers() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search by name, email, or company..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
               />
             </div>
             <div className="md:w-48">
@@ -154,7 +154,7 @@ export default function Customers() {
                     e.target.value as "all" | "active" | "inactive"
                   )
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
               >
                 <option value="all">All Customers</option>
                 <option value="active">Active</option>
@@ -186,7 +186,7 @@ export default function Customers() {
               {!searchTerm && statusFilter === "all" && (
                 <Link
                   href="/customers/create"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
                 >
                   + Add First Customer
                 </Link>
@@ -259,7 +259,7 @@ export default function Customers() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-2">
-                          <button className="text-blue-600 hover:text-blue-900">
+                          <button className="text-gray-600 hover:text-gray-900">
                             Edit
                           </button>
                           <button className="text-gray-600 hover:text-gray-900">

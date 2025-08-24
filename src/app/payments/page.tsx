@@ -14,7 +14,7 @@ export default function Payments() {
             </p>
           </div>
           <div className="flex space-x-4">
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+            <button className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
               + Record Payment
             </button>
             <button

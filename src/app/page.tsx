@@ -88,7 +88,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">AltBooks</h1>
@@ -113,12 +113,12 @@ export default function Home() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="e.g., create invoice, find customer, view reports..."
-                  className="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent outline-none transition-all"
                   disabled={isSearching}
                 />
                 {isSearching && (
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500"></div>
                   </div>
                 )}
               </div>
@@ -127,9 +127,9 @@ export default function Home() {
             <button
               type="submit"
               disabled={isSearching || !searchTerm.trim()}
-              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full bg-gray-800 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-900 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
-              {isSearching ? "Searching..." : "Search"}
+              {isSearching ? "Thinking..." : "Let's Go"}
             </button>
           </form>
 
@@ -140,7 +140,7 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={() => router.push("/invoice/create")}
-                className="text-left p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all"
+                className="text-left p-3 rounded-lg border border-gray-200 hover:border-gray-400 hover:bg-gray-50 transition-all"
               >
                 <div className="font-medium text-gray-900">Create Invoice</div>
                 <div className="text-sm text-gray-500">
@@ -149,21 +149,21 @@ export default function Home() {
               </button>
               <button
                 onClick={() => router.push("/invoice/list")}
-                className="text-left p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all"
+                className="text-left p-3 rounded-lg border border-gray-200 hover:border-gray-400 hover:bg-gray-50 transition-all"
               >
                 <div className="font-medium text-gray-900">View Invoices</div>
                 <div className="text-sm text-gray-500">See all invoices</div>
               </button>
               <button
                 onClick={() => router.push("/customers")}
-                className="text-left p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all"
+                className="text-left p-3 rounded-lg border border-gray-200 hover:border-gray-400 hover:bg-gray-50 transition-all"
               >
                 <div className="font-medium text-gray-900">Customers</div>
                 <div className="text-sm text-gray-500">Manage contacts</div>
               </button>
               <button
                 onClick={() => router.push("/reports")}
-                className="text-left p-3 rounded-lg border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all"
+                className="text-left p-3 rounded-lg border border-gray-200 hover:border-gray-400 hover:bg-gray-50 transition-all"
               >
                 <div className="font-medium text-gray-900">Reports</div>
                 <div className="text-sm text-gray-500">View analytics</div>
