@@ -4,7 +4,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const routes = JSON.parse(fs.readFileSync("src/app/routes.json", "utf8")) as {
+const routes = JSON.parse(
+  fs.readFileSync("src/app/api/routes.json", "utf8")
+) as {
   path: string;
   pathQuickAction: string;
   description: string;
@@ -29,10 +31,12 @@ async function generateEmbeddings() {
   }
 
   fs.writeFileSync(
-    "src/app/routes-embeddings.json",
+    "src/app/api/routes-embeddings.json",
     JSON.stringify(embeddings, null, 2)
   );
-  console.log("✅ Saved route embeddings to src/app/routes-embeddings.json");
+  console.log(
+    "✅ Saved route embeddings to src/app/api/routes-embeddings.json"
+  );
 }
 
 generateEmbeddings();

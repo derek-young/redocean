@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Route embeddings for semantic search
+model RouteEmbedding {
+  id          String   @id @default(cuid(2))
+  path        String   @unique
+  description String
+  pathQuickAction String
+  fields      String[] // Array of field names
+  embedding   Float[]  // Vector of embeddings
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("route_embeddings")
+}
+
+// Search queries for analytics
+model SearchQuery {
+  id        String   @id @default(cuid(2))
+  query     String
+  resultPath String?
+  confidence Float?
+  createdAt DateTime @default(now())
+
+  @@map("search_queries")
+}

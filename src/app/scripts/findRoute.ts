@@ -1,18 +1,14 @@
-import fs from "fs";
+import { prisma } from "../../lib/db";
 import { cosineSimilarity } from "./utils";
 
-const routeEmbeddings = JSON.parse(
-  fs.readFileSync("src/app/routes-embeddings.json", "utf8")
-) as {
-  path: string;
-  quickActions: string[];
-  description: string;
-  embedding: number[];
-}[];
+async function getRouteEmbeddings() {
+  return await prisma.routeEmbedding.findMany();
+}
 
 export async function findRouteByQuickAction(quickAction: string) {
-  const route = routeEmbeddings.find((route) =>
-    route.quickActions.includes(quickAction.toLowerCase().trim())
+  const routeEmbeddings = await getRouteEmbeddings();
+  const route = routeEmbeddings.find(
+    (route: any) => route.pathQuickAction === quickAction.toLowerCase().trim()
   );
 
   if (route) {
@@ -23,6 +19,12 @@ export async function findRouteByQuickAction(quickAction: string) {
 }
 
 export async function findRouteByEmbedding(queryEmbedding: number[]) {
+  const routeEmbeddings = await getRouteEmbeddings();
+
+  if (routeEmbeddings.length === 0) {
+    throw new Error("No route embeddings found in database");
+  }
+
   let bestMatch = routeEmbeddings[0];
   let bestScore = -Infinity;
 

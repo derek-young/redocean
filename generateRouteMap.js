@@ -9,7 +9,7 @@ const traverse = require("@babel/traverse").default;
 // NOTE: This is just for a POC, this won't work in production as it doesn't scan imported components
 
 // Path to your routes.json
-const routesFile = path.join(process.cwd(), "src/app/routes.json");
+const routesFile = path.join(process.cwd(), "src/app/api/routes.json");
 
 // 1️⃣ Crawl all page files
 const files = glob.sync("src/app/**/page.tsx");

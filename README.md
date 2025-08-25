@@ -4,10 +4,14 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ### Environment Setup
 
-This project requires an OpenAI API key for generating embeddings. Create a `.env.local` file in the root directory with your API key:
+This project requires an OpenAI API key and PostgreSQL database for generating and storing embeddings. Create a `.env.local` file in the root directory with your configuration:
 
 ```bash
+# OpenAI API Key for generating embeddings
 OPENAI_API_KEY=your_openai_api_key_here
+
+# PostgreSQL Database URL
+DATABASE_URL="postgresql://username:password@localhost:5432/altbooks"
 ```
 
 ### Running the Development Server
@@ -28,15 +32,47 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+### Database Setup
+
+1. **Install PostgreSQL** (if not already installed):
+
+   ```bash
+   # macOS with Homebrew
+   brew install postgresql
+   brew services start postgresql
+
+   # Ubuntu/Debian
+   sudo apt-get install postgresql postgresql-contrib
+   sudo systemctl start postgresql
+   ```
+
+2. **Create the database**:
+
+   ```bash
+   createdb altbooks
+   ```
+
+3. **Set up the database schema**:
+   ```bash
+   npm run db:push
+   ```
+
 ### Generating Embeddings
 
-To generate embeddings for route descriptions, run:
+To generate embeddings for route descriptions run:
 
 ```bash
 npm run generate:embeddings
 ```
 
-This will create a `src/app/routes-embeddings.json` file with embeddings for all routes defined in `src/app/routes.json`.
+This will create embeddings for all routes defined in `src/app/routes.json`.
+
+### Database Management
+
+- **View database in Prisma Studio**: `npm run db:studio`
+- **Generate Prisma client**: `npm run db:generate`
+- **Push schema changes**: `npm run db:push`
+- **Create and run migrations**: `npm run db:migrate`
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
@@ -48,6 +84,59 @@ To learn more about Next.js, take a look at the following resources:
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Google Cloud Run
+
+This project is configured for deployment on Google Cloud Run with PostgreSQL support.
+
+### Prerequisites
+
+1. **Google Cloud Project**: Create a project in Google Cloud Console
+2. **Cloud SQL**: Set up a PostgreSQL instance in Cloud SQL
+3. **Cloud Build**: Enable Cloud Build API
+4. **Container Registry**: Enable Container Registry API
+
+### Deployment Steps
+
+1. **Set up Cloud SQL PostgreSQL**:
+
+   ```bash
+   gcloud sql instances create altbooks-db \
+     --database-version=POSTGRES_14 \
+     --tier=db-f1-micro \
+     --region=us-central1
+
+   gcloud sql databases create altbooks --instance=altbooks-db
+   gcloud sql users create altbooks-user --instance=altbooks-db --password=your-password
+   ```
+
+2. **Get the database connection string**:
+
+   ```bash
+   gcloud sql instances describe altbooks-db --format="value(connectionName)"
+   ```
+
+3. **Update `cloudbuild.yaml`** with your actual database URL and OpenAI API key
+
+4. **Deploy using Cloud Build**:
+   ```bash
+   gcloud builds submit --config cloudbuild.yaml
+   ```
+
+### Environment Variables
+
+Set these environment variables in Cloud Run:
+
+- `DATABASE_URL`: Your Cloud SQL PostgreSQL connection string
+- `OPENAI_API_KEY`: Your OpenAI API key
+
+### Local Development with Cloud SQL
+
+To connect to Cloud SQL from your local machine:
+
+```bash
+gcloud sql connect altbooks-db --user=altbooks-user
+```
 
 ## Deploy on Vercel
 
