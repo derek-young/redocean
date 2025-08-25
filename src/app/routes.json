@@ -1,26 +1,31 @@
 [
   {
     "path": "/",
+    "quickActions": ["home", "dashboard"],
     "description": "Home view with smart search and quick actions",
     "fields": ["Search"]
   },
   {
     "path": "/reports",
+    "quickActions": ["reports", "view reports"],
     "description": "View business analytics and financial reports",
     "fields": []
   },
   {
     "path": "/payments",
+    "quickActions": ["payments", "view payments"],
     "description": "View and manage payments to suppliers",
     "fields": []
   },
   {
-    "path": "/invoice/list",
+    "path": "/invoices",
+    "quickActions": ["invoices", "view invoices"],
     "description": "View and manage existing invoices",
     "fields": []
   },
   {
     "path": "/invoice/create",
+    "quickActions": ["create invoice", "new invoice"],
     "description": "Create a new invoice for a customer",
     "fields": [
       "Invoice Number",
@@ -39,6 +44,7 @@
   },
   {
     "path": "/customers",
+    "quickActions": ["customers", "view customers"],
     "description": "View and manage existing customers",
     "fields": [
       "Search customers by name, email, or company",
@@ -47,6 +53,7 @@
   },
   {
     "path": "/customers/create",
+    "quickActions": ["create customer", "new customer"],
     "description": "Add a new customer to the system",
     "fields": [
       "First Name",

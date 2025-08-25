@@ -6,6 +6,7 @@ dotenv.config();
 
 const routes = JSON.parse(fs.readFileSync("src/app/routes.json", "utf8")) as {
   path: string;
+  pathQuickAction: string;
   description: string;
   fields: string[];
 }[];
@@ -18,7 +19,7 @@ async function generateEmbeddings() {
   for (const route of routes) {
     const resp = await client.embeddings.create({
       model: "text-embedding-3-small",
-      input: route.description,
+      input: route.description.toLowerCase(),
     });
 
     embeddings.push({

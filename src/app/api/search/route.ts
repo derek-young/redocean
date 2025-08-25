@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SearchResponse, SearchRequest, SearchError } from "@/types/search";
 
-import findRoute from "@/app/scripts/findRoute";
+import { getTextEmbedding } from "@/app/scripts/openai";
+import {
+  findRouteByEmbedding,
+  findRouteByQuickAction,
+} from "@/app/scripts/findRoute";
 
 export async function POST(
   request: NextRequest
@@ -16,15 +20,21 @@ export async function POST(
       );
     }
 
-    // Similarity for term "create invoice" is 0.75 on desc: "create a new invoice for a customer"
-    // Similarity for term "create invoice for bob's diner" is 0.5886
-
     const term = searchTerm.toLowerCase().trim();
-    const route = await findRoute(term);
+    console.log(`User query: "${term}"`);
 
-    console.log("Best match:", route);
+    const routeByQuickAction = await findRouteByQuickAction(term);
 
-    if (route.confidence > 0.5) {
+    if (routeByQuickAction) {
+      return NextResponse.json({ route: routeByQuickAction.path });
+    }
+
+    // NOTE: The text embedding comparison may not be useful after evaluating the quick action
+    // If the query doesn't match a quick action, it will likely need to be evaluated by an LLM
+    const data = await getTextEmbedding(term);
+    const route = await findRouteByEmbedding(data[0].embedding);
+
+    if (route.confidence > 0.7) {
       return NextResponse.json({ route: route.path });
     }
 
