@@ -13,27 +13,155 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Route embeddings for semantic search
-model RouteEmbedding {
+model User {
+  id        String   @id @default(cuid(2))
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  journalEntries JournalEntry[]
+
+  @@map("users")
+}
+
+// ===========================================
+// CUSTOMER & VENDOR MANAGEMENT
+// ===========================================
+
+model Customer {
+  id        String   @id @default(cuid(2))
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  contacts Contact[]
+  addresses Address[]
+
+  @@map("customers")
+}
+
+model Vendor {
+  id        String   @id @default(cuid(2))
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  contacts Contact[]
+  addresses Address[]
+
+  @@map("vendors")
+}
+
+model Address {
+  id        String   @id @default(cuid(2))
+  street1   String
+  street2   String?
+  street3   String?
+  city      String
+  state     String
+  zip       String
+  country   String   @default("US")
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  vendorId String?
+  vendor   Vendor? @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+model Contact {
+  id         String   @id @default(cuid(2))
+  email      String   @unique
+  firstName  String?
+  lastName   String?
+  phone      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relationships
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  vendorId   String?
+  vendor     Vendor? @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@map("contacts")
+}
+
+// ===========================================
+// ACCOUNTING & FINANCIAL MANAGEMENT
+// ===========================================
+
+enum AccountType {
+  ASSET       // 1000-1999: Cash, Accounts Receivable, Inventory, etc.
+  LIABILITY   // 2000-2999: Accounts Payable, Loans, etc.
+  EQUITY      // 3000-3999: Owner's Equity, Retained Earnings, etc.
+  REVENUE     // 4000-4999: Sales, Service Revenue, etc.
+  EXPENSE     // 5000-5999: Cost of Goods Sold, Operating Expenses, etc.
+}
+
+model Account {
   id          String   @id @default(cuid(2))
-  path        String   @unique
-  description String
-  pathQuickAction String
-  fields      String[] // Array of field names
-  embedding   Float[]  // Vector of embeddings
+  code        String   @unique // e.g., "1000", "1100", "2000"
+  name        String   // e.g., "Cash", "Accounts Receivable", "Accounts Payable"
+  type        AccountType
+  description String?
+  isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@map("route_embeddings")
+  // Hierarchical structure
+  parentId    String?
+  parent      Account? @relation("AccountHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children    Account[] @relation("AccountHierarchy")
+
+  // Relationships
+  transactions Transaction[]
+
+  @@map("accounts")
 }
 
-// Search queries for analytics
-model SearchQuery {
-  id        String   @id @default(cuid(2))
-  query     String
-  resultPath String?
-  confidence Float?
-  createdAt DateTime @default(now())
+model JournalEntry {
+  id          String @id @default(cuid(2))
+  date        DateTime
+  reference   String?
+  memo        String?
+  createdById String
+  createdBy   User @relation(fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  @@map("search_queries")
+  // Relationships
+  transactions Transaction[]
+
+  @@map("journal_entries")
+}
+
+model Transaction {
+  id            String   @id @default(cuid(2))
+  description   String?
+  debitAmount   Decimal?  @db.Decimal(10, 2)
+  creditAmount  Decimal?  @db.Decimal(10, 2)
+  accountId     String
+  journalEntryId String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relationships
+  account       Account @relation(fields: [accountId], references: [id])
+  journalEntry  JournalEntry @relation(fields: [journalEntryId], references: [id])
+
+  @@map("transactions")
 }
