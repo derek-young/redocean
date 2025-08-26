@@ -76,6 +76,7 @@ const crawledRoutes = files.map((file) => {
     return {
       path: routePath,
       description: existing.description,
+      quickActions: existing.quickActions,
       fields: fields.length ? fields : existing.fields || [],
     };
   }
@@ -84,6 +85,7 @@ const crawledRoutes = files.map((file) => {
   return {
     path: routePath,
     description: "no commit",
+    quickActions: [],
     fields,
   };
 });

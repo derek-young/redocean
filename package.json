@@ -8,9 +8,11 @@
     "generate:routes": "node generateRouteMap.js",
     "generate:embeddings": "ts-node generateEmbeddings.ts",
     "db:generate": "prisma generate",
+    "db:dev": "prisma dev",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
+    "db:seed": "ts-node prisma/seed.ts",
     "start": "next start",
     "lint": "eslint"
   },

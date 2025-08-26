@@ -1,10 +1,8 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
 ## Getting Started
 
 ### Environment Setup
 
-This project requires an OpenAI API key and PostgreSQL database for generating and storing embeddings. Create a `.env.local` file in the root directory with your configuration:
+This project requires defining two environment variabls: an OpenAI API key and PostgreSQL database URL. Create a `.env` file in the root directory with your configuration:
 
 ```bash
 # OpenAI API Key for generating embeddings
@@ -14,23 +12,33 @@ OPENAI_API_KEY=your_openai_api_key_here
 DATABASE_URL="postgresql://username:password@localhost:5432/altbooks"
 ```
 
+### Generating Route Embeddings
+
+To generate embeddings for route descriptions, first run:
+
+```bash
+npm run generate:routes
+```
+
+This will create a sitemap under `src/app/api/` that includes all routes and their input field names. Manually update the descriptions and quick actions of each route. The description should be LLM-friendly. The quick actions are what a human would expect to be able to type to get to that route.
+
+After descriptions and quick actions have been entered, run:
+
+```bash
+npm run generate:embeddings
+```
+
+This will create embeddings for all routes defined in `src/app/api/routes.json`.
+
 ### Running the Development Server
 
-First, run the development server:
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open [http://localhost:3000](http://localhost:3000)
 
 ### Database Setup
 
@@ -52,20 +60,16 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
    createdb altbooks
    ```
 
-3. **Set up the database schema**:
+3. **Run database dev server**:
+
+   ```bash
+   npm run db:dev
+   ```
+
+4. **Set up the database schema**:
    ```bash
    npm run db:push
    ```
-
-### Generating Embeddings
-
-To generate embeddings for route descriptions run:
-
-```bash
-npm run generate:embeddings
-```
-
-This will create embeddings for all routes defined in `src/app/routes.json`.
 
 ### Database Management
 
