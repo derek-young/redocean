@@ -4,6 +4,23 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// TODO: Add middleware to automatically add tenantId filter to all queries
+/*
+  export const prisma = new PrismaClient().$extends({
+    query: {
+      $allModels: {
+        async $allOperations({ args, query }) {
+          // Automatically add tenantId filter to all queries
+          if (args.where && !args.where.tenantId) {
+            args.where.tenantId = getCurrentTenantId();
+          }
+          return query(args);
+        },
+      },
+    },
+  });
+*/
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,16 +30,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Tenant {
+  id        String   @id @default(cuid(2))
+  name      String
+  subdomain String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  users User[]
+  customers Customer[]
+  vendors Vendor[]
+  accounts Account[]
+  journalEntries JournalEntry[]
+
+  @@map("tenants")
+}
+
 model User {
   id        String   @id @default(cuid(2))
   email     String   @unique
   firstName String?
   lastName  String?
   isActive  Boolean  @default(true)
+  tenantId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relationships
+  tenant         Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   journalEntries JournalEntry[]
 
   @@map("users")
@@ -35,11 +72,13 @@ model User {
 model Customer {
   id        String   @id @default(cuid(2))
   name      String
+  tenantId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relationships
-  contacts Contact[]
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contacts  Contact[]
   addresses Address[]
 
   @@map("customers")
@@ -48,11 +87,13 @@ model Customer {
 model Vendor {
   id        String   @id @default(cuid(2))
   name      String
+  tenantId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relationships
-  contacts Contact[]
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contacts  Contact[]
   addresses Address[]
 
   @@map("vendors")
@@ -114,11 +155,12 @@ enum AccountType {
 
 model Account {
   id          String   @id @default(cuid(2))
-  code        String   @unique // e.g., "1000", "1100", "2000"
+  code        String   // e.g., "1000", "1100", "2000"
   name        String   // e.g., "Cash", "Accounts Receivable", "Accounts Payable"
   type        AccountType
   description String?
   isActive    Boolean  @default(true)
+  tenantId    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -128,8 +170,10 @@ model Account {
   children    Account[] @relation("AccountHierarchy")
 
   // Relationships
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   transactions Transaction[]
 
+  @@unique([code, tenantId])
   @@map("accounts")
 }
 
@@ -138,12 +182,14 @@ model JournalEntry {
   date        DateTime
   reference   String?
   memo        String?
+  tenantId    String
   createdById String
   createdBy   User @relation(fields: [createdById], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relationships
+  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   transactions Transaction[]
 
   @@map("journal_entries")
