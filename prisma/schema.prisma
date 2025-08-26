@@ -39,30 +39,50 @@ model Tenant {
   updatedAt DateTime @updatedAt
 
   // Relationships
-  users User[]
+  users     UserTenant[]
   customers Customer[]
-  vendors Vendor[]
-  accounts Account[]
+  vendors   Vendor[]
+  accounts  Account[]
   journalEntries JournalEntry[]
 
   @@map("tenants")
 }
 
+enum Role {
+  ADMIN
+  AUDITOR
+}
+
 model User {
   id        String   @id @default(cuid(2))
   email     String   @unique
+  role      Role
   firstName String?
   lastName  String?
   isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  journalEntries JournalEntry[]
+  tenants   UserTenant[]
+
+  @@map("users")
+}
+
+model UserTenant {
+  id        String   @id @default(cuid(2))
+  userId    String
   tenantId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relationships
-  tenant         Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  journalEntries JournalEntry[]
+  user     User   @relation(fields: [userId], references: [id])
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
 
-  @@map("users")
+  @@unique([userId, tenantId])
+  @@map("tenant_users")
 }
 
 // ===========================================
@@ -178,28 +198,30 @@ model Account {
 }
 
 model JournalEntry {
-  id          String @id @default(cuid(2))
+  id          String   @id @default(cuid(2))
+  entryNumber Int      // Reader-friendly ID: 1001, 1002, etc.
   date        DateTime
   reference   String?
   memo        String?
   tenantId    String
-  createdById String
-  createdBy   User @relation(fields: [createdById], references: [id])
+  userId      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relationships
+  user        User @relation(fields: [userId], references: [id])
   tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   transactions Transaction[]
 
+  @@unique([entryNumber, tenantId])
   @@map("journal_entries")
 }
 
 model Transaction {
   id            String   @id @default(cuid(2))
   description   String?
-  debitAmount   Decimal?  @db.Decimal(10, 2)
-  creditAmount  Decimal?  @db.Decimal(10, 2)
+  debitAmount   Decimal? @db.Decimal(10, 2)
+  creditAmount  Decimal? @db.Decimal(10, 2)
   accountId     String
   journalEntryId String
   createdAt     DateTime @default(now())
