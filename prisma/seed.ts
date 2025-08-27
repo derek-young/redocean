@@ -20,13 +20,18 @@ async function main() {
       email: "az@galactictradingco.com",
       firstName: "Admiral Zelara",
       lastName: "Vey",
-      tenants: {
-        connect: [{ id: tenant.id }],
-      },
       role: "ADMIN",
     },
   });
   console.log("✅ Created user:", user.email);
+
+  // Create user-tenant membership
+  await prisma.userTenantMembership.create({
+    data: {
+      userId: user.id,
+      tenantId: tenant.id,
+    },
+  });
 
   // Create standard chart of accounts
   const accounts = await createStandardAccounts(tenant.id);
@@ -163,10 +168,7 @@ async function createVendors(tenantId: string) {
         ...vendorData,
         tenantId,
         addresses: {
-          create: addresses.map((addr) => ({
-            ...addr,
-            tenantId,
-          })),
+          create: addresses,
         },
       },
     });
@@ -234,10 +236,7 @@ async function createCustomers(tenantId: string) {
         ...customerData,
         tenantId,
         addresses: {
-          create: addresses.map((addr) => ({
-            ...addr,
-            tenantId,
-          })),
+          create: addresses,
         },
       },
     });

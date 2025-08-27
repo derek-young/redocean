@@ -60,15 +60,19 @@ Open [http://localhost:3000](http://localhost:3000)
    createdb altbooks
    ```
 
-3. **Run database dev server**:
+3. **Set up the database schema and seed data**:
 
    ```bash
    npm run db:dev
-   ```
 
-4. **Set up the database schema**:
-   ```bash
+   # Push schema to database
    npm run db:push
+
+   # Generate Prisma client
+   npm run db:generate
+
+   # Seed the database with initial data
+   npm run db:seed
    ```
 
 ### Database Management

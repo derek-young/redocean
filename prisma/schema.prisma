@@ -32,24 +32,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Tenant {
-  id        String   @id @default(cuid(2))
-  name      String
-  subdomain String   @unique
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relationships
-  users     UserTenant[]
-  customers Customer[]
-  vendors   Vendor[]
-  accounts  Account[]
-  journalEntries JournalEntry[]
-
-  @@map("tenants")
-}
-
 enum Role {
   ADMIN
   AUDITOR
@@ -67,12 +49,30 @@ model User {
 
   // Relationships
   journalEntries JournalEntry[]
-  tenants   UserTenant[]
+  userTenantMemberships UserTenantMembership[]
 
   @@map("users")
 }
 
-model UserTenant {
+model Tenant {
+  id        String   @id @default(cuid(2))
+  name      String
+  subdomain String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  accounts  Account[]
+  customers Customer[]
+  journalEntries JournalEntry[]
+  userTenantMemberships UserTenantMembership[]
+  vendors   Vendor[]
+
+  @@map("tenants")
+}
+
+model UserTenantMembership {
   id        String   @id @default(cuid(2))
   userId    String
   tenantId  String
@@ -84,7 +84,7 @@ model UserTenant {
   tenant   Tenant @relation(fields: [tenantId], references: [id])
 
   @@unique([userId, tenantId])
-  @@map("tenant_users")
+  @@map("user_tenant_memberships")
 }
 
 // ===========================================
