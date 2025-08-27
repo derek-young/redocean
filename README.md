@@ -66,7 +66,7 @@ Open [http://localhost:3000](http://localhost:3000)
    npm run db:dev
 
    # Push schema to database
-   npm run db:push
+   npm run db:push:reset
 
    # Generate Prisma client
    npm run db:generate

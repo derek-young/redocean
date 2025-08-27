@@ -17,7 +17,7 @@ export default function Home() {
     setIsSearching(true);
 
     try {
-      const response = await fetch("/api/search", {
+      const response = await fetch("/api/v1/search", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

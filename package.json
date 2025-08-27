@@ -10,7 +10,7 @@
     "db:generate": "prisma generate",
     "db:dev": "prisma dev",
     "db:push": "prisma db push",
-    "db:push:wipe": "prisma db push --force-reset",
+    "db:push:reset": "prisma db push --force-reset",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "db:seed": "ts-node prisma/seed.ts",

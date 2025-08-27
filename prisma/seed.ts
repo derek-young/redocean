@@ -1,4 +1,4 @@
-import { AccountType, PrismaClient } from "@prisma/client";
+import { AccountType, ContactType, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -42,6 +42,10 @@ async function main() {
 
   const customers = await createCustomers(tenant.id);
   console.log(`✅ Created ${customers.length} customers`);
+
+  // Add contacts for vendors and customers
+  await createContacts(vendors, customers);
+  console.log("✅ Created contacts for vendors and customers");
 
   console.log("🎉 Database seeding completed!");
 }
@@ -245,6 +249,95 @@ async function createCustomers(tenantId: string) {
   }
 
   return createdCustomers;
+}
+
+async function createContacts(vendors: any[], customers: any[]) {
+  const vendorContacts = [
+    {
+      vendorId: vendors[0].id, // Dark Matter Refinery Ltd.
+      email: "zara.quantum@darkmatterrefinery.com",
+      firstName: "Zara",
+      lastName: "Quantum",
+      phone: "+1-970-555-1234",
+      type: ContactType.PRIMARY,
+    },
+    {
+      vendorId: vendors[1].id, // CryoVault Logistics
+      email: "frost.iceberg@cryovault.com",
+      firstName: "Frost",
+      lastName: "Iceberg",
+      phone: "+1-970-555-5678",
+      type: ContactType.PRIMARY,
+    },
+    {
+      vendorId: vendors[1].id, // CryoVault Logistics - secondary contact
+      email: "chill.penguin@cryovault.com",
+      firstName: "Chill",
+      lastName: "Penguin",
+      phone: "+1-970-555-9101",
+      type: ContactType.SECONDARY,
+    },
+    {
+      vendorId: vendors[2].id, // Nova Fuel Consortium
+      email: "nova.starburst@novafuel.com",
+      firstName: "Nova",
+      lastName: "Starburst",
+      phone: "+1-970-555-1314",
+      type: ContactType.PRIMARY,
+    },
+  ];
+
+  const customerContacts = [
+    {
+      customerId: customers[0].id, // Orion Spice Syndicate
+      email: "spice.lord@orionspice.com",
+      firstName: "Spice",
+      lastName: "Lord",
+      phone: "+1-970-555-1516",
+      type: ContactType.PRIMARY,
+    },
+    {
+      customerId: customers[0].id, // Orion Spice Syndicate - secondary contact
+      email: "cinnamon.queen@orionspice.com",
+      firstName: "Cinnamon",
+      lastName: "Queen",
+      phone: "+1-970-555-1718",
+      type: ContactType.SECONDARY,
+    },
+    {
+      customerId: customers[1].id, // Tau Ceti Terraformers
+      email: "terra.former@tauceti.com",
+      firstName: "Terra",
+      lastName: "Former",
+      phone: "+1-970-555-1920",
+      type: ContactType.PRIMARY,
+    },
+    {
+      customerId: customers[2].id, // Betelgeuse Royal Court
+      email: "royal.majesty@betelgeuse.com",
+      firstName: "Royal",
+      lastName: "Majesty",
+      phone: "+1-970-555-2122",
+      type: ContactType.PRIMARY,
+    },
+    {
+      customerId: customers[2].id, // Betelgeuse Royal Court - secondary contact (missing phone)
+      email: "princess.stellar@betelgeuse.com",
+      firstName: "Princess",
+      lastName: "Stellar",
+      type: ContactType.SECONDARY,
+    },
+  ];
+
+  for (const contact of [...vendorContacts, ...customerContacts]) {
+    await prisma.contact.create({
+      data: contact,
+    });
+  }
+
+  console.log(
+    `✅ Created ${vendorContacts.length + customerContacts.length} contacts`
+  );
 }
 
 main()

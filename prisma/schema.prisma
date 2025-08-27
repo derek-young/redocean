@@ -25,8 +25,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-/// @seed="ts-node prisma/seed.ts"
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -37,14 +35,20 @@ enum Role {
   AUDITOR
 }
 
+enum Status {
+  ACTIVE
+  ARCHIVED
+}
+
 model User {
   id        String   @id @default(cuid(2))
   email     String   @unique
   role      Role
   firstName String?
   lastName  String?
-  isActive  Boolean  @default(true)
+  status    Status @default(ACTIVE)
   createdAt DateTime @default(now())
+  deletedAt DateTime?
   updatedAt DateTime @updatedAt
 
   // Relationships
@@ -58,8 +62,9 @@ model Tenant {
   id        String   @id @default(cuid(2))
   name      String
   subdomain String   @unique
-  isActive  Boolean  @default(true)
+  status    Status @default(ACTIVE)
   createdAt DateTime @default(now())
+  deletedAt DateTime?
   updatedAt DateTime @updatedAt
 
   // Relationships
@@ -95,7 +100,9 @@ model Customer {
   id        String   @id @default(cuid(2))
   name      String
   tenantId  String
+  status    Status @default(ACTIVE)
   createdAt DateTime @default(now())
+  deletedAt DateTime?
   updatedAt DateTime @updatedAt
 
   // Relationships
@@ -110,7 +117,9 @@ model Vendor {
   id        String   @id @default(cuid(2))
   name      String
   tenantId  String
+  status    Status @default(ACTIVE)
   createdAt DateTime @default(now())
+  deletedAt DateTime?
   updatedAt DateTime @updatedAt
 
   // Relationships
@@ -144,13 +153,21 @@ model Address {
   @@map("addresses")
 }
 
+enum ContactType {
+  PRIMARY
+  SECONDARY
+}
+
 model Contact {
   id         String   @id @default(cuid(2))
   email      String   @unique
   firstName  String?
   lastName   String?
   phone      String?
+  status     Status @default(ACTIVE)
+  type       ContactType @default(PRIMARY)
   createdAt  DateTime @default(now())
+  deletedAt  DateTime?
   updatedAt  DateTime @updatedAt
 
   // Relationships
@@ -181,9 +198,10 @@ model Account {
   name        String   // e.g., "Cash", "Accounts Receivable", "Accounts Payable"
   type        AccountType
   description String?
-  isActive    Boolean  @default(true)
+  status      Status @default(ACTIVE)
   tenantId    String
   createdAt   DateTime @default(now())
+  deletedAt   DateTime?
   updatedAt   DateTime @updatedAt
 
   // Hierarchical structure
