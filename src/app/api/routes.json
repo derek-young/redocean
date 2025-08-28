@@ -25,7 +25,12 @@
   },
   {
     "path": "/invoice/create",
-    "quickActions": ["create invoice", "new invoice"],
+    "quickActions": [
+      "create invoice",
+      "create an invoice",
+      "new invoice",
+      "create a new invoice"
+    ],
     "description": "Create a new invoice for a customer",
     "fields": [
       "Invoice Number",
@@ -44,7 +49,12 @@
   },
   {
     "path": "/customers",
-    "quickActions": ["customers", "view customers"],
+    "quickActions": [
+      "customers",
+      "view customers",
+      "find customer",
+      "find a customer"
+    ],
     "description": "View and manage existing customers",
     "fields": [
       "Search customers by name, email, or company",
@@ -53,7 +63,12 @@
   },
   {
     "path": "/customers/create",
-    "quickActions": ["create customer", "new customer"],
+    "quickActions": [
+      "create customer",
+      "new customer",
+      "create a customer",
+      "create a new customer"
+    ],
     "description": "Add a new customer to the system",
     "fields": [
       "First Name",
