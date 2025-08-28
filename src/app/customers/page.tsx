@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Customer, Contact, Address } from "@prisma/client";
+import { People } from "@mui/icons-material";
 
 type CustomerWithRelations = Customer & {
   contacts: Contact[];
@@ -149,7 +150,9 @@ export default function Customers() {
 
           {filteredCustomers.length === 0 ? (
             <div className="text-center py-12">
-              <div className="text-gray-400 text-6xl mb-4">👥</div>
+              <div className="text-gray-400 mb-4">
+                <People className="text-6xl" />
+              </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
                 No customers found
               </h3>

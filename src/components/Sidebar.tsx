@@ -1,15 +1,23 @@
 import { useRouter } from "next/navigation";
+import {
+  Business,
+  People,
+  Description,
+  Receipt,
+  Payment,
+  Analytics,
+} from "@mui/icons-material";
 
 function SidebarItem({
   title,
   description,
   onClick,
-  icon,
+  icon: Icon,
 }: {
   title: string;
   description: string;
   onClick: () => void;
-  icon: string;
+  icon: React.ComponentType<{ className?: string }>;
 }) {
   return (
     <button
@@ -17,8 +25,8 @@ function SidebarItem({
       className="w-full text-left p-4 rounded-lg border border-gray-200 hover:border-red-300 hover:bg-gray-50 transition-all group"
     >
       <div className="flex items-center space-x-3">
-        <div className="text-gray-400 group-hover:text-red-600 text-xl">
-          {icon}
+        <div className="text-gray-400 group-hover:text-red-600 transition-colors">
+          <Icon className="text-2xl" />
         </div>
         <div>
           <div className="font-medium text-gray-900 group-hover:text-red-600">
@@ -41,42 +49,42 @@ function Sidebar() {
           title="Vendors"
           description="Manage suppliers"
           onClick={() => router.push("/vendors")}
-          icon="🏢"
+          icon={Business}
         />
 
         <SidebarItem
           title="Customers"
           description="Manage contacts"
           onClick={() => router.push("/customers")}
-          icon="👥"
+          icon={People}
         />
 
         <SidebarItem
           title="Create Invoice"
           description="Generate new invoice"
           onClick={() => router.push("/invoice/create")}
-          icon="📄"
+          icon={Description}
         />
 
         <SidebarItem
           title="View Invoices"
           description="See all invoices"
           onClick={() => router.push("/invoice/list")}
-          icon="📋"
+          icon={Receipt}
         />
 
         <SidebarItem
           title="Payments"
           description="Track payments"
           onClick={() => router.push("/payments")}
-          icon="💰"
+          icon={Payment}
         />
 
         <SidebarItem
           title="Reports"
           description="View analytics"
           onClick={() => router.push("/reports")}
-          icon="📊"
+          icon={Analytics}
         />
       </div>
     </aside>

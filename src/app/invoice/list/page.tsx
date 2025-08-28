@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Receipt } from "@mui/icons-material";
 
 export default function InvoiceList() {
   return (
@@ -29,7 +30,9 @@ export default function InvoiceList() {
 
         <div className="bg-white rounded-lg shadow p-6">
           <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">📄</div>
+            <div className="text-gray-400 mb-4">
+              <Receipt className="text-6xl" />
+            </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
               Invoice List
             </h3>

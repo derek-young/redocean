@@ -1,4 +1,5 @@
 import { useRouter } from "next/navigation";
+import { Payment } from "@mui/icons-material";
 
 export default function Payments() {
   const router = useRouter();
@@ -28,7 +29,9 @@ export default function Payments() {
 
         <div className="bg-white rounded-lg shadow p-6">
           <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">💳</div>
+            <div className="text-gray-400 mb-4">
+              <Payment className="text-6xl" />
+            </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
               Payment Tracking
             </h3>
