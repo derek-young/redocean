@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Customer, Contact, Address } from "@prisma/client";
-import { People } from "@mui/icons-material";
+
+import Loading from "@/components/Loading";
+
+import EmptyState from "./Empty";
 
 type CustomerWithRelations = Customer & {
   contacts: Contact[];
@@ -16,6 +19,7 @@ export default function Customers() {
   const [statusFilter, setStatusFilter] = useState<
     "all" | "ACTIVE" | "ARCHIVED"
   >("all");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -33,6 +37,8 @@ export default function Customers() {
         console.error("Error fetching customers:", error);
         // For now, use empty array if API is not available
         setCustomers([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -146,33 +152,14 @@ export default function Customers() {
       {/* Customer List */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            Customer List ({filteredCustomers.length} customers)
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Customer List&nbsp;
+            {isLoading && <Loading />}
           </h2>
         </div>
 
-        {filteredCustomers.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
-              <People className="text-6xl" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              No customers found
-            </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
-              {searchTerm || statusFilter !== "all"
-                ? "Try adjusting your search or filter criteria."
-                : "Get started by adding your first customer."}
-            </p>
-            {!searchTerm && statusFilter === "all" && (
-              <Link
-                href="/customers/create"
-                className="px-4 py-2 bg-gray-800 dark:bg-gray-700 text-white dark:text-gray-100 rounded-md hover:bg-gray-900 dark:hover:bg-gray-600 transition-colors"
-              >
-                + Add First Customer
-              </Link>
-            )}
-          </div>
+        {isLoading ? null : filteredCustomers.length === 0 ? (
+          <EmptyState searchTerm={searchTerm} statusFilter={statusFilter} />
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">

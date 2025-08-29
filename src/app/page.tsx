@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "@mui/icons-material";
 
+import Loading from "@/components/Loading";
 import { SearchResponse } from "@/types/search";
 
 const placeholderSamples = [
@@ -92,7 +93,7 @@ export default function Home() {
             />
             {isSearching && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-500"></div>
+                <Loading />
               </div>
             )}
           </form>
