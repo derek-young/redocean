@@ -1,55 +1,109 @@
 "use client";
 
 import { Analytics } from "@mui/icons-material";
-import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
 
 export default function Reports() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 p-8">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  Reports & Analytics
-                </h1>
-                <p className="text-gray-600 mt-1">
-                  View your business insights and financial reports
-                </p>
-              </div>
-            </div>
+    <div className="max-w-7xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Reports</h1>
+        <p className="text-gray-600 mt-1">
+          View business analytics and financial reports
+        </p>
+      </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="text-center py-12">
-                <div className="text-gray-400 mb-4">
-                  <Analytics className="text-6xl" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  Reports Dashboard
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  This page would display comprehensive business analytics and
-                  financial reports.
-                </p>
-                <p className="text-sm text-gray-500">
-                  Features to be implemented:
-                </p>
-                <ul className="text-sm text-gray-500 mt-2 space-y-1">
-                  <li>• Revenue and profit analytics</li>
-                  <li>• Invoice aging reports</li>
-                  <li>• Customer payment history</li>
-                  <li>• Expense tracking and categorization</li>
-                  <li>• Cash flow projections</li>
-                  <li>• Tax reports and summaries</li>
-                </ul>
-              </div>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Profit & Loss */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Profit & Loss
+            </h3>
+            <Analytics className="text-gray-400" />
           </div>
-        </main>
+          <p className="text-gray-600 text-sm mb-4">
+            View your revenue, expenses, and net profit over time.
+          </p>
+          <button className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+            View Report
+          </button>
+        </div>
+
+        {/* Cash Flow */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Cash Flow</h3>
+            <Analytics className="text-gray-400" />
+          </div>
+          <p className="text-gray-600 text-sm mb-4">
+            Track money coming in and going out of your business.
+          </p>
+          <button className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+            View Report
+          </button>
+        </div>
+
+        {/* Balance Sheet */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Balance Sheet
+            </h3>
+            <Analytics className="text-gray-400" />
+          </div>
+          <p className="text-gray-600 text-sm mb-4">
+            See your assets, liabilities, and equity at a point in time.
+          </p>
+          <button className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+            View Report
+          </button>
+        </div>
+
+        {/* Sales Report */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Sales Report
+            </h3>
+            <Analytics className="text-gray-400" />
+          </div>
+          <p className="text-gray-600 text-sm mb-4">
+            Analyze your sales performance and trends.
+          </p>
+          <button className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+            View Report
+          </button>
+        </div>
+
+        {/* Expense Report */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Expense Report
+            </h3>
+            <Analytics className="text-gray-400" />
+          </div>
+          <p className="text-gray-600 text-sm mb-4">
+            Track and categorize your business expenses.
+          </p>
+          <button className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+            View Report
+          </button>
+        </div>
+
+        {/* Tax Report */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Tax Report</h3>
+            <Analytics className="text-gray-400" />
+          </div>
+          <p className="text-gray-600 text-sm mb-4">
+            Prepare for tax season with organized financial data.
+          </p>
+          <button className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+            View Report
+          </button>
+        </div>
       </div>
     </div>
   );

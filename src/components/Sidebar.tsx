@@ -47,22 +47,33 @@ function SidebarItem({
   description,
   href,
   icon: Icon,
-  isActive = false,
+  isImplemented = true,
 }: {
   title: string;
   description: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
-  isActive?: boolean;
+  isImplemented?: boolean;
 }) {
+  const pathname = usePathname();
+  const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!isImplemented) {
+      e.preventDefault();
+      return;
+    }
+  };
+
   return (
     <Link
+      onClick={handleClick}
       href={href}
-      className={`group block relative px-3 py-2 rounded-lg transition-all duration-200 ${
+      className={`group block relative px-3 py-2 rounded-lg ${
         isActive
           ? "bg-gray-800 border border-gray-600 text-red-300"
           : "text-gray-300 hover:bg-gray-800 hover:text-red-300"
-      }`}
+      } ${!isImplemented ? "opacity-60" : ""}`}
     >
       <div className="flex items-center space-x-3">
         <div
@@ -81,6 +92,9 @@ function SidebarItem({
             }`}
           >
             {title}
+            {!isImplemented && (
+              <span className="ml-2 text-xs text-gray-500">(Coming Soon)</span>
+            )}
           </div>
           <div className="text-xs text-gray-500 truncate">{description}</div>
         </div>
@@ -93,15 +107,6 @@ function SidebarItem({
 }
 
 function Sidebar() {
-  const pathname = usePathname();
-
-  const isActive = (href: string) => {
-    if (href === "/") {
-      return pathname === "/";
-    }
-    return pathname.startsWith(href);
-  };
-
   return (
     <aside className="w-64 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 min-h-screen p-4 border-r border-gray-700">
       <div className="space-y-6">
@@ -109,10 +114,9 @@ function Sidebar() {
         <SidebarGroup title="Overview">
           <SidebarItem
             title="Dashboard"
-            description="Your financial cockpit"
+            description="Your financial flight deck"
             href="/"
             icon={Dashboard}
-            isActive={isActive("/")}
           />
         </SidebarGroup>
 
@@ -123,21 +127,20 @@ function Sidebar() {
             description="Track the money movement"
             href="/cash-flow"
             icon={TrendingUp}
-            isActive={isActive("/cash-flow")}
+            isImplemented={false}
           />
           <SidebarItem
             title="Banking"
             description="Connect your accounts"
             href="/banking"
             icon={AccountBalance}
-            isActive={isActive("/banking")}
+            isImplemented={false}
           />
           <SidebarItem
             title="Payments"
-            description="Incoming & outgoing"
+            description="Outgoing to suppliers"
             href="/payments"
             icon={Payment}
-            isActive={isActive("/payments")}
           />
         </SidebarGroup>
 
@@ -148,28 +151,25 @@ function Sidebar() {
             description="View all invoices"
             href="/invoice/list"
             icon={Receipt}
-            isActive={isActive("/invoice/list")}
           />
           <SidebarItem
             title="Create Invoice"
             description="Send a new bill"
             href="/invoice/create"
             icon={Description}
-            isActive={isActive("/invoice/create")}
           />
           <SidebarItem
             title="Customers"
             description="Your client base"
             href="/customers"
             icon={People}
-            isActive={isActive("/customers")}
           />
           <SidebarItem
             title="Estimates"
             description="Draft proposals"
             href="/estimates"
             icon={ReceiptLong}
-            isActive={isActive("/estimates")}
+            isImplemented={false}
           />
         </SidebarGroup>
 
@@ -180,28 +180,27 @@ function Sidebar() {
             description="Your suppliers"
             href="/vendors"
             icon={Business}
-            isActive={isActive("/vendors")}
           />
           <SidebarItem
             title="Bills"
             description="Track what you owe"
             href="/bills"
             icon={CreditCard}
-            isActive={isActive("/bills")}
+            isImplemented={false}
           />
           <SidebarItem
             title="Expenses"
             description="Track spending"
             href="/expenses"
             icon={AttachMoney}
-            isActive={isActive("/expenses")}
+            isImplemented={false}
           />
           <SidebarItem
             title="Inventory"
             description="Stock management"
             href="/inventory"
             icon={Inventory}
-            isActive={isActive("/inventory")}
+            isImplemented={false}
           />
         </SidebarGroup>
 
@@ -212,21 +211,20 @@ function Sidebar() {
             description="Financial analytics"
             href="/reports"
             icon={Analytics}
-            isActive={isActive("/reports")}
           />
           <SidebarItem
             title="Tax Center"
             description="Tax planning & prep"
             href="/tax"
             icon={Assessment}
-            isActive={isActive("/tax")}
+            isImplemented={false}
           />
           <SidebarItem
             title="Forecasting"
             description="Future predictions"
             href="/forecasting"
             icon={Timeline}
-            isActive={isActive("/forecasting")}
+            isImplemented={false}
           />
         </SidebarGroup>
 
@@ -237,28 +235,28 @@ function Sidebar() {
             description="Track project costs"
             href="/projects"
             icon={LocalShipping}
-            isActive={isActive("/projects")}
+            isImplemented={false}
           />
           <SidebarItem
             title="Team"
             description="Manage access"
             href="/team"
             icon={AccountCircle}
-            isActive={isActive("/team")}
+            isImplemented={false}
           />
           <SidebarItem
             title="Settings"
             description="Configure system"
             href="/settings"
             icon={Settings}
-            isActive={isActive("/settings")}
+            isImplemented={false}
           />
           <SidebarItem
             title="Security"
             description="Access & permissions"
             href="/security"
             icon={Security}
-            isActive={isActive("/security")}
+            isImplemented={false}
           />
         </SidebarGroup>
 
@@ -269,7 +267,7 @@ function Sidebar() {
             description="Get assistance"
             href="/help"
             icon={Help}
-            isActive={isActive("/help")}
+            isImplemented={false}
           />
         </SidebarGroup>
       </div>
