@@ -97,7 +97,7 @@ export default function Home() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder={`What would you like to do? (e.g.: "${placeholder}")`}
-                  className="w-full pl-12 pr-4 py-3 text-lg border border-gray-300 rounded-lg focus:ring-1 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white"
+                  className="w-full pl-14 pr-4 py-3 text-lg border border-gray-300 rounded-lg focus:ring-1 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white text-gray-900 placeholder-gray-500"
                   disabled={isSearching}
                 />
                 {isSearching && (

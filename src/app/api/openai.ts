@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+
 import { cosineSimilarity } from "./utils";
 
 const client = new OpenAI();

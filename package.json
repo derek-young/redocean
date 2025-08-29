@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "generate:routes": "node generateRouteMap.js",
-    "generate:embeddings": "ts-node generateEmbeddings.ts",
+    "generate:routes": "node src/scripts/generateRouteMap.js",
+    "generate:embeddings": "ts-node src/scripts/generateEmbeddings.ts",
     "db:generate": "prisma generate",
     "db:dev": "prisma dev",
     "db:push": "prisma db push",

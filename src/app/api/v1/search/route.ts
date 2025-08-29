@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SearchResponse, SearchRequest, SearchError } from "@/types/search";
 
-import { getTextEmbedding } from "@/app/scripts/openai";
-import {
-  findRouteByEmbedding,
-  findRouteByQuickAction,
-} from "@/app/scripts/findRoute";
+import { getTextEmbedding } from "@/app/api/openai";
+
+import { findRouteByEmbedding, findRouteByQuickAction } from "./findRoute";
 
 export async function POST(
   request: NextRequest

@@ -1,14 +1,26 @@
-import { prisma } from "../../lib/db";
-import { cosineSimilarity } from "./utils";
+import { cosineSimilarity } from "@/app/api/utils";
+import routeEmbeddingsData from "@/app/api/routes-embeddings.json";
 
-async function getRouteEmbeddings() {
-  return await prisma.routeEmbedding.findMany();
+interface RouteEmbedding {
+  path: string;
+  quickActions: string[];
+  description: string;
+  fields: string[];
+  embedding: number[];
+}
+
+function getRouteEmbeddings(): RouteEmbedding[] {
+  return routeEmbeddingsData as RouteEmbedding[];
 }
 
 export async function findRouteByQuickAction(quickAction: string) {
-  const routeEmbeddings = await getRouteEmbeddings();
-  const route = routeEmbeddings.find(
-    (route: any) => route.pathQuickAction === quickAction.toLowerCase().trim()
+  const routeEmbeddings = getRouteEmbeddings();
+  const searchTerm = quickAction.toLowerCase().trim();
+
+  const route = routeEmbeddings.find((route: RouteEmbedding) =>
+    route.quickActions.some((action) =>
+      action.toLowerCase().includes(searchTerm)
+    )
   );
 
   if (route) {
@@ -19,10 +31,10 @@ export async function findRouteByQuickAction(quickAction: string) {
 }
 
 export async function findRouteByEmbedding(queryEmbedding: number[]) {
-  const routeEmbeddings = await getRouteEmbeddings();
+  const routeEmbeddings = getRouteEmbeddings();
 
   if (routeEmbeddings.length === 0) {
-    throw new Error("No route embeddings found in database");
+    throw new Error("No route embeddings found in JSON file");
   }
 
   let bestMatch = routeEmbeddings[0];

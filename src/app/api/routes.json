@@ -1,37 +1,78 @@
 [
   {
     "path": "/",
-    "quickActions": ["home", "dashboard"],
     "description": "Home view with smart search and quick actions",
+    "quickActions": ["home", "dashboard"],
     "fields": ["Search"]
   },
   {
+    "path": "/vendors",
+    "description": "View and manage existing vendors",
+    "quickActions": ["vendors", "view vendors", "find vendor", "find a vendor"],
+    "fields": [
+      "Search vendors by name, email, or contact information",
+      "Filter vendors by status"
+    ]
+  },
+  {
+    "path": "/vendors/create",
+    "description": "Create a new vendor",
+    "quickActions": [
+      "create vendor",
+      "new vendor",
+      "create a vendor",
+      "create a new vendor"
+    ],
+    "fields": [
+      "Company Name",
+      "Email",
+      "Phone",
+      "Website",
+      "Tax ID",
+      "Contact First Name",
+      "Contact Last Name",
+      "Contact Email",
+      "Contact Phone",
+      "Street Address",
+      "City",
+      "State",
+      "ZIP Code",
+      "Country",
+      "Notes"
+    ]
+  },
+  {
     "path": "/reports",
-    "quickActions": ["reports", "view reports"],
     "description": "View business analytics and financial reports",
+    "quickActions": ["reports", "view reports"],
     "fields": []
   },
   {
     "path": "/payments",
-    "quickActions": ["payments", "view payments"],
     "description": "View and manage payments to suppliers",
+    "quickActions": ["payments", "view payments"],
     "fields": []
   },
   {
-    "path": "/invoices",
-    "quickActions": ["invoices", "view invoices"],
-    "description": "View and manage existing invoices",
+    "path": "/invoice/list",
+    "description": "View all invoices",
+    "quickActions": [
+      "invoices",
+      "view invoices",
+      "find invoice",
+      "find an invoice"
+    ],
     "fields": []
   },
   {
     "path": "/invoice/create",
+    "description": "Create a new invoice for a customer",
     "quickActions": [
       "create invoice",
       "create an invoice",
       "new invoice",
       "create a new invoice"
     ],
-    "description": "Create a new invoice for a customer",
     "fields": [
       "Invoice Number",
       "Issue Date",
@@ -49,27 +90,27 @@
   },
   {
     "path": "/customers",
+    "description": "View and manage existing customers",
     "quickActions": [
       "customers",
       "view customers",
       "find customer",
       "find a customer"
     ],
-    "description": "View and manage existing customers",
     "fields": [
-      "Search customers by name, email, or company",
+      "Search customers by name or contact information",
       "Filter customers by status"
     ]
   },
   {
     "path": "/customers/create",
+    "description": "Add a new customer to the system",
     "quickActions": [
       "create customer",
       "new customer",
       "create a customer",
       "create a new customer"
     ],
-    "description": "Add a new customer to the system",
     "fields": [
       "First Name",
       "Last Name",
