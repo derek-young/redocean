@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-import { Customer, Contact, Address } from "@redocean/types";
+import { Customer, Contact, Address } from "@/types";
 import Loading from "@/components/Loading";
 
 import EmptyState from "./Empty";

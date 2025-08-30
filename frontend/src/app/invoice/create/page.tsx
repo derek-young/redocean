@@ -323,7 +323,7 @@ export default function CreateInvoice() {
             </div>
 
             <div className="space-y-4">
-              {items.map((item, index) => (
+              {items.map((item) => (
                 <div
                   key={item.id}
                   className="grid grid-cols-12 gap-4 items-center p-4 border border-gray-200 rounded-lg"

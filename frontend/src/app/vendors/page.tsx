@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Business } from "@mui/icons-material";
 import Loading from "@/components/Loading";
 
-import { Vendor, Contact, Address } from "@redocean/types";
+import { Vendor, Contact, Address } from "@/types";
 
 type VendorWithRelations = Vendor & {
   contacts: Contact[];
