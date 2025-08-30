@@ -5,21 +5,6 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 // TODO: Add middleware to automatically add tenantId filter to all queries
-/*
-  export const prisma = new PrismaClient().$extends({
-    query: {
-      $allModels: {
-        async $allOperations({ args, query }) {
-          // Automatically add tenantId filter to all queries
-          if (args.where && !args.where.tenantId) {
-            args.where.tenantId = getCurrentTenantId();
-          }
-          return query(args);
-        },
-      },
-    },
-  });
-*/
 
 generator client {
   provider = "prisma-client-js"

@@ -1,5 +1,5 @@
-import { cosineSimilarity } from "@/app/api/utils";
-import routeEmbeddingsData from "@/app/api/routes-embeddings.json";
+import { cosineSimilarity } from "./cosineSimilarity";
+import routeEmbeddingsData from "../data/routes-embeddings.json";
 
 interface RouteEmbedding {
   path: string;

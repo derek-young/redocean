@@ -8,11 +8,13 @@ const traverse = require("@babel/traverse").default;
 
 // NOTE: This is just for a POC, this won't work in production as it doesn't scan imported components
 
+const parentDir = path.dirname(process.cwd());
+
 // Path to your routes.json
-const routesFile = path.join(process.cwd(), "src/app/api/routes.json");
+const routesFile = path.join(parentDir, "backend/src/data/routes.json");
 
 // 1️⃣ Crawl all page files
-const files = glob.sync("src/app/**/page.tsx");
+const files = glob.sync(path.join(parentDir, "nextjs/src/app/**/page.tsx"));
 
 // 2️⃣ Load existing routes.json (if exists)
 let existingRoutes = [];

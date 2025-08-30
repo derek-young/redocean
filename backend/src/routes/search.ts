@@ -1,21 +1,22 @@
-import { NextRequest, NextResponse } from "next/server";
+import { Router, Request, Response } from "express";
 import { SearchResponse, SearchRequest, SearchError } from "@/types/search";
+import { clarifyUserIntent, getTextEmbedding } from "../services/openai";
+import {
+  findRouteByEmbedding,
+  findRouteByQuickAction,
+} from "../utils/findRoute";
 
-import { clarifyUserIntent, getTextEmbedding } from "@/app/api/openai";
+const router = Router();
 
-import { findRouteByEmbedding, findRouteByQuickAction } from "./findRoute";
-
-export async function POST(
-  request: NextRequest
-): Promise<NextResponse<SearchResponse | SearchError>> {
+router.post("/", async (req: Request, res: Response): Promise<void> => {
   try {
-    const { searchTerm }: SearchRequest = await request.json();
+    const { searchTerm }: SearchRequest = req.body;
 
     if (!searchTerm || typeof searchTerm !== "string") {
-      return NextResponse.json(
-        { error: "Search term is required and must be a string" },
-        { status: 400 }
-      );
+      res.status(400).json({
+        error: "Search term is required and must be a string",
+      } as SearchError);
+      return;
     }
 
     const term = searchTerm.toLowerCase().trim();
@@ -24,7 +25,8 @@ export async function POST(
     const routeByQuickAction = await findRouteByQuickAction(term);
 
     if (routeByQuickAction) {
-      return NextResponse.json({ route: routeByQuickAction.path });
+      res.json({ route: routeByQuickAction.path } as SearchResponse);
+      return;
     }
 
     // NOTE: The text embedding comparison may not be useful after evaluating the quick action
@@ -33,23 +35,25 @@ export async function POST(
     const route = await findRouteByEmbedding(data[0].embedding);
 
     if (route.confidence > 0.7) {
-      return NextResponse.json({ route: route.path });
+      res.json({ route: route.path } as SearchResponse);
+      return;
     }
 
     const intent = await clarifyUserIntent(searchTerm);
 
     console.log("intent", intent);
 
-    return NextResponse.json({
+    res.json({
       route: intent.route,
       params: intent.params,
       message: intent.message,
-    });
+    } as SearchResponse);
   } catch (error) {
     console.error("Search API error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    res.status(500).json({
+      error: "Internal server error",
+    } as SearchError);
   }
-}
+});
+
+export default router;

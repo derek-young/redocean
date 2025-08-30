@@ -1,12 +1,17 @@
 import fs from "fs";
 import OpenAI from "openai";
+import routes from "../data/routes.json";
 
-import { cosineSimilarity } from "./utils";
+// Lazy initialization of OpenAI client to ensure environment variables are loaded
+let client: OpenAI | null = null;
 
-const client = new OpenAI();
-const routes = JSON.parse(
-  fs.readFileSync("./src/app/api/routes.json", "utf-8")
-);
+function getOpenAIClient(): OpenAI {
+  if (!client) {
+    client = new OpenAI();
+  }
+  return client;
+}
+
 const routesWithoutQuickActions = routes.map((route: any) => {
   const { quickActions, ...routeWithoutQuickActions } = route;
   return routeWithoutQuickActions;
@@ -37,7 +42,7 @@ export async function clarifyUserIntent(input: string) {
     If no route can be determined confidently, return null for route and an empty object for params and ask the user for clarification with the message.
     `;
 
-  const completion = await client.chat.completions.create({
+  const completion = await getOpenAIClient().chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
       {
@@ -74,8 +79,8 @@ export async function clarifyUserIntent(input: string) {
   }
 }
 
-async function getTextEmbedding(input: string | string[]) {
-  const res = await client.embeddings.create({
+export async function getTextEmbedding(input: string | string[]) {
+  const res = await getOpenAIClient().embeddings.create({
     model: "text-embedding-3-small",
     input,
   });
@@ -87,12 +92,13 @@ async function getTextEmbedding(input: string | string[]) {
   return res.data;
 }
 
-async function compareStrings(string1: string, string2: string) {
-  const res = await client.embeddings.create({
+export async function compareStrings(string1: string, string2: string) {
+  const res = await getOpenAIClient().embeddings.create({
     model: "text-embedding-3-small",
     input: [string1, string2],
   });
 
+  const { cosineSimilarity } = await import("../utils/cosineSimilarity");
   const similarity = cosineSimilarity(
     res.data[0].embedding,
     res.data[1].embedding
@@ -104,4 +110,4 @@ async function compareStrings(string1: string, string2: string) {
   console.log(`Similarity between ${string1} and ${string2}: ${similarity}`);
 }
 
-export { client, getTextEmbedding, compareStrings };
+export { getOpenAIClient };

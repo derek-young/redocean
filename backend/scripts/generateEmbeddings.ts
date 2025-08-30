@@ -2,21 +2,23 @@ import fs from "fs";
 import OpenAI from "openai";
 import dotenv from "dotenv";
 
-dotenv.config();
-
-const routes = JSON.parse(
-  fs.readFileSync("src/app/api/routes.json", "utf8")
-) as {
+type RouteEmbedding = {
   path: string;
   pathQuickAction: string;
   description: string;
   fields: string[];
-}[];
+};
+
+dotenv.config();
+
+const routes = JSON.parse(
+  fs.readFileSync("src/data/routes.json", "utf8")
+) as RouteEmbedding[];
 
 const client = new OpenAI();
 
 async function generateEmbeddings() {
-  const embeddings = [];
+  const embeddings: (RouteEmbedding & { embedding: number[] })[] = [];
 
   for (const route of routes) {
     const resp = await client.embeddings.create({
@@ -31,12 +33,10 @@ async function generateEmbeddings() {
   }
 
   fs.writeFileSync(
-    "src/app/api/routes-embeddings.json",
+    "src/data/routes-embeddings.json",
     JSON.stringify(embeddings, null, 2)
   );
-  console.log(
-    "✅ Saved route embeddings to src/app/api/routes-embeddings.json"
-  );
+  console.log("✅ Saved route embeddings to src/data/routes-embeddings.json");
 }
 
 generateEmbeddings();
