@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SearchResponse, SearchRequest, SearchError } from "@/types/search";
 
-import { getTextEmbedding } from "@/app/api/openai";
+import { clarifyUserIntent, getTextEmbedding } from "@/app/api/openai";
 
 import { findRouteByEmbedding, findRouteByQuickAction } from "./findRoute";
 
@@ -36,16 +36,14 @@ export async function POST(
       return NextResponse.json({ route: route.path });
     }
 
+    const intent = await clarifyUserIntent(searchTerm);
+
+    console.log("intent", intent);
+
     return NextResponse.json({
-      route: null,
-      message: `I'm not sure what you're looking for. You searched for: "${searchTerm}".`,
-      suggestions: [
-        "create invoice",
-        "view invoices",
-        "manage customers",
-        "view reports",
-        "manage payments",
-      ],
+      route: intent.route,
+      params: intent.params,
+      message: intent.message,
     });
   } catch (error) {
     console.error("Search API error:", error);

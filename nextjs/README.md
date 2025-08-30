@@ -9,7 +9,7 @@ This project requires defining two environment variabls: an OpenAI API key and P
 OPENAI_API_KEY=your_openai_api_key_here
 
 # PostgreSQL Database URL
-DATABASE_URL="postgresql://username:password@localhost:5432/altbooks"
+DATABASE_URL="postgresql://username:password@localhost:5432/redocean"
 ```
 
 ### Generating Route Embeddings
@@ -57,7 +57,7 @@ Open [http://localhost:3000](http://localhost:3000)
 2. **Create the database**:
 
    ```bash
-   createdb altbooks
+   createdb redocean
    ```
 
 3. **Set up the database schema and seed data**:
@@ -109,19 +109,19 @@ This project is configured for deployment on Google Cloud Run with PostgreSQL su
 1. **Set up Cloud SQL PostgreSQL**:
 
    ```bash
-   gcloud sql instances create altbooks-db \
+   gcloud sql instances create redocean-db \
      --database-version=POSTGRES_14 \
      --tier=db-f1-micro \
      --region=us-central1
 
-   gcloud sql databases create altbooks --instance=altbooks-db
-   gcloud sql users create altbooks-user --instance=altbooks-db --password=your-password
+   gcloud sql databases create redocean --instance=redocean-db
+   gcloud sql users create redocean-user --instance=redocean-db --password=your-password
    ```
 
 2. **Get the database connection string**:
 
    ```bash
-   gcloud sql instances describe altbooks-db --format="value(connectionName)"
+   gcloud sql instances describe redocean-db --format="value(connectionName)"
    ```
 
 3. **Update `cloudbuild.yaml`** with your actual database URL and OpenAI API key
@@ -143,7 +143,7 @@ Set these environment variables in Cloud Run:
 To connect to Cloud SQL from your local machine:
 
 ```bash
-gcloud sql connect altbooks-db --user=altbooks-user
+gcloud sql connect redocean-db --user=redocean-user
 ```
 
 ## Deploy on Vercel

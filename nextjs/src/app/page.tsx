@@ -12,6 +12,10 @@ const placeholderSamples = [
   "View P&L for last quarter",
   "See a snapshot of current cashflow",
   "View customers with outstanding invoices",
+  "Record a payment to a vendor",
+  "Generate monthly expense report",
+  "Find all overdue invoices",
+  "Add a new customer",
 ];
 
 export default function Home() {
@@ -29,7 +33,7 @@ export default function Home() {
       setPlaceholderSampleIndex(
         (curr) => (curr + 1) % placeholderSamples.length
       );
-    }, 10000);
+    }, 6000);
 
     return () => clearInterval(interval);
   }, []);
@@ -51,6 +55,8 @@ export default function Home() {
       });
 
       const result: SearchResponse = await response.json();
+
+      console.log("result", result);
 
       if (result.route) {
         // Navigate to the suggested route
@@ -87,7 +93,7 @@ export default function Home() {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder={`What would you like to do? (e.g.: "${placeholder}")`}
+              placeholder={placeholder}
               className="w-full pl-14 pr-4 py-3 text-lg border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-1 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               disabled={isSearching}
             />
