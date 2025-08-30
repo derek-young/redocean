@@ -1,32 +1,23 @@
+# TODO: Update for production
+
 steps:
-  # Build the container image
-  - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/$PROJECT_ID/redocean:$COMMIT_SHA", "."]
-
-  # Push the container image to Container Registry
-  - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/$PROJECT_ID/redocean:$COMMIT_SHA"]
-
-  # Deploy container image to Cloud Run
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: gcloud
     args:
       - "run"
       - "deploy"
-      - "redocean"
-      - "--image"
-      - "gcr.io/$PROJECT_ID/redocean:$COMMIT_SHA"
+      - "redocean-frontend"
+      - "--project"
+      - "redocean-e9f04"
       - "--region"
       - "us-central1"
+      - "--source"
+      - "."
       - "--platform"
       - "managed"
       - "--allow-unauthenticated"
+      - "--port"
+      - "8080"
       - "--set-env-vars"
-      - "DATABASE_URL=${_DATABASE_URL},OPENAI_API_KEY=${_OPENAI_API_KEY}"
-
-images:
-  - "gcr.io/$PROJECT_ID/redocean:$COMMIT_SHA"
-
-substitutions:
-  _DATABASE_URL: "postgresql://user:password@host:5432/database" # Replace with your actual database URL
-  _OPENAI_API_KEY: "your-openai-api-key" # Replace with your actual OpenAI API key
+      - "NODE_ENV=production"
+      - "BACKEND_URL=https://redocean-backend-989102844665.us-central1.run.app"

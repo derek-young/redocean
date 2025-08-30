@@ -1,0 +1,25 @@
+# TODO: Update for production
+
+steps:
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - redocean-backend
+      - --project
+      - redocean-e9f04
+      - --region
+      - us-central1
+      - --source
+      - .
+      - --platform
+      - managed
+      - --allow-unauthenticated
+      - --port
+      - "8080"
+      - --set-env-vars
+      - NODE_ENV=production
+      # - --set-secrets
+      # - DATABASE_URL=projects/redocean-e9f04/secrets/DATABASE_URL:latest
+      # - OPENAI_API_KEY=projects/redocean-e9f04/secrets/OPENAI_API_KEY:latest

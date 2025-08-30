@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
 
 interface InvoiceItem {
   id: string;

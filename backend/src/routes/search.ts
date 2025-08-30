@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { SearchRequest } from "@/types/search";
+
 import { clarifyUserIntent, getTextEmbedding } from "../services/openai";
 import {
   findRouteByEmbedding,
@@ -10,7 +10,7 @@ const router = Router();
 
 router.post("/", async (req: Request, res: Response): Promise<void> => {
   try {
-    const { searchTerm }: SearchRequest = req.body;
+    const { searchTerm }: { searchTerm: string } = req.body;
 
     if (!searchTerm || typeof searchTerm !== "string") {
       res.status(400).json({

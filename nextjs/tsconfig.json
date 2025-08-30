@@ -19,7 +19,6 @@
       }
     ],
     "paths": {
-      "@prisma": ["../backend/src/types/prisma.ts"],
       "@/*": ["./src/*"]
     }
   },
