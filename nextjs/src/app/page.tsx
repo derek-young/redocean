@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 import { Search } from "@mui/icons-material";
 
 import Loading from "@/components/Loading";
-import { SearchResponse } from "@/types/search";
+
+interface SearchResponse {
+  route: string | null;
+  message?: string;
+  suggestions?: string[];
+  params?: Record<string, unknown>;
+}
 
 const placeholderSamples = [
   "Create an invoice",

@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Vendor, Contact, Address } from "@prisma/client";
 import { Business } from "@mui/icons-material";
 import Loading from "@/components/Loading";
+
+import { Vendor, Contact, Address } from "@prisma";
 
 type VendorWithRelations = Vendor & {
   contacts: Contact[];

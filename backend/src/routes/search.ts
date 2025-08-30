@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { SearchResponse, SearchRequest, SearchError } from "@/types/search";
+import { SearchRequest } from "@/types/search";
 import { clarifyUserIntent, getTextEmbedding } from "../services/openai";
 import {
   findRouteByEmbedding,
@@ -15,7 +15,7 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
     if (!searchTerm || typeof searchTerm !== "string") {
       res.status(400).json({
         error: "Search term is required and must be a string",
-      } as SearchError);
+      });
       return;
     }
 
@@ -25,7 +25,7 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
     const routeByQuickAction = await findRouteByQuickAction(term);
 
     if (routeByQuickAction) {
-      res.json({ route: routeByQuickAction.path } as SearchResponse);
+      res.json({ route: routeByQuickAction.path });
       return;
     }
 
@@ -35,7 +35,7 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
     const route = await findRouteByEmbedding(data[0].embedding);
 
     if (route.confidence > 0.7) {
-      res.json({ route: route.path } as SearchResponse);
+      res.json({ route: route.path });
       return;
     }
 
@@ -47,12 +47,12 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
       route: intent.route,
       params: intent.params,
       message: intent.message,
-    } as SearchResponse);
+    });
   } catch (error) {
     console.error("Search API error:", error);
     res.status(500).json({
       error: "Internal server error",
-    } as SearchError);
+    });
   }
 });
 
