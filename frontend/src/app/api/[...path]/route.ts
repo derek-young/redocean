@@ -6,18 +6,19 @@ const backendUrl = process.env.BACKEND_URL!;
 let cachedToken: string | null = null;
 let tokenExpiryTime: number | null = null;
 
-const getAuthClient = async (targetAudience: string) => {
+// In production, the GOOGLE_APPLICATION_CREDENTIALS env var is set.
+// which containsn the Base64-encoded WIF JSON config, see: gcr_credentials_example.json
+async function getAuthClient(targetAudience: string) {
   if (process.env.NODE_ENV === "production") {
     const auth = new GoogleAuth({
-      credentials: JSON.parse(process.env.GCP_SERVICE_ACCOUNT_KEY!),
-      scopes: ["https://www.googleapis.com/auth/cloud-platform"],
+      projectId: process.env.GCP_PROJECT_ID,
     });
     return auth.getIdTokenClient(targetAudience);
   }
 
   const auth = new GoogleAuth();
   return auth.getIdTokenClient(targetAudience);
-};
+}
 
 async function getAuthHeaders(
   targetAudience: string
