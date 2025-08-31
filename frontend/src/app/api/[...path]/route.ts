@@ -6,16 +6,33 @@ const backendUrl = process.env.BACKEND_URL!;
 let cachedToken: string | null = null;
 let tokenExpiryTime: number | null = null;
 
+const getAuthClient = async (targetAudience: string) => {
+  if (process.env.NODE_ENV === "production") {
+    const auth = new GoogleAuth({
+      credentials: JSON.parse(process.env.GCP_SERVICE_ACCOUNT_KEY!),
+      scopes: ["https://www.googleapis.com/auth/cloud-platform"],
+    });
+    return auth.getIdTokenClient(targetAudience);
+  }
+
+  const auth = new GoogleAuth();
+  return auth.getIdTokenClient(targetAudience);
+};
+
 async function getAuthHeaders(
   targetAudience: string
 ): Promise<{ Authorization?: string }> {
+  if (process.env.NODE_ENV === "development") {
+    console.log("Development mode: skipping authentication");
+    return {};
+  }
+
   const buffer = 300000; // 5 minutes
   if (cachedToken && tokenExpiryTime && Date.now() + buffer < tokenExpiryTime) {
     return { Authorization: cachedToken };
   }
 
-  const auth = new GoogleAuth();
-  const client = await auth.getIdTokenClient(targetAudience);
+  const client = await getAuthClient(targetAudience);
   const authHeaders = await client.getRequestHeaders();
 
   if (authHeaders?.Authorization) {
