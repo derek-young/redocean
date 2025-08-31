@@ -11,42 +11,6 @@ const backendUrl = process.env.BACKEND_URL!;
 let cachedToken: string | null = null;
 let tokenExpiryTime: number | null = null;
 
-// In production, the GCP_WIF_CREDENTIALS_BASE64 env var is set
-// which containsn the Base64-encoded WIF JSON config, see: gcr_credentials_example.json
-// async function getAuthClient(targetAudience: string) {
-//   console.log("Getting auth client for target audience:", targetAudience);
-//   console.log("Node environment:", process.env.NODE_ENV);
-//   console.log(
-//     "GCP WIF credentials base64:",
-//     process.env.GCP_WIF_CREDENTIALS_BASE64
-//   );
-//   if (process.env.NODE_ENV === "production") {
-//     try {
-//       const credentialsString = Base64.decode(
-//         process.env.GCP_WIF_CREDENTIALS_BASE64!
-//       );
-//       const credentials = JSON.parse(credentialsString);
-//       const tempPath = join(tmpdir(), "gcp-wif-credentials.json");
-//       await fs.writeFile(tempPath, credentialsString);
-
-//       console.log("WIF credentials:", credentials);
-
-//       const auth = new GoogleAuth({
-//         keyFilename: tempPath,
-//         scopes: "https://www.googleapis.com/auth/cloud-platform",
-//       });
-
-//       return auth.getIdTokenClient(targetAudience);
-//     } catch (error) {
-//       console.error("Failed to decode or parse WIF credentials:", error);
-//       throw new Error("Invalid WIF credentials configuration.");
-//     }
-//   }
-
-//   const auth = new GoogleAuth();
-//   return auth.getIdTokenClient(targetAudience);
-// }
-
 const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID;
 const GCP_PROJECT_NUMBER = process.env.GCP_PROJECT_NUMBER;
 const GCP_SERVICE_ACCOUNT_EMAIL = process.env.GCP_SERVICE_ACCOUNT_EMAIL;
@@ -54,7 +18,7 @@ const GCP_WORKLOAD_IDENTITY_POOL_ID = process.env.GCP_WORKLOAD_IDENTITY_POOL_ID;
 const GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID =
   process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID;
 
-const authClient = ExternalAccountClient.fromJSON({
+const credentials = {
   type: "external_account",
   audience: `//iam.googleapis.com/projects/${GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
   projectId: GCP_PROJECT_ID,
@@ -65,7 +29,22 @@ const authClient = ExternalAccountClient.fromJSON({
     // Use the Vercel OIDC token as the subject token
     getSubjectToken: getVercelOidcToken,
   },
-});
+};
+
+// In production, the GCP_WIF_CREDENTIALS_BASE64 env var is set
+// which containsn the Base64-encoded WIF JSON config, see: gcr_credentials_example.json
+async function getAuthClient(targetAudience: string) {
+  console.log("Getting auth client for target audience:", targetAudience);
+  console.log("Node environment:", process.env.NODE_ENV);
+  if (process.env.NODE_ENV === "production") {
+    const auth = new GoogleAuth({ credentials });
+
+    return auth.getIdTokenClient(targetAudience);
+  }
+
+  const auth = new GoogleAuth();
+  return auth.getIdTokenClient(targetAudience);
+}
 
 async function getAuthHeaders(
   targetAudience: string
@@ -80,9 +59,7 @@ async function getAuthHeaders(
     return { Authorization: cachedToken };
   }
 
-  console.log("Using BaseExternalAccountClient:", authClient);
-
-  const client = authClient;
+  const client = await getAuthClient(targetAudience);
   const authHeaders = await client?.getRequestHeaders();
 
   console.log("Auth headers:", authHeaders);
