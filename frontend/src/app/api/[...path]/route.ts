@@ -1,6 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { GoogleAuth } from "google-auth-library";
+import fs from "fs/promises";
+import { tmpdir } from "os";
+import { join } from "path";
 import { Base64 } from "js-base64";
+import { GoogleAuth } from "google-auth-library";
+import { NextRequest, NextResponse } from "next/server";
 
 const backendUrl = process.env.BACKEND_URL!;
 
@@ -22,10 +25,15 @@ async function getAuthClient(targetAudience: string) {
         process.env.GCP_WIF_CREDENTIALS_BASE64!
       );
       const credentials = JSON.parse(credentialsString);
+      const tempPath = join(tmpdir(), "gcp-wif-credentials.json");
+      await fs.writeFile(tempPath, credentialsString);
 
       console.log("WIF credentials:", credentials);
 
-      const auth = new GoogleAuth({ credentials });
+      const auth = new GoogleAuth({
+        keyFilename: tempPath,
+        scopes: "https://www.googleapis.com/auth/cloud-platform",
+      });
 
       return auth.getIdTokenClient(targetAudience);
     } catch (error) {
