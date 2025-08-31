@@ -54,6 +54,8 @@ async function getAuthHeaders(
   const client = await getAuthClient(targetAudience);
   const authHeaders = await client.getRequestHeaders();
 
+  console.log("Auth headers:", authHeaders);
+
   if (authHeaders?.Authorization) {
     cachedToken = authHeaders.Authorization;
 
@@ -97,6 +99,9 @@ async function handler(
       request.method === "GET" || request.method === "DELETE"
         ? undefined
         : request.body;
+
+    console.log("Fetching backend API URL:", backendApiUrl);
+    console.log("Headers:", headers);
 
     const response = await fetch(backendApiUrl, {
       method: request.method,
