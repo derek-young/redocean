@@ -92,7 +92,7 @@ async function handler(
   try {
     const pathSegments = (await params).path;
     const apiPath = pathSegments.join("/");
-    const backendApiUrl = `${backendUrl}/api/v1/${apiPath}`;
+    const backendApiUrl = `${backendUrl}/api/${apiPath}`;
     const authHeaders = await getAuthHeaders(backendUrl);
     const headers = new Headers();
     const contentType = request.headers.get("content-type");
