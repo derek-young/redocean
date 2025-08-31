@@ -60,8 +60,6 @@ npm run db:seed
 
 ## Deploy on Google Cloud Run
 
-This project is configured for deployment on Google Cloud Run with PostgreSQL support.
-
 ### Prerequisites
 
 1. **Google Cloud Project**: Create a project in Google Cloud Console
@@ -90,6 +88,14 @@ This project is configured for deployment on Google Cloud Run with PostgreSQL su
    ```
 
 3. **Update `cloudbuild.yaml`** with your actual database URL and OpenAI API key
+
+```bash
+gcloud secrets create DATABASE_URL --replication-policy="automatic" || true
+gcloud secrets create OPENAI_API_KEY --replication-policy="automatic" || true
+
+echo "your-db-url" | gcloud secrets versions add DATABASE_URL --data-file=-
+echo "your-openai-key" | gcloud secrets versions add OPENAI_API_KEY --data-file=-
+```
 
 4. **Deploy using Cloud Build**:
    ```bash

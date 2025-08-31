@@ -14,7 +14,7 @@ const parentDir = path.dirname(process.cwd());
 const routesFile = path.join(parentDir, "backend/src/data/routes.json");
 
 // 1️⃣ Crawl all page files
-const files = glob.sync(path.join(parentDir, "nextjs/src/app/**/page.tsx"));
+const files = glob.sync(path.join(parentDir, "frontend/src/app/**/page.tsx"));
 
 // 2️⃣ Load existing routes.json (if exists)
 let existingRoutes = [];

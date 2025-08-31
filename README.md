@@ -23,7 +23,7 @@ npm run db:seed
 ### Frontend Setup
 
 ```bash
-cd nextjs
+cd frontend
 npm i
 npm run dev
 ```
@@ -80,28 +80,7 @@ gcloud services enable containerregistry.googleapis.com
 
 ```bash
 cd backend
-gcloud builds submit --tag gcr.io/$PROJECT_ID/redocean-backend
-gcloud run deploy redocean-backend \
-  --image gcr.io/$PROJECT_ID/redocean-backend \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --port 8080 \
-  --set-env-vars DATABASE_URL=$DATABASE_URL,OPENAI_API_KEY=$OPENAI_API_KEY
-```
-
-#### 3. Deploy Frontend
-
-```bash
-cd nextjs
-gcloud builds submit --tag gcr.io/$PROJECT_ID/redocean-frontend
-gcloud run deploy redocean-frontend \
-  --image gcr.io/$PROJECT_ID/redocean-frontend \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --port 8080 \
-  --set-env-vars BACKEND_URL=https://redocean-backend-$PROJECT_ID.us-central1.run.app
+gcloud builds submit --config cloudbuild.yaml
 ```
 
 ### Production URLs

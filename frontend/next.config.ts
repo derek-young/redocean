@@ -9,7 +9,7 @@ const getBackendUrl = (): string => {
     return "http://localhost:2550";
   }
 
-  return "https://backend-250945466278.us-east4.run.app";
+  return "https://redocean-backend-989102844665.us-central1.run.app";
 };
 
 const nextConfig: NextConfig = {
