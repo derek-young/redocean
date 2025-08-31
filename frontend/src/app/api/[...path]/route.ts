@@ -1,19 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleAuth } from "google-auth-library";
+import { Base64 } from "js-base64";
 
 const backendUrl = process.env.BACKEND_URL!;
 
 let cachedToken: string | null = null;
 let tokenExpiryTime: number | null = null;
 
-// In production, the GOOGLE_APPLICATION_CREDENTIALS env var is set.
+// In production, the GCP_WIF_CREDENTIALS_BASE64 env var is set
 // which containsn the Base64-encoded WIF JSON config, see: gcr_credentials_example.json
 async function getAuthClient(targetAudience: string) {
   if (process.env.NODE_ENV === "production") {
-    const auth = new GoogleAuth({
-      projectId: process.env.GCP_PROJECT_ID,
-    });
-    return auth.getIdTokenClient(targetAudience);
+    try {
+      const credentialsString = Base64.decode(
+        process.env.GCP_WIF_CREDENTIALS_BASE64!
+      );
+      const credentials = JSON.parse(credentialsString);
+
+      const auth = new GoogleAuth({ credentials });
+
+      return auth.getIdTokenClient(targetAudience);
+    } catch (error) {
+      console.error("Failed to decode or parse WIF credentials:", error);
+      throw new Error("Invalid WIF credentials configuration.");
+    }
   }
 
   const auth = new GoogleAuth();
