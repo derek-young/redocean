@@ -13,17 +13,7 @@ const getBackendUrl = (): string => {
 };
 
 const nextConfig: NextConfig = {
-  output: "standalone",
-  async rewrites() {
-    const backendUrl = getBackendUrl();
-
-    return [
-      {
-        source: "/api/:path*",
-        destination: `${backendUrl}/api/:path*`,
-      },
-    ];
-  },
+  // NOOP
 };
 
 export default nextConfig;
