@@ -103,7 +103,7 @@ async function getAuthHeaders(
     }
   }
 
-  return authHeaders;
+  return authHeaders || {};
 }
 
 async function handler(
