@@ -6,7 +6,9 @@
     "dev": "BACKEND_URL=http://localhost:2550 next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "type-check": "tsc --noEmit",
+    "lint:all": "npm run lint && npm run type-check"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
