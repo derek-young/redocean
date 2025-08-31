@@ -1,9 +1,5 @@
 import { getVercelOidcToken } from "@vercel/oidc";
-// import fs from "fs/promises";
-// import { tmpdir } from "os";
-// import { join } from "path";
-// import { Base64 } from "js-base64";
-import { GoogleAuth, ExternalAccountClient } from "google-auth-library";
+import { GoogleAuth } from "google-auth-library";
 import { NextRequest, NextResponse } from "next/server";
 
 const backendUrl = process.env.BACKEND_URL!;
@@ -33,18 +29,22 @@ const credentials = {
 
 // In production, the GCP_WIF_CREDENTIALS_BASE64 env var is set
 // which containsn the Base64-encoded WIF JSON config, see: gcr_credentials_example.json
-async function getAuthClient(targetAudience: string) {
-  console.log("Getting auth client for target audience:", targetAudience);
-  console.log("Node environment:", process.env.NODE_ENV);
-  if (process.env.NODE_ENV === "production") {
-    const auth = new GoogleAuth({ credentials });
+// async function getAuthClient(targetAudience: string) {
+//   console.log("Getting auth client for target audience:", targetAudience);
+//   console.log("Node environment:", process.env.NODE_ENV);
+//   if (process.env.NODE_ENV === "production") {
+//     const auth = new GoogleAuth({
+//       credentials,
+//       projectId: GCP_PROJECT_ID,
+//       scopes: ["https://www.googleapis.com/auth/cloud-platform"],
+//     });
 
-    return auth.getIdTokenClient(targetAudience);
-  }
+//     return auth.getIdTokenClient(targetAudience);
+//   }
 
-  const auth = new GoogleAuth();
-  return auth.getIdTokenClient(targetAudience);
-}
+//   const auth = new GoogleAuth();
+//   return auth.getIdTokenClient(targetAudience);
+// }
 
 async function getAuthHeaders(
   targetAudience: string
@@ -59,8 +59,9 @@ async function getAuthHeaders(
     return { Authorization: cachedToken };
   }
 
-  const client = await getAuthClient(targetAudience);
-  const authHeaders = await client?.getRequestHeaders();
+  // const client = await getAuthClient(targetAudience);
+  // const authHeaders = await client?.getRequestHeaders();
+  const authHeaders = { Authorization: `Bearer ${await getVercelOidcToken()}` };
 
   console.log("Auth headers:", authHeaders);
 
