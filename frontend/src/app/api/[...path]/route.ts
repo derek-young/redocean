@@ -25,6 +25,9 @@ const credentials = {
     // Use the Vercel OIDC token as the subject token
     getSubjectToken: getVercelOidcToken,
   },
+  credential_source: {
+    url: "https://oidc.vercel.com",
+  },
 };
 
 async function getIdToken() {
