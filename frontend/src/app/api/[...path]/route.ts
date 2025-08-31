@@ -40,10 +40,10 @@ async function getAuthHeaders(
 
 async function handler(
   request: NextRequest,
-  { params }: { params: { path?: string[] } }
+  { params }: { params: { path: string[] } }
 ) {
   try {
-    const pathSegments = params.path ?? [];
+    const pathSegments = params.path;
     const apiPath = pathSegments.join("/");
     const backendApiUrl = `${backendUrl}/api/v1/${apiPath}`;
     const authHeaders = await getAuthHeaders(backendUrl);
@@ -103,9 +103,11 @@ async function handler(
   }
 }
 
-export const GET = handler;
-export const POST = handler;
-export const PUT = handler;
-export const DELETE = handler;
-export const PATCH = handler;
-export const OPTIONS = handler;
+export {
+  handler as GET,
+  handler as POST,
+  handler as PUT,
+  handler as DELETE,
+  handler as PATCH,
+  handler as OPTIONS,
+};
