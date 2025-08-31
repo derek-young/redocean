@@ -1,5 +1,5 @@
 import { getVercelOidcToken } from "@vercel/oidc";
-import { GoogleAuth } from "google-auth-library";
+import { ExternalAccountClient, Impersonated } from "google-auth-library";
 import { NextRequest, NextResponse } from "next/server";
 
 const backendUrl = process.env.BACKEND_URL!;
@@ -27,6 +27,24 @@ const credentials = {
   },
 };
 
+async function getIdToken() {
+  const client = ExternalAccountClient.fromJSON(credentials);
+
+  const targetClient = client
+    ? new Impersonated({
+        sourceClient: client,
+        targetPrincipal: GCP_SERVICE_ACCOUNT_EMAIL,
+        lifetime: 30,
+        delegates: [],
+        targetScopes: ["https://www.googleapis.com/auth/cloud-platform"],
+      })
+    : null;
+
+  const idToken = await targetClient?.fetchIdToken(backendUrl);
+
+  return idToken;
+}
+
 // In production, the GCP_WIF_CREDENTIALS_BASE64 env var is set
 // which containsn the Base64-encoded WIF JSON config, see: gcr_credentials_example.json
 // async function getAuthClient(targetAudience: string) {
@@ -46,44 +64,44 @@ const credentials = {
 //   return auth.getIdTokenClient(targetAudience);
 // }
 
-async function getAuthHeaders(
-  targetAudience: string
-): Promise<{ Authorization?: string }> {
-  if (process.env.NODE_ENV === "development") {
-    console.log("Development mode: skipping authentication");
-    return {};
-  }
+// async function getAuthHeaders(
+//   targetAudience: string
+// ): Promise<{ Authorization?: string }> {
+//   if (process.env.NODE_ENV === "development") {
+//     console.log("Development mode: skipping authentication");
+//     return {};
+//   }
 
-  const buffer = 300000; // 5 minutes
-  if (cachedToken && tokenExpiryTime && Date.now() + buffer < tokenExpiryTime) {
-    return { Authorization: cachedToken };
-  }
+//   const buffer = 300000; // 5 minutes
+//   if (cachedToken && tokenExpiryTime && Date.now() + buffer < tokenExpiryTime) {
+//     return { Authorization: cachedToken };
+//   }
 
-  // const client = await getAuthClient(targetAudience);
-  // const authHeaders = await client?.getRequestHeaders();
-  const authHeaders = { Authorization: `Bearer ${await getVercelOidcToken()}` };
+//   // const client = await getAuthClient(targetAudience);
+//   // const authHeaders = await client?.getRequestHeaders();
+//   const authHeaders = { Authorization: `Bearer ${await getVercelOidcToken()}` };
 
-  console.log("Auth headers:", authHeaders);
+//   console.log("Auth headers:", authHeaders);
 
-  if (authHeaders?.Authorization) {
-    cachedToken = authHeaders.Authorization;
+//   if (authHeaders?.Authorization) {
+//     cachedToken = authHeaders.Authorization;
 
-    try {
-      const tokenParts = cachedToken.split(".");
-      if (tokenParts.length === 3) {
-        const decodedPayload = JSON.parse(atob(tokenParts[1]));
-        tokenExpiryTime = decodedPayload.exp * 1000;
-      }
-    } catch (error) {
-      console.warn("Failed to decode JWT token for caching:", error);
-      // Continue without caching if decoding fails
-      cachedToken = null;
-      tokenExpiryTime = null;
-    }
-  }
+//     try {
+//       const tokenParts = cachedToken.split(".");
+//       if (tokenParts.length === 3) {
+//         const decodedPayload = JSON.parse(atob(tokenParts[1]));
+//         tokenExpiryTime = decodedPayload.exp * 1000;
+//       }
+//     } catch (error) {
+//       console.warn("Failed to decode JWT token for caching:", error);
+//       // Continue without caching if decoding fails
+//       cachedToken = null;
+//       tokenExpiryTime = null;
+//     }
+//   }
 
-  return authHeaders || {};
-}
+//   return authHeaders || {};
+// }
 
 async function handler(
   request: NextRequest,
@@ -93,15 +111,15 @@ async function handler(
     const pathSegments = (await params).path;
     const apiPath = pathSegments.join("/");
     const backendApiUrl = `${backendUrl}/api/${apiPath}`;
-    const authHeaders = await getAuthHeaders(backendUrl);
+    const idToken = await getIdToken();
     const headers = new Headers();
     const contentType = request.headers.get("content-type");
 
     if (contentType) {
       headers.set("content-type", contentType);
     }
-    if (authHeaders?.Authorization) {
-      headers.set("Authorization", authHeaders.Authorization);
+    if (idToken) {
+      headers.set("Authorization", `Bearer ${idToken}`);
     }
 
     const body =
