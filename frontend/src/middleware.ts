@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 import { getAuthHeaders } from "./gcpAuth";
 
-const backendUrl = process.env.BACKEND_URL!;
+const backendUrl = "https://redocean-backend-989102844665.us-central1.run.app";
 
 export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/api")) {
