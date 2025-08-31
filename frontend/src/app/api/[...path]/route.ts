@@ -8,8 +8,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 const backendUrl = process.env.BACKEND_URL!;
 
-let cachedToken: string | null = null;
-let tokenExpiryTime: number | null = null;
+// let cachedToken: string | null = null;
+// let tokenExpiryTime: number | null = null;
 
 const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID;
 const GCP_PROJECT_NUMBER = process.env.GCP_PROJECT_NUMBER;
