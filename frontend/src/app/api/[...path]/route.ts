@@ -1,8 +1,9 @@
-import fs from "fs/promises";
-import { tmpdir } from "os";
-import { join } from "path";
-import { Base64 } from "js-base64";
-import { GoogleAuth } from "google-auth-library";
+import { getVercelOidcToken } from "@vercel/oidc";
+// import fs from "fs/promises";
+// import { tmpdir } from "os";
+// import { join } from "path";
+// import { Base64 } from "js-base64";
+import { GoogleAuth, ExternalAccountClient } from "google-auth-library";
 import { NextRequest, NextResponse } from "next/server";
 
 const backendUrl = process.env.BACKEND_URL!;
@@ -12,39 +13,58 @@ let tokenExpiryTime: number | null = null;
 
 // In production, the GCP_WIF_CREDENTIALS_BASE64 env var is set
 // which containsn the Base64-encoded WIF JSON config, see: gcr_credentials_example.json
-async function getAuthClient(targetAudience: string) {
-  console.log("Getting auth client for target audience:", targetAudience);
-  console.log("Node environment:", process.env.NODE_ENV);
-  console.log(
-    "GCP WIF credentials base64:",
-    process.env.GCP_WIF_CREDENTIALS_BASE64
-  );
-  if (process.env.NODE_ENV === "production") {
-    try {
-      const credentialsString = Base64.decode(
-        process.env.GCP_WIF_CREDENTIALS_BASE64!
-      );
-      const credentials = JSON.parse(credentialsString);
-      const tempPath = join(tmpdir(), "gcp-wif-credentials.json");
-      await fs.writeFile(tempPath, credentialsString);
+// async function getAuthClient(targetAudience: string) {
+//   console.log("Getting auth client for target audience:", targetAudience);
+//   console.log("Node environment:", process.env.NODE_ENV);
+//   console.log(
+//     "GCP WIF credentials base64:",
+//     process.env.GCP_WIF_CREDENTIALS_BASE64
+//   );
+//   if (process.env.NODE_ENV === "production") {
+//     try {
+//       const credentialsString = Base64.decode(
+//         process.env.GCP_WIF_CREDENTIALS_BASE64!
+//       );
+//       const credentials = JSON.parse(credentialsString);
+//       const tempPath = join(tmpdir(), "gcp-wif-credentials.json");
+//       await fs.writeFile(tempPath, credentialsString);
 
-      console.log("WIF credentials:", credentials);
+//       console.log("WIF credentials:", credentials);
 
-      const auth = new GoogleAuth({
-        keyFilename: tempPath,
-        scopes: "https://www.googleapis.com/auth/cloud-platform",
-      });
+//       const auth = new GoogleAuth({
+//         keyFilename: tempPath,
+//         scopes: "https://www.googleapis.com/auth/cloud-platform",
+//       });
 
-      return auth.getIdTokenClient(targetAudience);
-    } catch (error) {
-      console.error("Failed to decode or parse WIF credentials:", error);
-      throw new Error("Invalid WIF credentials configuration.");
-    }
-  }
+//       return auth.getIdTokenClient(targetAudience);
+//     } catch (error) {
+//       console.error("Failed to decode or parse WIF credentials:", error);
+//       throw new Error("Invalid WIF credentials configuration.");
+//     }
+//   }
 
-  const auth = new GoogleAuth();
-  return auth.getIdTokenClient(targetAudience);
-}
+//   const auth = new GoogleAuth();
+//   return auth.getIdTokenClient(targetAudience);
+// }
+
+const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID;
+const GCP_PROJECT_NUMBER = process.env.GCP_PROJECT_NUMBER;
+const GCP_SERVICE_ACCOUNT_EMAIL = process.env.GCP_SERVICE_ACCOUNT_EMAIL;
+const GCP_WORKLOAD_IDENTITY_POOL_ID = process.env.GCP_WORKLOAD_IDENTITY_POOL_ID;
+const GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID =
+  process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID;
+
+const authClient = ExternalAccountClient.fromJSON({
+  type: "external_account",
+  audience: `//iam.googleapis.com/projects/${GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
+  subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+  token_url: "https://sts.googleapis.com/v1/token",
+  service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
+  subject_token_supplier: {
+    // Use the Vercel OIDC token as the subject token
+    getSubjectToken: getVercelOidcToken,
+  },
+});
 
 async function getAuthHeaders(
   targetAudience: string
@@ -59,8 +79,10 @@ async function getAuthHeaders(
     return { Authorization: cachedToken };
   }
 
-  const client = await getAuthClient(targetAudience);
-  const authHeaders = await client.getRequestHeaders();
+  console.log("Using BaseExternalAccountClient:", authClient);
+
+  const client = authClient;
+  const authHeaders = await client?.getRequestHeaders();
 
   console.log("Auth headers:", authHeaders);
 
