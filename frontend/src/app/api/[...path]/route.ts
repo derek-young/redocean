@@ -10,12 +10,20 @@ let tokenExpiryTime: number | null = null;
 // In production, the GCP_WIF_CREDENTIALS_BASE64 env var is set
 // which containsn the Base64-encoded WIF JSON config, see: gcr_credentials_example.json
 async function getAuthClient(targetAudience: string) {
+  console.log("Getting auth client for target audience:", targetAudience);
+  console.log("Node environment:", process.env.NODE_ENV);
+  console.log(
+    "GCP WIF credentials base64:",
+    process.env.GCP_WIF_CREDENTIALS_BASE64
+  );
   if (process.env.NODE_ENV === "production") {
     try {
       const credentialsString = Base64.decode(
         process.env.GCP_WIF_CREDENTIALS_BASE64!
       );
       const credentials = JSON.parse(credentialsString);
+
+      console.log("WIF credentials:", credentials);
 
       const auth = new GoogleAuth({ credentials });
 
