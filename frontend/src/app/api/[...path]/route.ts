@@ -30,23 +30,31 @@ const credentials = {
   },
 };
 
-// async function getIdToken() {
-//   const client = ExternalAccountClient.fromJSON(credentials);
+async function getIdToken() {
+  const client = ExternalAccountClient.fromJSON(credentials);
 
-//   const targetClient = client
-//     ? new Impersonated({
-//         sourceClient: client,
-//         targetPrincipal: GCP_SERVICE_ACCOUNT_EMAIL,
-//         lifetime: 30,
-//         delegates: [],
-//         targetScopes: ["https://www.googleapis.com/auth/cloud-platform"],
-//       })
-//     : null;
+  const targetClient = client
+    ? new Impersonated({
+        sourceClient: client,
+        targetPrincipal: GCP_SERVICE_ACCOUNT_EMAIL,
+        lifetime: 30,
+        delegates: [],
+        targetScopes: ["https://www.googleapis.com/auth/cloud-platform"],
+      })
+    : null;
 
-//   const idToken = await targetClient?.fetchIdToken(backendUrl);
+  const idToken = await targetClient?.fetchIdToken(backendUrl);
 
-//   return idToken;
-// }
+  return idToken;
+}
+
+async function getAuthHeaders() {
+  const idToken = await getIdToken();
+  if (idToken) {
+    return { Authorization: `Bearer ${idToken}` };
+  }
+  return {};
+}
 
 async function getAuthClient(targetAudience: string) {
   console.log("Getting auth client for target audience:", targetAudience);
@@ -102,82 +110,6 @@ async function getAuthClient(targetAudience: string) {
 
 //   return authHeaders || {};
 // }
-
-async function getAuthHeaders(): Promise<{ Authorization?: string }> {
-  if (process.env.NODE_ENV === "development") {
-    console.log("Development mode: skipping authentication");
-    return {};
-  }
-
-  const buffer = 300000; // 5 minutes
-  if (cachedToken && tokenExpiryTime && Date.now() + buffer < tokenExpiryTime) {
-    return { Authorization: `Bearer ${cachedToken}` };
-  }
-
-  // 1. Get the OIDC token from Vercel
-  const subjectToken = await getVercelOidcToken();
-
-  // 2. Exchange OIDC → federated access token with STS
-  const stsResponse = await fetch("https://sts.googleapis.com/v1/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
-      audience: `//iam.googleapis.com/projects/${GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
-      requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
-      subject_token: subjectToken,
-      subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
-      scope: "https://www.googleapis.com/auth/cloud-platform",
-    }),
-  });
-
-  if (!stsResponse.ok) {
-    throw new Error(`STS exchange failed: ${await stsResponse.text()}`);
-  }
-
-  // const { access_token: stsToken } = await stsResponse.json();
-
-  // // 3. (Optional) Impersonate service account for final GCP access token
-  // const impersonateResponse = await fetch(
-  //   `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
-  //   {
-  //     method: "POST",
-  //     headers: {
-  //       Authorization: `Bearer ${stsToken}`,
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       scope: ["https://www.googleapis.com/auth/cloud-platform"],
-  //     }),
-  //   }
-  // );
-
-  if (!stsResponse.ok) {
-    throw new Error(`STS exchange failed: ${await stsResponse.text()}`);
-  }
-
-  const { access_token, expires_in } = await stsResponse.json();
-
-  // 3. Cache token and expiry
-  cachedToken = access_token;
-  tokenExpiryTime = Date.now() + expires_in * 1000;
-
-  return { Authorization: `Bearer ${access_token}` };
-
-  // if (!impersonateResponse.ok) {
-  //   throw new Error(
-  //     `Service account impersonation failed: ${await impersonateResponse.text()}`
-  //   );
-  // }
-
-  // const { accessToken, expireTime } = await impersonateResponse.json();
-
-  // // 4. Cache until expiry
-  // cachedToken = accessToken;
-  // tokenExpiryTime = new Date(expireTime).getTime();
-
-  // return { Authorization: `Bearer ${accessToken}` };
-}
 
 async function handler(
   request: NextRequest,
