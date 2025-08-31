@@ -1,4 +1,3 @@
-import { getVercelOidcToken } from "@vercel/oidc";
 import {
   GoogleAuth,
   ExternalAccountClient,
@@ -78,9 +77,8 @@ async function getAuthHeaders(
     return { Authorization: cachedToken };
   }
 
-  // const client = await getAuthClient(targetAudience);
-  // const authHeaders = await client?.getRequestHeaders();
-  const authHeaders = { Authorization: `Bearer ${await getVercelOidcToken()}` };
+  const client = await getAuthClient(targetAudience);
+  const authHeaders = await client?.getRequestHeaders();
 
   console.log("Auth headers:", authHeaders);
 
