@@ -57,6 +57,7 @@ const GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID =
 const authClient = ExternalAccountClient.fromJSON({
   type: "external_account",
   audience: `//iam.googleapis.com/projects/${GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
+  projectId: GCP_PROJECT_ID,
   subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
   token_url: "https://sts.googleapis.com/v1/token",
   service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
