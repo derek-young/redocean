@@ -127,6 +127,7 @@ async function getAuthHeaders(): Promise<{ Authorization?: string }> {
       requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
       subject_token: subjectToken,
       subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+      scope: "https://www.googleapis.com/auth/cloud-platform",
     }),
   });
 
