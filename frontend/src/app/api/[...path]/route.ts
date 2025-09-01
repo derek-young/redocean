@@ -73,10 +73,6 @@ async function getIdToken() {
     throw new Error(`STS exchange failed: ${await stsResponse.text()}`);
   }
 
-  console.log("STS response:", stsResponse);
-
-  console.log("STS response body:", await stsResponse.json());
-
   const { access_token, expires_in } = await stsResponse.json();
 
   console.log("Access token:", access_token);
