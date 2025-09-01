@@ -65,6 +65,7 @@ async function getIdToken() {
       requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
       subject_token: oidcToken,
       subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+      scope: "https://www.googleapis.com/auth/cloud-platform",
     }),
   });
 
