@@ -54,6 +54,8 @@ const credentials = {
 async function getIdToken() {
   const oidcToken = await getVercelOidcToken();
 
+  console.log("OIDC token:", oidcToken);
+
   const stsResponse = await fetch("https://sts.googleapis.com/v1/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -68,6 +70,9 @@ async function getIdToken() {
 
   const { access_token, expires_in } = await stsResponse.json();
 
+  console.log("Access token:", access_token);
+  console.log("Expires in:", expires_in);
+
   return access_token;
 }
 
@@ -79,22 +84,22 @@ async function getAuthHeaders() {
   return {};
 }
 
-async function getAuthClient(targetAudience: string) {
-  console.log("Getting auth client for target audience:", targetAudience);
-  console.log("Node environment:", process.env.NODE_ENV);
-  if (process.env.NODE_ENV === "production") {
-    const auth = new GoogleAuth({
-      credentials,
-      projectId: GCP_PROJECT_ID,
-      scopes: ["https://www.googleapis.com/auth/cloud-platform"],
-    });
+// async function getAuthClient(targetAudience: string) {
+//   console.log("Getting auth client for target audience:", targetAudience);
+//   console.log("Node environment:", process.env.NODE_ENV);
+//   if (process.env.NODE_ENV === "production") {
+//     const auth = new GoogleAuth({
+//       credentials,
+//       projectId: GCP_PROJECT_ID,
+//       scopes: ["https://www.googleapis.com/auth/cloud-platform"],
+//     });
 
-    return auth.getIdTokenClient(targetAudience);
-  }
+//     return auth.getIdTokenClient(targetAudience);
+//   }
 
-  const auth = new GoogleAuth();
-  return auth.getIdTokenClient(targetAudience);
-}
+//   const auth = new GoogleAuth();
+//   return auth.getIdTokenClient(targetAudience);
+// }
 
 // async function getAuthHeaders(
 //   targetAudience: string
