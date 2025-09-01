@@ -14,21 +14,6 @@ const backendUrl = process.env.BACKEND_URL!;
 // TODO: Try this
 // import { getVercelOidcToken } from "@vercel/oidc"; // or process.env.VERCEL_OIDC_TOKEN
 
-// const oidcToken = await getVercelOidcToken();
-
-// const stsResponse = await fetch("https://sts.googleapis.com/v1/token", {
-//   method: "POST",
-//   headers: { "Content-Type": "application/x-www-form-urlencoded" },
-//   body: new URLSearchParams({
-//     grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
-//     audience: "//iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/vercel-pool/providers/vercel-provider",
-//     requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
-//     subject_token: oidcToken,
-//     subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
-//   }),
-// });
-// const { access_token, expires_in } = await stsResponse.json();
-
 const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID;
 const GCP_PROJECT_NUMBER = process.env.GCP_PROJECT_NUMBER;
 const GCP_SERVICE_ACCOUNT_EMAIL = process.env.GCP_SERVICE_ACCOUNT_EMAIL;
@@ -48,22 +33,42 @@ const credentials = {
   },
 };
 
+// async function getIdToken() {
+//   const client = ExternalAccountClient.fromJSON(credentials);
+
+//   const targetClient = client
+//     ? new Impersonated({
+//         sourceClient: client,
+//         targetPrincipal: GCP_SERVICE_ACCOUNT_EMAIL,
+//         lifetime: 30,
+//         delegates: [],
+//         targetScopes: ["https://www.googleapis.com/auth/cloud-platform"],
+//       })
+//     : null;
+
+//   const idToken = await targetClient?.fetchIdToken(backendUrl);
+
+//   return idToken;
+// }
+
 async function getIdToken() {
-  const client = ExternalAccountClient.fromJSON(credentials);
+  const oidcToken = await getVercelOidcToken();
 
-  const targetClient = client
-    ? new Impersonated({
-        sourceClient: client,
-        targetPrincipal: GCP_SERVICE_ACCOUNT_EMAIL,
-        lifetime: 30,
-        delegates: [],
-        targetScopes: ["https://www.googleapis.com/auth/cloud-platform"],
-      })
-    : null;
+  const stsResponse = await fetch("https://sts.googleapis.com/v1/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+      audience: `//iam.googleapis.com/projects/${GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
+      requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
+      subject_token: oidcToken,
+      subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+    }),
+  });
 
-  const idToken = await targetClient?.fetchIdToken(backendUrl);
+  const { access_token, expires_in } = await stsResponse.json();
 
-  return idToken;
+  return access_token;
 }
 
 async function getAuthHeaders() {
