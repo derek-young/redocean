@@ -61,7 +61,7 @@ async function getIdToken() {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
       grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
-      audience: `https://vercel.com/derekyoungs-projects`,
+      audience: `//iam.googleapis.com/projects/${GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
       requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
       subject_token: oidcToken,
       subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
