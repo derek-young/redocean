@@ -11,6 +11,24 @@ const backendUrl = process.env.BACKEND_URL!;
 // let cachedToken: string | null = null;
 // let tokenExpiryTime: number | null = null;
 
+// TODO: Try this
+// import { getVercelOidcToken } from "@vercel/oidc"; // or process.env.VERCEL_OIDC_TOKEN
+
+// const oidcToken = await getVercelOidcToken();
+
+// const stsResponse = await fetch("https://sts.googleapis.com/v1/token", {
+//   method: "POST",
+//   headers: { "Content-Type": "application/x-www-form-urlencoded" },
+//   body: new URLSearchParams({
+//     grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+//     audience: "//iam.googleapis.com/projects/$PROJECT_NUMBER/locations/global/workloadIdentityPools/vercel-pool/providers/vercel-provider",
+//     requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
+//     subject_token: oidcToken,
+//     subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+//   }),
+// });
+// const { access_token, expires_in } = await stsResponse.json();
+
 const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID;
 const GCP_PROJECT_NUMBER = process.env.GCP_PROJECT_NUMBER;
 const GCP_SERVICE_ACCOUNT_EMAIL = process.env.GCP_SERVICE_ACCOUNT_EMAIL;
@@ -119,7 +137,13 @@ async function handler(
     const pathSegments = (await params).path;
     const apiPath = pathSegments.join("/");
     const backendApiUrl = `${backendUrl}/api/${apiPath}`;
+
+    console.log("Processing proxy request for path:", apiPath);
+
     const authHeaders = await getAuthHeaders();
+
+    console.log("Auth headers:", authHeaders);
+
     const headers = new Headers();
     const contentType = request.headers.get("content-type");
 
