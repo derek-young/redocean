@@ -1,5 +1,0 @@
-{
-  "dependencies": {
-    "@vercel/oidc": "^2.0.2"
-  }
-}
