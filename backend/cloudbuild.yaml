@@ -7,11 +7,14 @@ steps:
       - run
       - deploy
       - redocean-backend
-      - --project=redocean-e9f04
+      - --project=${_PROJECT_ID}
       - --region=us-central1
       - --source=.
       - --platform=managed
       - --no-allow-unauthenticated
       - --port=8080
-      - --set-env-vars=NODE_ENV=production
-      - --set-secrets=DATABASE_URL=projects/989102844665/secrets/DATABASE_URL:latest,OPENAI_API_KEY=projects/989102844665/secrets/OPENAI_API_KEY:latest
+      - --set-env-vars=NODE_ENV=production,DATABASE_URL=${_DATABASE_URL},OPENAI_API_KEY=projects/${PROJECT_ID}/secrets/OPENAI_API_KEY:latest
+
+substitutions:
+  _DATABASE_URL: "replace-with-database-url"
+  _PROJECT_ID: "redocean-e9f04"
