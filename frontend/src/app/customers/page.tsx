@@ -30,12 +30,10 @@ export default function Customers() {
           setCustomers(data);
         } else {
           console.error("Failed to fetch customers");
-          // For now, use empty array if API is not available
           setCustomers([]);
         }
       } catch (error) {
         console.error("Error fetching customers:", error);
-        // For now, use empty array if API is not available
         setCustomers([]);
       } finally {
         setIsLoading(false);
