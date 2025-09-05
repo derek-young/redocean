@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
@@ -94,12 +96,9 @@ export default function Customers() {
           </p>
         </div>
         <div className="flex space-x-4">
-          <Link
-            href="/customers/create"
-            className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
-          >
-            + New Customer
-          </Link>
+          <Button>
+            <Link href="/customers/create">+ New Customer</Link>
+          </Button>
         </div>
       </div>
 
