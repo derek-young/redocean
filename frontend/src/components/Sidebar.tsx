@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   Business,
   People,
@@ -24,6 +22,8 @@ import {
   Security,
   Help,
 } from "@mui/icons-material";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 function SidebarGroup({
   title,

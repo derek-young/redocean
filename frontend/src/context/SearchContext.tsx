@@ -8,8 +8,10 @@ import {
   useMemo,
   useCallback,
   useRef,
+  useEffect,
 } from "react";
 
+import useDebounce from "@/hooks/useDebounce";
 import { Customer, Vendor } from "@/types";
 
 interface Route {
@@ -29,21 +31,51 @@ interface SearchContextType {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   isSearching: boolean;
-  handleSearch: (e: React.FormEvent) => void;
+  onSubmitSearch: (e: React.FormEvent) => void;
+  results: SearchResponse | null;
 }
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
+function doResultsExist(results: SearchResponse | null) {
+  return (
+    results?.customers?.length &&
+    results?.vendors?.length &&
+    results?.routes?.length
+  );
+}
+
 export function SearchProvider({ children }: { children: ReactNode }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [results, setResults] = useState<SearchResponse | null>(null);
+
   const searchTermRef = useRef(searchTerm);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const hasResults = doResultsExist(results);
 
   searchTermRef.current = searchTerm;
 
-  const handleSearch = useCallback(async (e: React.FormEvent) => {
+  const onSubmitSearch = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchTermRef.current.trim()) return;
+
+    setIsSearching(true);
+
+    try {
+      console.log("searchTerm", searchTermRef.current.trim());
+    } catch (error) {
+      console.error("Search error:", error);
+    } finally {
+      setIsSearching(false);
+    }
+  }, []);
+
+  const onUserInput = async (debouncedSearchTerm: string) => {
+    const searchTerm = debouncedSearchTerm.trim();
+    if (!searchTerm) {
+      return;
+    }
 
     setIsSearching(true);
 
@@ -53,30 +85,40 @@ export function SearchProvider({ children }: { children: ReactNode }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ searchTerm: searchTermRef.current.trim() }),
+        body: JSON.stringify({ searchTerm }),
       });
 
-      const result: SearchResponse = await response.json();
+      const data: SearchResponse = await response.json();
 
-      console.log("result", result);
+      console.log("data", data);
+
+      setResults(data);
     } catch (error) {
       console.error("Search error:", error);
-      alert(
-        "Sorry, there was an error processing your search. Please try again."
-      );
     } finally {
       setIsSearching(false);
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    onUserInput(debouncedSearchTerm);
+  }, [debouncedSearchTerm]);
+
+  useEffect(() => {
+    if (hasResults && !searchTermRef.current.trim()) {
+      setResults(null);
+    }
+  }, [hasResults]);
 
   const value = useMemo(
     () => ({
+      onSubmitSearch,
+      isSearching,
       searchTerm,
       setSearchTerm,
-      isSearching,
-      handleSearch,
+      results,
     }),
-    [searchTerm, setSearchTerm, isSearching, handleSearch]
+    [searchTerm, setSearchTerm, isSearching, onSubmitSearch, results]
   );
 
   return (

@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-import { Customer, Contact, Address, Status } from "@/types";
 import Loading from "@/components/Loading";
+import { Button } from "@/components/ui/button";
+import { Customer, Contact, Address, Status } from "@/types";
 
 import CustomerEmpty from "./CustomerEmpty";
 import CustomerTable from "./CustomerTable";

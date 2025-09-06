@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { Business } from "@mui/icons-material";
+import Link from "next/link";
 
 export default function CreateVendor() {
   return (

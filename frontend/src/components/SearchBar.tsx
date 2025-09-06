@@ -1,14 +1,15 @@
 import { Search } from "@mui/icons-material";
 
-import Loading from "./Loading";
 import { useSearchContext } from "@/context/SearchContext";
 
+import Loading from "./Loading";
+
 function SearchBar() {
-  const { searchTerm, setSearchTerm, isSearching, handleSearch } =
+  const { searchTerm, setSearchTerm, isSearching, onSubmitSearch } =
     useSearchContext();
 
   return (
-    <form onSubmit={handleSearch} className="relative">
+    <form onSubmit={onSubmitSearch} className="relative">
       <button
         type="submit"
         disabled={isSearching || !searchTerm.trim()}
