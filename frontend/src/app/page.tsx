@@ -1,114 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Search } from "@mui/icons-material";
+import SearchBar from "@/components/SearchBar";
+import { SearchProvider } from "@/context/SearchContext";
 
-import Loading from "@/components/Loading";
-
-interface SearchResponse {
-  route: string | null;
-  message?: string;
-  suggestions?: string[];
-  params?: Record<string, unknown>;
-}
-
-const placeholderSamples = [
-  "Create an invoice",
-  "View P&L for last quarter",
-  "See a snapshot of current cashflow",
-  "View customers with outstanding invoices",
-  "Record a payment to a vendor",
-  "Generate monthly expense report",
-  "Find all overdue invoices",
-  "Add a new customer",
-];
-
-export default function Home() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
-  const [placeholderSampleIndex, setPlaceholderSampleIndex] = useState(
-    Math.floor(Math.random() * placeholderSamples.length)
-  );
-  const router = useRouter();
-
-  const placeholder = placeholderSamples[placeholderSampleIndex];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPlaceholderSampleIndex(
-        (curr) => (curr + 1) % placeholderSamples.length
-      );
-    }, 6000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Smart routing logic based on search terms
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchTerm.trim()) return;
-
-    setIsSearching(true);
-
-    try {
-      const response = await fetch("/api/v1/search", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ searchTerm: searchTerm.trim() }),
-      });
-
-      const result: SearchResponse = await response.json();
-
-      console.log("result", result);
-
-      if (result.route) {
-        // Navigate to the suggested route
-        router.push(result.route);
-      } else {
-        // Show clarification message with suggestions
-        const suggestions = result.suggestions?.join(", ") || "";
-        alert(`${result.message}\n\nTry searching for: ${suggestions}`);
-      }
-    } catch (error) {
-      console.error("Search error:", error);
-      alert(
-        "Sorry, there was an error processing your search. Please try again."
-      );
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
+function Home() {
   return (
     <>
       <div className="flex justify-start mb-8">
         <div className="w-full ">
-          <form onSubmit={handleSearch} className="relative">
-            <button
-              type="submit"
-              disabled={isSearching || !searchTerm.trim()}
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-red-600 text-white p-2 rounded-md hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            >
-              <Search className="w-5 h-5" />
-            </button>
-            <input
-              aria-label="Search"
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder={placeholder}
-              className="w-full pl-14 pr-4 py-3 text-lg border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-1 focus:ring-red-500 focus:border-transparent outline-none transition-all bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
-              disabled={isSearching}
-            />
-            {isSearching && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <Loading />
-              </div>
-            )}
-          </form>
+          <SearchBar />
         </div>
       </div>
       <div>
@@ -169,5 +69,13 @@ export default function Home() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function HomeWithSearchProvider() {
+  return (
+    <SearchProvider>
+      <Home />
+    </SearchProvider>
   );
 }
