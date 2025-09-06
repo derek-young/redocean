@@ -3,11 +3,10 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
-import { PrismaClient } from "@prisma/client";
+
+import { prisma } from "@/db";
 
 dotenv.config();
-
-export const prisma = new PrismaClient();
 
 import customerRoutes from "./routes/customers";
 import vendorRoutes from "./routes/vendors";

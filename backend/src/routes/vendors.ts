@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { Address, Contact, Vendor } from "@prisma/client";
 
-import { prisma } from "../index";
+import { prisma } from "@/db";
 
 type VendorWithRelations = Vendor & {
   addresses: Address[];
