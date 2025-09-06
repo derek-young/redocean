@@ -1,6 +1,6 @@
 "use client";
 
-import SearchBar from "@/components/SearchBar";
+import SearchBar from "@/components/search/SearchBar";
 import { SearchProvider } from "@/context/SearchContext";
 
 function Home() {

@@ -19,36 +19,44 @@ interface Route {
   fields: string[];
 }
 
-interface SearchResponse {
+export type HelpItem = {
+  name: string;
+};
+
+export type SearchResults = {
   type: string;
   customers?: Customer[];
   vendors?: Vendor[];
   routes?: Route[];
+  help: HelpItem[];
   searchTerm: string;
-}
+};
 
 interface SearchContextType {
+  hasResults: boolean;
+  isSearching: boolean;
+  isSubmitting: boolean;
+  onSubmitSearch: () => void;
+  results: SearchResults | null;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
-  isSearching: boolean;
-  onSubmitSearch: (e: React.FormEvent) => void;
-  results: SearchResponse | null;
 }
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
-function doResultsExist(results: SearchResponse | null) {
-  return (
-    results?.customers?.length &&
-    results?.vendors?.length &&
-    results?.routes?.length
+function doResultsExist(results: SearchResults | null) {
+  return Boolean(
+    results?.customers?.length ||
+      results?.vendors?.length ||
+      results?.routes?.length
   );
 }
 
 export function SearchProvider({ children }: { children: ReactNode }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [results, setResults] = useState<SearchResponse | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [results, setResults] = useState<SearchResults | null>(null);
 
   const searchTermRef = useRef(searchTerm);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -56,18 +64,17 @@ export function SearchProvider({ children }: { children: ReactNode }) {
 
   searchTermRef.current = searchTerm;
 
-  const onSubmitSearch = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmitSearch = useCallback(async () => {
     if (!searchTermRef.current.trim()) return;
 
-    setIsSearching(true);
+    setIsSubmitting(true);
 
     try {
       console.log("searchTerm", searchTermRef.current.trim());
     } catch (error) {
       console.error("Search error:", error);
     } finally {
-      setIsSearching(false);
+      setIsSubmitting(false);
     }
   }, []);
 
@@ -88,11 +95,11 @@ export function SearchProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ searchTerm }),
       });
 
-      const data: SearchResponse = await response.json();
+      const data: SearchResults = await response.json();
 
       console.log("data", data);
 
-      setResults(data);
+      setResults({ ...data, help: [{ name: "Natural Language Search" }] });
     } catch (error) {
       console.error("Search error:", error);
     } finally {
@@ -105,20 +112,22 @@ export function SearchProvider({ children }: { children: ReactNode }) {
   }, [debouncedSearchTerm]);
 
   useEffect(() => {
-    if (hasResults && !searchTermRef.current.trim()) {
+    if (!searchTerm.trim()) {
       setResults(null);
     }
-  }, [hasResults]);
+  }, [searchTerm]);
 
   const value = useMemo(
     () => ({
-      onSubmitSearch,
+      hasResults,
       isSearching,
+      isSubmitting,
+      onSubmitSearch,
       searchTerm,
       setSearchTerm,
       results,
     }),
-    [searchTerm, setSearchTerm, isSearching, onSubmitSearch, results]
+    [onSubmitSearch, isSearching, isSubmitting, searchTerm, results, hasResults]
   );
 
   return (
