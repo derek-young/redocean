@@ -1,5 +1,5 @@
-import { cosineSimilarity } from "./cosineSimilarity";
-import routeEmbeddingsData from "../data/routes-embeddings.json";
+import { cosineSimilarity } from "@/utils/cosineSimilarity";
+import routeEmbeddingsData from "@/data/routes-embeddings.json";
 
 interface RouteEmbedding {
   path: string;
@@ -13,21 +13,17 @@ function getRouteEmbeddings(): RouteEmbedding[] {
   return routeEmbeddingsData as RouteEmbedding[];
 }
 
-export async function findRouteByQuickAction(quickAction: string) {
+export function findRoutesByQuickAction(quickAction: string) {
   const routeEmbeddings = getRouteEmbeddings();
   const searchTerm = quickAction.toLowerCase().trim();
 
-  const route = routeEmbeddings.find((route: RouteEmbedding) =>
+  const routes = routeEmbeddings.filter((route: RouteEmbedding) =>
     route.quickActions.some((action) =>
       action.toLowerCase().includes(searchTerm)
     )
   );
 
-  if (route) {
-    console.log(`Found route by quick action: ${route.path}`);
-  }
-
-  return route;
+  return routes;
 }
 
 export async function findRouteByEmbedding(queryEmbedding: number[]) {
