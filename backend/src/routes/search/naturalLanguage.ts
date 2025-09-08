@@ -1,9 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 
-import { clarifyUserIntent, getTextEmbedding } from "@/services/openai";
-import { prisma } from "@/db";
-
-import { findRouteByEmbedding, findRoutesByQuickAction } from "./findRoute";
+import { searchAgent } from "@/services/agents";
 
 const router = Router();
 
@@ -26,9 +23,22 @@ const handler = async (req: Request, res: Response): Promise<void> => {
 
   console.log("searchTerm", term);
 
-  res.status(200).json({
-    message: "Natural language search not implemented yet",
-  });
+  try {
+    const agentResponse = await searchAgent(searchTerm);
+
+    const { route, params, message } = JSON.parse(agentResponse.output_text);
+
+    res.json({
+      route,
+      params,
+      message,
+    });
+  } catch (error) {
+    console.error("Natural language search error:", error);
+    res.status(500).json({
+      message: "Natural language search error",
+    });
+  }
 };
 
 router.post("/", validator, handler);

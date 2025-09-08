@@ -1,9 +1,8 @@
 import { Router, Request, Response, NextFunction } from "express";
 
-import { clarifyUserIntent, getTextEmbedding } from "@/services/openai";
 import { prisma } from "@/db";
 
-import { findRouteByEmbedding, findRoutesByQuickAction } from "./findRoute";
+import { findRoutesByQuickAction } from "./findRoute";
 
 const router = Router();
 
