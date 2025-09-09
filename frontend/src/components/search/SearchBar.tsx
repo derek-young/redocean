@@ -55,11 +55,7 @@ function SearchBar() {
           {help.length > 0 && (
             <CommandGroup>
               {help.map((h: HelpItem) => (
-                <CommandItem
-                  key={h.name}
-                  onSelect={onSubmitSearch}
-                  className="hover:!bg-red-100 dark:!bg-red-900/20 dark:hover:!bg-red-900/30 data-[selected=true]:!bg-red-100 dark:data-[selected=true]:!bg-red-900/30"
-                >
+                <CommandItem key={h.name} onSelect={onSubmitSearch}>
                   <Anchor />
                   <span>{h.name}</span>
                 </CommandItem>

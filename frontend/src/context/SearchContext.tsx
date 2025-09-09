@@ -70,13 +70,23 @@ export function SearchProvider({ children }: { children: ReactNode }) {
     setIsSubmitting(true);
 
     try {
-      console.log("searchTerm", searchTermRef.current.trim());
+      const response = await fetch("/api/v1/search/natural", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ searchTerm }),
+      });
+
+      const data: SearchResults = await response.json();
+
+      console.log("data", data);
     } catch (error) {
       console.error("Search error:", error);
     } finally {
       setIsSubmitting(false);
     }
-  }, []);
+  }, [searchTerm]);
 
   const onUserInput = async (debouncedSearchTerm: string) => {
     const searchTerm = debouncedSearchTerm.trim();
@@ -87,7 +97,7 @@ export function SearchProvider({ children }: { children: ReactNode }) {
     setIsSearching(true);
 
     try {
-      const response = await fetch("/api/v1/search", {
+      const response = await fetch("/api/v1/search/quick", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
