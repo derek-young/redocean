@@ -1,5 +1,6 @@
+"use client";
+
 import { Anchor } from "lucide-react";
-import { useRef } from "react";
 
 import {
   Command,
@@ -9,7 +10,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import type { HelpItem } from "@/context/SearchContext";
-import { useSearchContext } from "@/context/SearchContext";
+import { SearchProvider, useSearchContext } from "@/context/SearchContext";
 
 import Loading from "../Loading";
 
@@ -25,8 +26,6 @@ function SearchBar() {
     onSubmitSearch,
   } = useSearchContext();
 
-  const searchBarRef = useRef<HTMLDivElement>(null);
-
   const {
     customers = [],
     vendors = [],
@@ -35,19 +34,16 @@ function SearchBar() {
   } = results ?? {};
 
   return (
-    <div ref={searchBarRef} className="relative">
+    <div className="relative">
       <Command shouldFilter={false}>
         <CommandInput
           aria-label="Search"
           value={searchTerm}
           onValueChange={setSearchTerm}
           placeholder="Search in RedOcean"
-        />
-        {(isSearching || isSubmitting) && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <Loading width={16} height={16} />
-          </div>
-        )}
+        >
+          {(isSearching || isSubmitting) && <Loading width={16} height={16} />}
+        </CommandInput>
         <CommandList>
           {customers.length > 0 && <CustomerResults customers={customers} />}
           {vendors.length > 0 && <VendorResults vendors={vendors} />}
@@ -68,4 +64,10 @@ function SearchBar() {
   );
 }
 
-export default SearchBar;
+export default function SearchBarWithProvider() {
+  return (
+    <SearchProvider>
+      <SearchBar />
+    </SearchProvider>
+  );
+}
