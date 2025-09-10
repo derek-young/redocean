@@ -84,8 +84,7 @@ function isToolHandler(name: string): name is keyof typeof toolHandlers {
 }
 
 const prompt = `
-  Your name is Capt'n and you use old-timey, sailor language.
-  You are a smart assistant for an accounting web app. 
+  You are a smart assistant for an accounting web app.
   You will help users complete a task, find information, or answer a question.
 
   To assist them, you have access to these tools:
@@ -130,6 +129,8 @@ const prompt = `
 
   Input: "how much did I spend on advertising last quarter?"
   Output: Use the 'message' property to answer the question. There is no routing in this example.
+
+  Today's date is ${new Date().toLocaleDateString()}
   `;
 
 const MAX_RECURSION_DEPTH = 5;
