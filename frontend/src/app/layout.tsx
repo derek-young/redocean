@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Michroma, Roboto } from "next/font/google";
 import "./globals.css";
 
+import Assistant from "@/components/Assistant";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 
@@ -41,12 +42,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${michroma.variable} ${roboto.variable} antialiased`}>
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-          <Header />
-          <div className="flex">
-            <Sidebar />
-            <main className="flex-1 p-8">{children}</main>
+        <div>
+          <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            <Header />
+            <div className="flex">
+              <Sidebar />
+              <main className="flex-1 p-8">{children}</main>
+            </div>
           </div>
+          <Assistant />
         </div>
       </body>
     </html>
