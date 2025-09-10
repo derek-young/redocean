@@ -32,13 +32,7 @@ export default function AssistantInput({
   };
 
   return (
-    <div
-      className={cn(
-        "p-4 border-t border-border dark:border-border",
-        "bg-muted/30 dark:bg-muted/30",
-        className
-      )}
-    >
+    <div className={cn("p-4 border-t border-border", "bg-muted/30", className)}>
       <div className="flex gap-2">
         <textarea
           aria-label="Assistant Message Input"
@@ -48,11 +42,10 @@ export default function AssistantInput({
           placeholder="Type your message..."
           className={cn(
             "flex-1 min-h-[40px] max-h-32 px-3 py-2",
-            "bg-background dark:bg-background border border-input dark:border-input rounded-md",
-            "text-sm placeholder:text-muted-foreground dark:placeholder:text-muted-foreground",
+            "bg-background border border-input rounded-md",
+            "text-sm text-foreground placeholder:text-muted-foreground",
             "resize-none",
-            "focus:outline-none focus:ring-2 focus:ring-ring dark:focus:ring-ring focus:border-transparent",
-            "dark:bg-input/30"
+            "focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
           )}
           rows={1}
         />

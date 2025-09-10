@@ -22,10 +22,9 @@ export default function AssistantPanel({ onClose }: AssistantPanelProps) {
       className={cn(
         "w-full h-full",
         "bg-card border border-border",
-        "rounded-lg shadow-xl dark:shadow-2xl",
+        "rounded-lg shadow-xl",
         "flex flex-col",
         "backdrop-blur-sm"
-        // "dark:bg-gray-800"
       )}
     >
       <div
