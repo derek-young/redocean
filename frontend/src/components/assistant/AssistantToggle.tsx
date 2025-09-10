@@ -16,7 +16,7 @@ export default function AssistantToggle({ onClick }: AssistantToggleProps) {
       size="icon"
       className={cn(
         "w-12 h-12 rounded-full shadow-lg dark:shadow-2xl",
-        "bg-primary hover:bg-primary/90 dark:bg-primary dark:hover:bg-primary/90",
+        "bg-gray-700 hover:bg-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600",
         "text-primary-foreground dark:text-primary-foreground",
         "border border-border dark:border-border",
         "transition-all duration-200",

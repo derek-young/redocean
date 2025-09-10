@@ -5,7 +5,6 @@ import "./globals.css";
 import Assistant from "@/components/Assistant";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import { DarkModeProvider } from "@/context/DarkModeContext";
 
 const michroma = Michroma({
   variable: "--font-michroma",
@@ -43,18 +42,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${michroma.variable} ${roboto.variable} antialiased`}>
-        <DarkModeProvider>
-          <div>
-            <div className="min-h-screen bg-background">
-              <Header />
-              <div className="flex">
-                <Sidebar />
-                <main className="flex-1 p-8">{children}</main>
-              </div>
+        <div>
+          <div className="min-h-screen bg-background">
+            <Header />
+            <div className="flex">
+              <Sidebar />
+              <main className="flex-1 p-8">{children}</main>
             </div>
-            <Assistant />
           </div>
-        </DarkModeProvider>
+          <Assistant />
+        </div>
       </body>
     </html>
   );
