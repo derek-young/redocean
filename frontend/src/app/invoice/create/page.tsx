@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
+
 interface InvoiceItem {
   id: string;
   description: string;
@@ -106,14 +108,16 @@ export default function CreateInvoice() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Create Invoice</h1>
-            <p className="text-gray-600 mt-1">
+            <h1 className="text-3xl font-bold text-foreground">
+              Create Invoice
+            </h1>
+            <p className="text-muted-foreground mt-1">
               Generate a new invoice for your customer
             </p>
           </div>
           <Link
             href="/"
-            className="px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+            className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             ← Back to Home
           </Link>
@@ -121,13 +125,15 @@ export default function CreateInvoice() {
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Invoice Header */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Invoice Details</h2>
+          <div className="bg-card rounded-lg shadow p-6 border border-border">
+            <h2 className="text-xl font-semibold mb-4 text-card-foreground">
+              Invoice Details
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label
                   htmlFor="invoiceNumber"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground mb-2"
                 >
                   Invoice Number
                 </label>
@@ -141,7 +147,7 @@ export default function CreateInvoice() {
                       invoiceNumber: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                   placeholder="INV-001"
                   required
                 />
@@ -149,7 +155,7 @@ export default function CreateInvoice() {
               <div>
                 <label
                   htmlFor="issueDate"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground mb-2"
                 >
                   Issue Date
                 </label>
@@ -163,14 +169,14 @@ export default function CreateInvoice() {
                       issueDate: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                   required
                 />
               </div>
               <div>
                 <label
                   htmlFor="dueDate"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground mb-2"
                 >
                   Due Date
                 </label>
@@ -184,14 +190,14 @@ export default function CreateInvoice() {
                       dueDate: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                   required
                 />
               </div>
               <div>
                 <label
                   htmlFor="terms"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground mb-2"
                 >
                   Payment Terms
                 </label>
@@ -204,7 +210,7 @@ export default function CreateInvoice() {
                       terms: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                 >
                   <option value="Net 30">Net 30</option>
                   <option value="Net 15">Net 15</option>
@@ -216,13 +222,15 @@ export default function CreateInvoice() {
           </div>
 
           {/* Customer Information */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Customer Information</h2>
+          <div className="bg-card rounded-lg shadow p-6 border border-border">
+            <h2 className="text-xl font-semibold mb-4 text-card-foreground">
+              Customer Information
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label
                   htmlFor="customerName"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground mb-2"
                 >
                   Customer Name
                 </label>
@@ -236,7 +244,7 @@ export default function CreateInvoice() {
                       customerName: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                   placeholder="John Doe"
                   required
                 />
@@ -244,7 +252,7 @@ export default function CreateInvoice() {
               <div>
                 <label
                   htmlFor="customerEmail"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground mb-2"
                 >
                   Email
                 </label>
@@ -258,7 +266,7 @@ export default function CreateInvoice() {
                       customerEmail: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                   placeholder="john@example.com"
                   required
                 />
@@ -266,7 +274,7 @@ export default function CreateInvoice() {
               <div>
                 <label
                   htmlFor="customerPhone"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground mb-2"
                 >
                   Phone
                 </label>
@@ -280,14 +288,14 @@ export default function CreateInvoice() {
                       customerPhone: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                   placeholder="+1 (555) 123-4567"
                 />
               </div>
               <div className="md:col-span-2">
                 <label
                   htmlFor="customerAddress"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground mb-2"
                 >
                   Address
                 </label>
@@ -300,7 +308,7 @@ export default function CreateInvoice() {
                       customerAddress: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                   rows={3}
                   placeholder="123 Main St, City, State 12345"
                   required
@@ -310,23 +318,26 @@ export default function CreateInvoice() {
           </div>
 
           {/* Invoice Items */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-card rounded-lg shadow p-6 border border-border">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Invoice Items</h2>
-              <button
+              <h2 className="text-xl font-semibold text-card-foreground">
+                Invoice Items
+              </h2>
+              <Button
                 type="button"
                 onClick={addItem}
-                className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
+                variant="default"
+                size="default"
               >
                 + Add Item
-              </button>
+              </Button>
             </div>
 
             <div className="space-y-4">
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="grid grid-cols-12 gap-4 items-center p-4 border border-gray-200 rounded-lg"
+                  className="grid grid-cols-12 gap-4 items-center p-4 border border-border rounded-lg bg-muted/30"
                 >
                   <div className="col-span-5">
                     <input
@@ -336,7 +347,7 @@ export default function CreateInvoice() {
                       onChange={(e) =>
                         updateItem(item.id, "description", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                       placeholder="Item description"
                       required
                     />
@@ -353,7 +364,7 @@ export default function CreateInvoice() {
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                       min="0"
                       step="1"
                       required
@@ -371,7 +382,7 @@ export default function CreateInvoice() {
                           parseFloat(e.target.value) || 0
                         )
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
                       min="0"
                       step="0.01"
                       placeholder="0.00"
@@ -379,19 +390,21 @@ export default function CreateInvoice() {
                     />
                   </div>
                   <div className="col-span-2">
-                    <div className="px-3 py-2 bg-gray-50 rounded-md text-right font-medium">
+                    <div className="px-3 py-2 bg-muted rounded-md text-right font-medium text-foreground">
                       ${item.amount.toFixed(2)}
                     </div>
                   </div>
                   <div className="col-span-1">
                     {items.length > 1 && (
-                      <button
+                      <Button
                         type="button"
                         onClick={() => removeItem(item.id)}
-                        className="text-red-600 hover:text-red-800 transition-colors"
+                        variant="ghost"
+                        size="icon"
+                        className="text-destructive hover:text-destructive/80"
                       >
                         ×
-                      </button>
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -400,35 +413,41 @@ export default function CreateInvoice() {
           </div>
 
           {/* Totals */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-card rounded-lg shadow p-6 border border-border">
             <div className="flex justify-end">
               <div className="w-64 space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal:</span>
-                  <span className="font-medium">${subtotal.toFixed(2)}</span>
+                  <span className="text-muted-foreground">Subtotal:</span>
+                  <span className="font-medium text-foreground">
+                    ${subtotal.toFixed(2)}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Tax (8%):</span>
-                  <span className="font-medium">${taxAmount.toFixed(2)}</span>
+                  <span className="text-muted-foreground">Tax (8%):</span>
+                  <span className="font-medium text-foreground">
+                    ${taxAmount.toFixed(2)}
+                  </span>
                 </div>
-                <div className="border-t pt-2 flex justify-between text-lg font-semibold">
-                  <span>Total:</span>
-                  <span>${total.toFixed(2)}</span>
+                <div className="border-t border-border pt-2 flex justify-between text-lg font-semibold">
+                  <span className="text-foreground">Total:</span>
+                  <span className="text-foreground">${total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Notes */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold mb-4">Additional Notes</h2>
+          <div className="bg-card rounded-lg shadow p-6 border border-border">
+            <h2 className="text-xl font-semibold mb-4 text-card-foreground">
+              Additional Notes
+            </h2>
             <textarea
               aria-label="Additional Notes"
               value={invoiceData.notes}
               onChange={(e) =>
                 setInvoiceData({ ...invoiceData, notes: e.target.value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
               rows={4}
               placeholder="Any additional notes or terms for this invoice..."
             />
@@ -436,20 +455,17 @@ export default function CreateInvoice() {
 
           {/* Submit Button */}
           <div className="flex justify-end space-x-4">
-            <Link
-              type="button"
-              href="/"
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </Link>
-            <button
+            <Button asChild variant="outline" size="lg">
+              <Link href="/">Cancel</Link>
+            </Button>
+            <Button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-3 bg-gray-800 text-white rounded-md hover:bg-gray-900 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              variant="default"
+              size="lg"
             >
               {isSubmitting ? "Creating..." : "Create Invoice"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

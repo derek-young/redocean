@@ -17,10 +17,25 @@ export function findRoutesByQuickAction(quickAction: string) {
   const routeEmbeddings = getRouteEmbeddings();
   const searchTerm = quickAction.toLowerCase().trim();
 
-  const routes = routeEmbeddings.filter((route: RouteEmbedding) =>
-    route.quickActions.some((action) =>
-      action.toLowerCase().includes(searchTerm)
-    )
+  const routes = routeEmbeddings.reduce(
+    (
+      acc: (RouteEmbedding & { matchedAction: string })[],
+      route: RouteEmbedding
+    ) => {
+      const matchedAction = route.quickActions.find((action) =>
+        action.toLowerCase().includes(searchTerm)
+      );
+
+      if (matchedAction !== undefined) {
+        acc.push({
+          ...route,
+          matchedAction,
+        });
+      }
+
+      return acc;
+    },
+    []
   );
 
   return routes;

@@ -57,7 +57,11 @@ const handler = async (req: Request, res: Response): Promise<void> => {
     type: "entity_match",
     customers,
     vendors,
-    routes,
+    routes: routes.map((route) => ({
+      description: route.description,
+      matchedAction: route.matchedAction,
+      path: route.path,
+    })),
     searchTerm: term,
   });
 };

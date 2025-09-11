@@ -14,9 +14,10 @@ import {
 import useDebounce from "@/hooks/useDebounce";
 import { Customer, Vendor } from "@/types";
 
-interface Route {
+export interface Route {
+  description: string;
+  matchedAction: string;
   path: string;
-  fields: string[];
 }
 
 export type HelpItem = {

@@ -1,6 +1,5 @@
 "use client";
 
-
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
@@ -67,8 +66,8 @@ export default function Customers() {
     <div className="max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Customers</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Customers</h1>
+          <p className="text-muted-foreground mt-1">
             Manage your customer contacts and relationships
           </p>
         </div>

@@ -35,7 +35,7 @@ function SearchBar() {
 
   return (
     <div className="relative">
-      <Command shouldFilter={false}>
+      <Command onSelect={() => console.log("onSelect")} shouldFilter={false}>
         <CommandInput
           aria-label="Search"
           value={searchTerm}
@@ -44,12 +44,24 @@ function SearchBar() {
         >
           {(isSearching || isSubmitting) && <Loading width={16} height={16} />}
         </CommandInput>
-        <CommandList>
-          {customers.length > 0 && <CustomerResults customers={customers} />}
-          {vendors.length > 0 && <VendorResults vendors={vendors} />}
-          {routes.length > 0 && <RouteResults routes={routes} />}
+        <CommandList className="absolute top-9 w-full z-50 bg-background rounded-md shadow-lg">
+          {customers.length > 0 && (
+            <CustomerResults
+              customers={customers}
+              onSelect={() => setSearchTerm("")}
+            />
+          )}
+          {vendors.length > 0 && (
+            <VendorResults
+              vendors={vendors}
+              onSelect={() => setSearchTerm("")}
+            />
+          )}
+          {routes.length > 0 && (
+            <RouteResults routes={routes} onSelect={() => setSearchTerm("")} />
+          )}
           {help.length > 0 && (
-            <CommandGroup>
+            <CommandGroup className="border-t border-border">
               {help.map((h: HelpItem) => (
                 <CommandItem key={h.name} onSelect={onSubmitSearch}>
                   <Anchor />
