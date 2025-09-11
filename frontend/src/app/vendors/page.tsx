@@ -215,10 +215,7 @@ export default function Vendors() {
                   const primaryAddress = getPrimaryAddress(vendor.addresses);
 
                   return (
-                    <tr
-                      key={vendor.id}
-                      className="hover:bg-gray-50 dark:hover:bg-gray-700"
-                    >
+                    <tr key={vendor.id}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
                           <span
@@ -313,12 +310,13 @@ export default function Vendors() {
                           >
                             Edit
                           </button>
-                          <button
+                          <Link
+                            href={`/vendors/${vendor.id}`}
                             aria-label="View vendor"
                             className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                           >
                             View
-                          </button>
+                          </Link>
                         </div>
                       </td>
                     </tr>

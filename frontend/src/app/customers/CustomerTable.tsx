@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Address, Contact, ContactType, Customer, Status } from "@/types";
 
 type CustomerWithRelations = Customer & {
@@ -68,10 +70,7 @@ function Table(props: { customers: CustomerWithRelations[] }) {
               const primaryAddress = getPrimaryAddress(customer.addresses);
 
               return (
-                <tr
-                  key={customer.id}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-700"
-                >
+                <tr key={customer.id}>
                   <td className="px-3 sm:px-6 py-4">
                     <div>
                       <span
@@ -165,12 +164,13 @@ function Table(props: { customers: CustomerWithRelations[] }) {
                       >
                         Edit
                       </button>
-                      <button
+                      <Link
+                        href={`/customers/${customer.id}`}
                         aria-label="View customer"
                         className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 text-xs sm:text-sm"
                       >
                         View
-                      </button>
+                      </Link>
                     </div>
                   </td>
                 </tr>
