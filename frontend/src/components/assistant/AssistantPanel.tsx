@@ -1,22 +1,16 @@
-"use client";
-
-import { X, Bot, Sparkles } from "lucide-react";
+import { X } from "lucide-react";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
+import { useAssistantContext } from "@/context/AssistantContext";
 import { cn } from "@/lib/utils";
 
 import AssistantChat from "./AssistantChat";
 import AssistantInput from "./AssistantInput";
 
-interface AssistantPanelProps {
-  onClose: () => void;
-}
+export default function AssistantPanel() {
+  const { setIsOpen } = useAssistantContext();
 
-export default function AssistantPanel({ onClose }: AssistantPanelProps) {
-  const handleSendMessage = (message: string) => {
-    // This would connect to your AI service
-    console.log("Sending message:", message);
-  };
   return (
     <div
       className={cn(
@@ -36,16 +30,23 @@ export default function AssistantPanel({ onClose }: AssistantPanelProps) {
       >
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Bot className="w-5 h-5 text-primary" />
-            <Sparkles className="w-3 h-3 absolute -top-1 -right-1 text-yellow-400" />
+            <Image
+              alt="Captain Assistant Logo"
+              className="svg-theme-adaptive"
+              height={48}
+              width={48}
+              src="/capn.svg"
+            />
           </div>
           <div>
-            <h3 className="font-semibold text-foreground">AI Assistant</h3>
-            <p className="text-xs text-muted-foreground">Ready to help</p>
+            <h3 className="font-semibold text-foreground">Cap&apos;n</h3>
+            <p className="text-xs text-muted-foreground">
+              Ready t&apos; lend a hand!
+            </p>
           </div>
         </div>
         <Button
-          onClick={onClose}
+          onClick={() => setIsOpen(false)}
           size="icon"
           variant="ghost"
           className="w-8 h-8"
@@ -55,8 +56,8 @@ export default function AssistantPanel({ onClose }: AssistantPanelProps) {
         </Button>
       </div>
       <div className="flex-1 flex flex-col min-h-0">
-        <AssistantChat onSendMessage={handleSendMessage} />
-        <AssistantInput onSendMessage={handleSendMessage} />
+        <AssistantChat />
+        <AssistantInput />
       </div>
     </div>
   );

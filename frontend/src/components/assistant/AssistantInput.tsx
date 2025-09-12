@@ -4,22 +4,20 @@ import { Send } from "lucide-react";
 import { useState, KeyboardEvent } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Message, useAssistantContext } from "@/context/AssistantContext";
 import { cn } from "@/lib/utils";
 
 interface AssistantInputProps {
   className?: string;
-  onSendMessage?: (message: string) => void;
 }
 
-export default function AssistantInput({
-  className,
-  onSendMessage,
-}: AssistantInputProps) {
+export default function AssistantInput({ className }: AssistantInputProps) {
+  const { onSubmitMessage } = useAssistantContext();
   const [message, setMessage] = useState("");
 
   const handleSend = () => {
     if (message.trim()) {
-      onSendMessage?.(message.trim());
+      onSubmitMessage(message.trim());
       setMessage("");
     }
   };
@@ -35,11 +33,12 @@ export default function AssistantInput({
     <div className={cn("p-4 border-t border-border", "bg-muted/30", className)}>
       <div className="flex gap-2">
         <textarea
+          autoFocus
+          name="assistant-message-input"
           aria-label="Assistant Message Input"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Type your message..."
+          onKeyDown={handleKeyPress}
           className={cn(
             "flex-1 min-h-[40px] max-h-32 px-3 py-2",
             "bg-background border border-input rounded-md",

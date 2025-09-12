@@ -2,17 +2,18 @@
 
 import {
   createContext,
-  useContext,
-  useState,
   ReactNode,
-  useMemo,
   useCallback,
-  useRef,
+  useContext,
   useEffect,
+  useMemo,
+  useState,
 } from "react";
 
 import useDebounce from "@/hooks/useDebounce";
 import { Customer, Vendor } from "@/types";
+
+import { useAssistantContext } from "./AssistantContext";
 
 export interface Route {
   description: string;
@@ -36,8 +37,7 @@ export type SearchResults = {
 interface SearchContextType {
   hasResults: boolean;
   isSearching: boolean;
-  isSubmitting: boolean;
-  onSubmitSearch: () => void;
+  onSubmitNLSearch: () => void;
   results: SearchResults | null;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
@@ -54,40 +54,18 @@ function doResultsExist(results: SearchResults | null) {
 }
 
 export function SearchProvider({ children }: { children: ReactNode }) {
+  const { openAndSubmit } = useAssistantContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [results, setResults] = useState<SearchResults | null>(null);
 
-  const searchTermRef = useRef(searchTerm);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const hasResults = doResultsExist(results);
 
-  searchTermRef.current = searchTerm;
-
-  const onSubmitSearch = useCallback(async () => {
-    if (!searchTermRef.current.trim()) return;
-
-    setIsSubmitting(true);
-
-    try {
-      const response = await fetch("/api/v1/search/natural", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ searchTerm }),
-      });
-
-      const data: SearchResults = await response.json();
-
-      console.log("data", data);
-    } catch (error) {
-      console.error("Search error:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [searchTerm]);
+  const onSubmitNLSearch = useCallback(async () => {
+    if (!searchTerm.trim()) return;
+    openAndSubmit(searchTerm);
+  }, [openAndSubmit, searchTerm]);
 
   const onUserInput = async (debouncedSearchTerm: string) => {
     const searchTerm = debouncedSearchTerm.trim();
@@ -110,7 +88,7 @@ export function SearchProvider({ children }: { children: ReactNode }) {
 
       console.log("data", data);
 
-      setResults({ ...data, help: [{ name: "Natural Language Search" }] });
+      setResults({ ...data, help: [{ name: "Cast a Wider Net" }] });
     } catch (error) {
       console.error("Search error:", error);
     } finally {
@@ -132,13 +110,12 @@ export function SearchProvider({ children }: { children: ReactNode }) {
     () => ({
       hasResults,
       isSearching,
-      isSubmitting,
-      onSubmitSearch,
+      onSubmitNLSearch,
       searchTerm,
       setSearchTerm,
       results,
     }),
-    [onSubmitSearch, isSearching, isSubmitting, searchTerm, results, hasResults]
+    [hasResults, isSearching, onSubmitNLSearch, searchTerm, results]
   );
 
   return (

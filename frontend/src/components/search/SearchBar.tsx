@@ -1,7 +1,6 @@
 "use client";
 
-import { Anchor } from "lucide-react";
-
+import ShipWheelIcon from "@/components/ShipWheelIcon";
 import {
   Command,
   CommandGroup,
@@ -17,14 +16,8 @@ import Loading from "../Loading";
 import { CustomerResults, RouteResults, VendorResults } from "./SearchResults";
 
 function SearchBar() {
-  const {
-    results,
-    searchTerm,
-    setSearchTerm,
-    isSearching,
-    isSubmitting,
-    onSubmitSearch,
-  } = useSearchContext();
+  const { results, searchTerm, setSearchTerm, isSearching, onSubmitNLSearch } =
+    useSearchContext();
 
   const {
     customers = [],
@@ -42,7 +35,7 @@ function SearchBar() {
           onValueChange={setSearchTerm}
           placeholder="Search in RedOcean"
         >
-          {(isSearching || isSubmitting) && <Loading width={16} height={16} />}
+          {isSearching && <Loading width={16} height={16} />}
         </CommandInput>
         <CommandList className="absolute top-9 w-full z-50 bg-background rounded-md shadow-lg">
           {customers.length > 0 && (
@@ -63,8 +56,8 @@ function SearchBar() {
           {help.length > 0 && (
             <CommandGroup className="border-t border-border">
               {help.map((h: HelpItem) => (
-                <CommandItem key={h.name} onSelect={onSubmitSearch}>
-                  <Anchor />
+                <CommandItem key={h.name} onSelect={onSubmitNLSearch}>
+                  <ShipWheelIcon />
                   <span>{h.name}</span>
                 </CommandItem>
               ))}

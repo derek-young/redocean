@@ -154,4 +154,16 @@ body {
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background-color: hsl(var(--muted-foreground));
   }
+
+  .svg-theme-adaptive {
+    filter: brightness(0) saturate(100%) invert(13%) sepia(4%) saturate(2647%)
+      hue-rotate(265deg) brightness(97%) contrast(86%);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .svg-theme-adaptive {
+      filter: brightness(0) saturate(100%) invert(98%) sepia(0%) saturate(0%)
+        hue-rotate(248deg) brightness(100%) contrast(100%);
+    }
+  }
 }

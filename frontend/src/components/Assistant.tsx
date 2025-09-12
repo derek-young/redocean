@@ -1,18 +1,13 @@
 "use client";
 
-import { useState } from "react";
-
+import { useAssistantContext } from "@/context/AssistantContext";
 import { cn } from "@/lib/utils";
 
 import AssistantPanel from "./assistant/AssistantPanel";
 import AssistantToggle from "./assistant/AssistantToggle";
 
 export default function Assistant() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleAssistant = () => {
-    setIsOpen(!isOpen);
-  };
+  const { isOpen, setIsOpen } = useAssistantContext();
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
@@ -23,9 +18,9 @@ export default function Assistant() {
         )}
       >
         {isOpen ? (
-          <AssistantPanel onClose={() => setIsOpen(false)} />
+          <AssistantPanel />
         ) : (
-          <AssistantToggle onClick={toggleAssistant} />
+          <AssistantToggle onClick={() => setIsOpen(true)} />
         )}
       </div>
     </div>
