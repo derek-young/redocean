@@ -1,12 +1,14 @@
 [
   {
     "path": "/",
+    "name": "Dashboard",
     "description": "Home view with smart search and quick actions",
     "quickActions": ["home", "dashboard"],
     "fields": ["Search"]
   },
   {
     "path": "/vendors",
+    "name": "Vendors",
     "description": "View and manage existing vendors",
     "quickActions": ["vendors", "view vendors", "find vendor", "find a vendor"],
     "fields": [
@@ -16,6 +18,7 @@
   },
   {
     "path": "/vendors/create",
+    "name": "Create Vendor",
     "description": "Create a new vendor",
     "quickActions": [
       "create vendor",
@@ -43,18 +46,21 @@
   },
   {
     "path": "/reports",
+    "name": "Reports",
     "description": "View business analytics and financial reports",
     "quickActions": ["reports", "view reports"],
     "fields": []
   },
   {
     "path": "/payments",
+    "name": "Payments",
     "description": "View and manage payments to suppliers",
     "quickActions": ["payments", "view payments"],
     "fields": []
   },
   {
     "path": "/invoice/list",
+    "name": "Invoices",
     "description": "View all invoices",
     "quickActions": [
       "invoices",
@@ -66,6 +72,7 @@
   },
   {
     "path": "/invoice/create",
+    "name": "Create Invoice",
     "description": "Create a new invoice for a customer",
     "quickActions": [
       "create invoice",
@@ -90,6 +97,7 @@
   },
   {
     "path": "/customers",
+    "name": "Customers",
     "description": "View and manage existing customers",
     "quickActions": [
       "customers",
@@ -104,6 +112,7 @@
   },
   {
     "path": "/customers/create",
+    "name": "Create Customer",
     "description": "Add a new customer to the system",
     "quickActions": [
       "create customer",

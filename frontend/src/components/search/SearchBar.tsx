@@ -58,7 +58,9 @@ function SearchBar() {
               {help.map((h: HelpItem) => (
                 <CommandItem key={h.name} onSelect={onSubmitNLSearch}>
                   <ShipWheelIcon />
-                  <span>{h.name}</span>
+                  <span>
+                    <i>{h.name}</i>
+                  </span>
                 </CommandItem>
               ))}
             </CommandGroup>

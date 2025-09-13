@@ -235,6 +235,7 @@ export default function CreateInvoice() {
                   Customer Name
                 </label>
                 <input
+                  name="customerName"
                   aria-label="Customer Name"
                   type="text"
                   value={invoiceData.customerName}

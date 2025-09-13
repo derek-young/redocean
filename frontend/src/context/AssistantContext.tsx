@@ -6,7 +6,6 @@ import {
   useCallback,
   useContext,
   useMemo,
-  useRef,
   useState,
 } from "react";
 
@@ -14,7 +13,15 @@ export interface Message {
   id: string;
   content: string;
   role: "user" | "assistant";
+  route?: Route;
   timestamp: Date;
+}
+
+// TODO: Align the two Route interfaces
+interface Route {
+  path: string;
+  name: string;
+  params: Record<string, string>;
 }
 
 interface AssistantContextType {
@@ -39,7 +46,11 @@ export function AssistantContextProvider({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const setNewMessage = (message: string, role: "user" | "assistant") => {
+  const setNewMessage = (
+    message: string,
+    role: "user" | "assistant",
+    route?: Route
+  ) => {
     setMessages((prev) => {
       return [
         ...prev,
@@ -47,6 +58,7 @@ export function AssistantContextProvider({
           id: `${Date.now().toString()}_${role}`,
           content: message,
           role,
+          route,
           timestamp: new Date(),
         },
       ];
@@ -90,7 +102,7 @@ export function AssistantContextProvider({
 
         console.log("data", data);
 
-        setNewMessage(data.message, "assistant");
+        setNewMessage(data.message, "assistant", data.route);
       } catch (error) {
         console.error("Search error:", error);
       } finally {

@@ -62,9 +62,10 @@ export function SearchProvider({ children }: { children: ReactNode }) {
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const hasResults = doResultsExist(results);
 
-  const onSubmitNLSearch = useCallback(async () => {
+  const onSubmitNLSearch = useCallback(() => {
     if (!searchTerm.trim()) return;
     openAndSubmit(searchTerm);
+    setSearchTerm("");
   }, [openAndSubmit, searchTerm]);
 
   const onUserInput = async (debouncedSearchTerm: string) => {
@@ -88,7 +89,14 @@ export function SearchProvider({ children }: { children: ReactNode }) {
 
       console.log("data", data);
 
-      setResults({ ...data, help: [{ name: "Cast a Wider Net" }] });
+      setResults({
+        ...data,
+        help: [
+          {
+            name: "Use deep search to cast a wider net",
+          },
+        ],
+      });
     } catch (error) {
       console.error("Search error:", error);
     } finally {

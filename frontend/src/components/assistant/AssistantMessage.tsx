@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Message } from "@/context/AssistantContext";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +29,14 @@ export default function AssistantMessage({ message }: AssistantMessageProps) {
         >
           {message.content}
         </div>
+        {message.route?.path && (
+          <Link
+            href={message.route.path}
+            className="inline-flex items-center px-2 py-1 text-xs bg-primary/10 hover:bg-primary/20 text-primary rounded transition-colors"
+          >
+            {message.route.name} →
+          </Link>
+        )}
         <div
           className={cn(
             "text-xs text-muted-foreground px-1",
