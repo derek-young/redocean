@@ -2,6 +2,7 @@ import { Account, Customer, PrismaClient, Vendor } from "@prisma/client";
 
 import { accounts } from "./seedData";
 import * as GTC from "./seedDataGalacticTradingCo";
+import * as SDF from "./seedDataStellarDefense";
 
 const prisma = new PrismaClient();
 
@@ -22,15 +23,20 @@ async function main() {
     {
       name: "Galactic Trading Company",
       subdomain: "galacticetradingco",
+      vendorData: GTC.vendorData,
+      customerData: GTC.customerData,
     },
     {
       name: "Stellar Defense Fleet",
       subdomain: "stellardefense",
+      vendorData: SDF.vendorData,
+      customerData: SDF.customerData,
     },
   ];
 
   for (const data of tenantData) {
-    const tenant = await prisma.tenant.create({ data });
+    const { name, subdomain, vendorData, customerData } = data;
+    const tenant = await prisma.tenant.create({ data: { name, subdomain } });
     console.log("✅ Created tenant:", tenant.name);
 
     await prisma.userTenantMembership.create({
@@ -45,11 +51,11 @@ async function main() {
       `✅ Created ${accounts.length} standard accounts for ${tenant.name}`
     );
 
-    const vendors = await createVendors(GTC.vendorData, tenant.id);
-    console.log(`✅ Created ${vendors.length} vendors for ${tenant.name}`);
-
-    const customers = await createCustomers(GTC.customerData, tenant.id);
+    const customers = await createCustomers(customerData, tenant.id);
     console.log(`✅ Created ${customers.length} customers for ${tenant.name}`);
+
+    const vendors = await createVendors(vendorData, tenant.id);
+    console.log(`✅ Created ${vendors.length} vendors for ${tenant.name}`);
   }
 
   console.log("🎉 Database seeding completed!");
