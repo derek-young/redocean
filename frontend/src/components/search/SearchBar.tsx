@@ -28,7 +28,7 @@ function SearchBar() {
 
   return (
     <div className="relative">
-      <Command onSelect={() => console.log("onSelect")} shouldFilter={false}>
+      <Command shouldFilter={false}>
         <CommandInput
           aria-label="Search"
           value={searchTerm}
@@ -37,7 +37,7 @@ function SearchBar() {
         >
           {isSearching && <Loading width={16} height={16} />}
         </CommandInput>
-        <CommandList className="absolute top-9 w-full z-50 bg-background rounded-md shadow-lg">
+        <CommandList>
           {customers.length > 0 && (
             <CustomerResults
               customers={customers}

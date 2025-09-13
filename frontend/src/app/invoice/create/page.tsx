@@ -5,416 +5,61 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
-interface InvoiceItem {
-  id: string;
-  description: string;
-  quantity: number;
-  unitPrice: number;
-  amount: number;
-}
+import CustomerSelection from "./CustomerSelection";
+import InvoiceDetails from "./InvoiceDetails";
+import InvoiceLineItems, { InvoiceLine } from "./InvoiceLineItems";
 
 export default function CreateInvoice() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Invoice header data
-  const [invoiceData, setInvoiceData] = useState({
-    invoiceNumber: "",
-    issueDate: new Date().toISOString().split("T")[0],
-    dueDate: "",
-    customerName: "",
-    customerEmail: "",
-    customerAddress: "",
-    customerPhone: "",
-    notes: "",
-    terms: "Net 30",
-  });
-
-  // Invoice items
-  const [items, setItems] = useState<InvoiceItem[]>([
+  const [lines, setLines] = useState<InvoiceLine[]>([
     {
       id: "1",
       description: "",
       quantity: 1,
-      unitPrice: 0,
-      amount: 0,
+      unitAmount: 0,
+      lineAmount: 0,
     },
   ]);
 
-  // Calculate totals
-  const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
-  const taxRate = 0.08; // 8% tax rate
-  const taxAmount = subtotal * taxRate;
-  const total = subtotal + taxAmount;
-
-  const addItem = () => {
-    const newItem: InvoiceItem = {
-      id: Date.now().toString(),
-      description: "",
-      quantity: 1,
-      unitPrice: 0,
-      amount: 0,
-    };
-    setItems([...items, newItem]);
-  };
-
-  const removeItem = (id: string) => {
-    if (items.length > 1) {
-      setItems(items.filter((item) => item.id !== id));
-    }
-  };
-
-  const updateItem = (
-    id: string,
-    field: keyof InvoiceItem,
-    value: string | number
-  ) => {
-    setItems(
-      items.map((item) => {
-        if (item.id === id) {
-          const updatedItem = { ...item, [field]: value };
-          if (field === "quantity" || field === "unitPrice") {
-            updatedItem.amount = updatedItem.quantity * updatedItem.unitPrice;
-          }
-          return updatedItem;
-        }
-        return item;
-      })
-    );
-  };
+  const subtotal = lines.reduce((sum, line) => sum + line.lineAmount, 0);
+  const totalAmount = subtotal;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Here you would typically save to your backend
-    console.log("Invoice Data:", {
-      ...invoiceData,
-      items,
-      subtotal,
-      taxAmount,
-      total,
-    });
-
-    alert("Invoice created successfully!");
-    setIsSubmitting(false);
+    try {
+      console.log("TODO");
+    } catch (error) {
+      console.error("Error creating invoice:", error);
+      alert("Error creating invoice. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <main className="flex-1 p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">
-              Create Invoice
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Generate a new invoice for your customer
-            </p>
-          </div>
+          <h1 className="text-3xl font-bold text-foreground">Create Invoice</h1>
           <Link
-            href="/"
+            href="/invoice/list"
             className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
           >
-            ← Back to Home
+            ← Invoices
           </Link>
         </div>
-
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Invoice Header */}
+          <CustomerSelection />
+          <InvoiceDetails />
+          <InvoiceLineItems lines={lines} setLines={setLines} />
+
           <div className="bg-card rounded-lg shadow p-6 border border-border">
             <h2 className="text-xl font-semibold mb-4 text-card-foreground">
-              Invoice Details
+              Invoice Totals
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label
-                  htmlFor="invoiceNumber"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Invoice Number
-                </label>
-                <input
-                  aria-label="Invoice Number"
-                  type="text"
-                  value={invoiceData.invoiceNumber}
-                  onChange={(e) =>
-                    setInvoiceData({
-                      ...invoiceData,
-                      invoiceNumber: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                  placeholder="INV-001"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="issueDate"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Issue Date
-                </label>
-                <input
-                  aria-label="Issue Date"
-                  type="date"
-                  value={invoiceData.issueDate}
-                  onChange={(e) =>
-                    setInvoiceData({
-                      ...invoiceData,
-                      issueDate: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="dueDate"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Due Date
-                </label>
-                <input
-                  aria-label="Due Date"
-                  type="date"
-                  value={invoiceData.dueDate}
-                  onChange={(e) =>
-                    setInvoiceData({
-                      ...invoiceData,
-                      dueDate: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="terms"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Payment Terms
-                </label>
-                <select
-                  aria-label="Payment Terms"
-                  value={invoiceData.terms}
-                  onChange={(e) =>
-                    setInvoiceData({
-                      ...invoiceData,
-                      terms: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                >
-                  <option value="Net 30">Net 30</option>
-                  <option value="Net 15">Net 15</option>
-                  <option value="Due on Receipt">Due on Receipt</option>
-                  <option value="Net 60">Net 60</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Customer Information */}
-          <div className="bg-card rounded-lg shadow p-6 border border-border">
-            <h2 className="text-xl font-semibold mb-4 text-card-foreground">
-              Customer Information
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label
-                  htmlFor="customerName"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Customer Name
-                </label>
-                <input
-                  name="customerName"
-                  aria-label="Customer Name"
-                  type="text"
-                  value={invoiceData.customerName}
-                  onChange={(e) =>
-                    setInvoiceData({
-                      ...invoiceData,
-                      customerName: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                  placeholder="John Doe"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="customerEmail"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Email
-                </label>
-                <input
-                  aria-label="Customer Email"
-                  type="email"
-                  value={invoiceData.customerEmail}
-                  onChange={(e) =>
-                    setInvoiceData({
-                      ...invoiceData,
-                      customerEmail: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                  placeholder="john@example.com"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="customerPhone"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Phone
-                </label>
-                <input
-                  aria-label="Customer Phone"
-                  type="tel"
-                  value={invoiceData.customerPhone}
-                  onChange={(e) =>
-                    setInvoiceData({
-                      ...invoiceData,
-                      customerPhone: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                  placeholder="+1 (555) 123-4567"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label
-                  htmlFor="customerAddress"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Address
-                </label>
-                <textarea
-                  aria-label="Customer Address"
-                  value={invoiceData.customerAddress}
-                  onChange={(e) =>
-                    setInvoiceData({
-                      ...invoiceData,
-                      customerAddress: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                  rows={3}
-                  placeholder="123 Main St, City, State 12345"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Invoice Items */}
-          <div className="bg-card rounded-lg shadow p-6 border border-border">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-card-foreground">
-                Invoice Items
-              </h2>
-              <Button
-                type="button"
-                onClick={addItem}
-                variant="default"
-                size="default"
-              >
-                + Add Item
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              {items.map((item) => (
-                <div
-                  key={item.id}
-                  className="grid grid-cols-12 gap-4 items-center p-4 border border-border rounded-lg bg-muted/30"
-                >
-                  <div className="col-span-5">
-                    <input
-                      aria-label="Item Description"
-                      type="text"
-                      value={item.description}
-                      onChange={(e) =>
-                        updateItem(item.id, "description", e.target.value)
-                      }
-                      className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                      placeholder="Item description"
-                      required
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <input
-                      aria-label="Item Quantity"
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        updateItem(
-                          item.id,
-                          "quantity",
-                          parseFloat(e.target.value) || 0
-                        )
-                      }
-                      className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                      min="0"
-                      step="1"
-                      required
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <input
-                      aria-label="Item Unit Price"
-                      type="number"
-                      value={item.unitPrice}
-                      onChange={(e) =>
-                        updateItem(
-                          item.id,
-                          "unitPrice",
-                          parseFloat(e.target.value) || 0
-                        )
-                      }
-                      className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                      min="0"
-                      step="0.01"
-                      placeholder="0.00"
-                      required
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <div className="px-3 py-2 bg-muted rounded-md text-right font-medium text-foreground">
-                      ${item.amount.toFixed(2)}
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    {items.length > 1 && (
-                      <Button
-                        type="button"
-                        onClick={() => removeItem(item.id)}
-                        variant="ghost"
-                        size="icon"
-                        className="text-destructive hover:text-destructive/80"
-                      >
-                        ×
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Totals */}
-          <div className="bg-card rounded-lg shadow p-6 border border-border">
             <div className="flex justify-end">
               <div className="w-64 space-y-2">
                 <div className="flex justify-between">
@@ -423,38 +68,22 @@ export default function CreateInvoice() {
                     ${subtotal.toFixed(2)}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Tax (8%):</span>
-                  <span className="font-medium text-foreground">
-                    ${taxAmount.toFixed(2)}
+                <div className="border-t border-border pt-2 flex justify-between text-lg font-semibold">
+                  <span className="text-foreground">Total Amount:</span>
+                  <span className="text-foreground">
+                    ${totalAmount.toFixed(2)}
                   </span>
                 </div>
-                <div className="border-t border-border pt-2 flex justify-between text-lg font-semibold">
-                  <span className="text-foreground">Total:</span>
-                  <span className="text-foreground">${total.toFixed(2)}</span>
+                <div className="text-sm text-muted-foreground">
+                  <p>
+                    Note: Tax calculations are applied per line item based on
+                    selected tax rates.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Notes */}
-          <div className="bg-card rounded-lg shadow p-6 border border-border">
-            <h2 className="text-xl font-semibold mb-4 text-card-foreground">
-              Additional Notes
-            </h2>
-            <textarea
-              aria-label="Additional Notes"
-              value={invoiceData.notes}
-              onChange={(e) =>
-                setInvoiceData({ ...invoiceData, notes: e.target.value })
-              }
-              className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-              rows={4}
-              placeholder="Any additional notes or terms for this invoice..."
-            />
-          </div>
-
-          {/* Submit Button */}
           <div className="flex justify-end space-x-4">
             <Button asChild variant="outline" size="lg">
               <Link href="/">Cancel</Link>
