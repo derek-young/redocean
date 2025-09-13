@@ -137,7 +137,7 @@ enum ContactType {
 
 model Contact {
   id         String   @id @default(cuid(2))
-  email      String   @unique
+  email      String
   firstName  String?
   lastName   String?
   phone      String?
@@ -154,6 +154,7 @@ model Contact {
   vendorId   String?
   vendor     Vendor? @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
+  @@unique([email, vendorId, customerId])
   @@map("contacts")
 }
 
