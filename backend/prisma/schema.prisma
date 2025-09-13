@@ -7,63 +7,152 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// TOOD: Create sequences for:
+// Journal Entry Numbers
+// Invoice Numbers
+
+// ===========================================
+// ENUMS
+// ===========================================
+
+enum AccountType {
+  ASSET // 1000-1999: Cash, Accounts Receivable, Inventory, etc.
+  LIABILITY // 2000-2999: Accounts Payable, Loans, etc.
+  EQUITY // 3000-3999: Owner's Equity, Retained Earnings, etc.
+  REVENUE // 4000-4999: Sales, Service Revenue, etc.
+  EXPENSE // 5000-5999: Cost of Goods Sold, Operating Expenses, etc.
+}
+
+enum ActiveStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum BankAccountType {
+  CHECKING
+  SAVINGS
+  OTHER
+}
+
+enum BillStatus {
+  DRAFT
+  RECEIVED
+  PARTIALLY_PAID
+  PAID
+  VOID
+}
+
+enum ContactType {
+  PRIMARY
+  SECONDARY
+}
+
+enum DocStatus {
+  DRAFT
+  APPROVED
+  POSTED
+  PAID
+  PARTIALLY_PAID
+  VOID
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PARTIALLY_PAID
+  PAID
+  VOID
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  CREDIT_CARD
+  CHECK
+  ACH
+}
+
 enum Role {
   ADMIN
   AUDITOR
 }
 
-enum Status {
-  ACTIVE
-  ARCHIVED
+enum TransactionType {
+  DEBIT
+  CREDIT
 }
 
+// ===========================================
+// USER & TENANT MANAGEMENT
+// ===========================================
+
 model User {
-  id        String   @id @default(cuid(2))
-  email     String   @unique
-  role      Role
+  id        String    @id @default(cuid(2))
+  email     String    @unique
   firstName String?
   lastName  String?
-  status    Status @default(ACTIVE)
-  createdAt DateTime @default(now())
+  role      Role
+  status    ActiveStatus    @default(ACTIVE)
+
+  createdAt DateTime  @default(now())
   deletedAt DateTime?
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
 
   // Relationships
-  journalEntries JournalEntry[]
+  attachments           Attachment[]
+  auditLogs             AuditLog[]
+  bills                 Bill[]
+  invoices              Invoice[]
+  journalEntries        JournalEntry[]
+  payments              Payment[]
   userTenantMemberships UserTenantMembership[]
 
   @@map("users")
 }
 
 model Tenant {
-  id        String   @id @default(cuid(2))
+  id        String    @id @default(cuid(2))
   name      String
-  subdomain String   @unique
-  status    Status @default(ACTIVE)
-  createdAt DateTime @default(now())
+  subdomain String    @unique
+  status    ActiveStatus    @default(ACTIVE)
+  
+  createdAt DateTime  @default(now())
   deletedAt DateTime?
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
 
   // Relationships
-  accounts  Account[]
-  customers Customer[]
-  journalEntries JournalEntry[]
+  accounts              Account[]
+  attachments           Attachment[]
+  auditLogs             AuditLog[]
+  bankAccounts          BankAccount[]
+  bankStatements        BankStatement[]
+  bills                 Bill[]
+  customers             Customer[]
+  fiscalYears           FiscalYear[]
+  fixedAssets           FixedAsset[]
+  invoices              Invoice[]
+  journalEntries        JournalEntry[]
+  payments              Payment[]
+  reconciliations       Reconciliation[]
+  sequences             Sequence[]
+  taxRates              TaxRate[]
   userTenantMemberships UserTenantMembership[]
-  vendors   Vendor[]
+  vendors               Vendor[]
 
   @@map("tenants")
 }
 
 model UserTenantMembership {
   id        String   @id @default(cuid(2))
-  userId    String
   tenantId  String
+  userId    String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relationships
-  user     User   @relation(fields: [userId], references: [id])
-  tenant   Tenant @relation(fields: [tenantId], references: [id])
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
 
   @@unique([userId, tenantId])
   @@map("user_tenant_memberships")
@@ -74,41 +163,48 @@ model UserTenantMembership {
 // ===========================================
 
 model Customer {
-  id        String   @id @default(cuid(2))
+  id        String    @id @default(cuid(2))
   name      String
+  status    ActiveStatus    @default(ACTIVE)
   tenantId  String
-  status    Status @default(ACTIVE)
-  createdAt DateTime @default(now())
+
+  createdAt DateTime  @default(now())
   deletedAt DateTime?
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
 
   // Relationships
-  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  contacts  Contact[]
   addresses Address[]
+  contacts  Contact[]
+  invoices  Invoice[]
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@map("customers")
 }
 
 model Vendor {
-  id        String   @id @default(cuid(2))
+  id        String    @id @default(cuid(2))
   name      String
+  status    ActiveStatus    @default(ACTIVE)
   tenantId  String
-  status    Status @default(ACTIVE)
-  createdAt DateTime @default(now())
+
+  createdAt DateTime  @default(now())
   deletedAt DateTime?
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime  @updatedAt
 
   // Relationships
-  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  contacts  Contact[]
   addresses Address[]
+  bills     Bill[]
+  contacts  Contact[]
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@map("vendors")
 }
 
 model Address {
   id        String   @id @default(cuid(2))
+  customerId String?
+  isPrimary Boolean  @default(false)
+  vendorId  String?
   street1   String
   street2   String?
   street3   String?
@@ -116,124 +212,470 @@ model Address {
   state     String
   zip       String
   country   String   @default("US")
-  isPrimary Boolean  @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relationships
-  customerId String?
   customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
-
-  vendorId String?
   vendor   Vendor? @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   @@map("addresses")
 }
 
-enum ContactType {
-  PRIMARY
-  SECONDARY
-}
-
 model Contact {
-  id         String   @id @default(cuid(2))
-  email      String
-  firstName  String?
-  lastName   String?
-  phone      String?
-  status     Status @default(ACTIVE)
-  type       ContactType @default(PRIMARY)
-  createdAt  DateTime @default(now())
-  deletedAt  DateTime?
-  updatedAt  DateTime @updatedAt
+  id        String      @id @default(cuid(2))
+  customerId String?
+  email     String
+  firstName String?
+  lastName  String?
+  phone     String?
+  status    ActiveStatus      @default(ACTIVE)
+  type      ContactType @default(PRIMARY)
+  vendorId  String?
+
+  createdAt DateTime    @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime    @updatedAt
 
   // Relationships
-  customerId String?
   customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
-
-  vendorId   String?
-  vendor     Vendor? @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  vendor   Vendor? @relation(fields: [vendorId], references: [id], onDelete: Cascade)
 
   @@unique([email, vendorId, customerId])
   @@map("contacts")
 }
 
 // ===========================================
-// ACCOUNTING & FINANCIAL MANAGEMENT
+// ACCOUNTING
 // ===========================================
 
-enum AccountType {
-  ASSET       // 1000-1999: Cash, Accounts Receivable, Inventory, etc.
-  LIABILITY   // 2000-2999: Accounts Payable, Loans, etc.
-  EQUITY      // 3000-3999: Owner's Equity, Retained Earnings, etc.
-  REVENUE     // 4000-4999: Sales, Service Revenue, etc.
-  EXPENSE     // 5000-5999: Cost of Goods Sold, Operating Expenses, etc.
-}
-
 model Account {
-  id          String   @id @default(cuid(2))
-  code        String   // e.g., "1000", "1100", "2000"
-  name        String   // e.g., "Cash", "Accounts Receivable", "Accounts Payable"
-  type        AccountType
+  id          String      @id @default(cuid(2))
+  code        String // e.g., "1000", "1100", "2000"
   description String?
-  status      Status @default(ACTIVE)
+  name        String // e.g., "Cash", "Accounts Receivable", "Accounts Payable"
+  status      ActiveStatus      @default(ACTIVE)
   tenantId    String
-  createdAt   DateTime @default(now())
+  type        AccountType
+
+  createdAt   DateTime    @default(now())
   deletedAt   DateTime?
-  updatedAt   DateTime @updatedAt
+  updatedAt   DateTime    @updatedAt
 
   // Hierarchical structure
-  parentId    String?
-  parent      Account? @relation("AccountHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
-  children    Account[] @relation("AccountHierarchy")
+  parentId String?
+  parent   Account?  @relation("AccountHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children Account[] @relation("AccountHierarchy")
 
   // Relationships
-  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  transactions Transaction[]
+  accumulatedOn FixedAsset[]  @relation("AccountAccumulatedOn")
+  fixedAssets   FixedAsset[]  @relation("AccountFixedAssets")
+  tenant        Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  transactions  Transaction[]
+
+  // TODO: add a cached AccountBalance table
+  // balances AccountBalance[]
 
   @@unique([code, tenantId])
   @@map("accounts")
 }
 
-model JournalEntry {
-  id          String   @id @default(cuid(2))
-  entryNumber Int      // Reader-friendly ID: 1001, 1002, etc.
-  date        DateTime
-  reference   String?
-  memo        String?
-  tenantId    String
-  userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
+
+model JournalEntry {
+  id            String     @id @default(cuid(2))
+  createdById   String?
+  date          DateTime
+  entryNumber   Int // Reader-friendly ID: 1001, 1002, etc.
+  memo          String?
+  postedAt      DateTime?
+  reference     String?
+  status        DocStatus?
+  tenantId      String
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  // Optional pointers back to the originating sub-ledger object
+  bankAccountId String? // bank account involved (if JE posted against a BankAccount)
+  billId        String? // for vendor bill posting
+  invoiceId     String? // if this JE was created by posting an Invoice
+  paymentId     String? // for payment JE
+
+  // OR
+  sourceId      String? // generic pointer if you prefer one field for all sources
+  sourceType    String? // (e.g., "INVOICE","BILL","PAYMENT","DEPRECIATION")
+  
   // Relationships
-  user        User @relation(fields: [userId], references: [id])
-  tenant      Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  bankAccount  BankAccount?  @relation(fields: [bankAccountId], references: [id], onDelete: SetNull)
+  bill         Bill?         @relation(fields: [billId], references: [id], onDelete: SetNull)
+  createdBy    User?         @relation(fields: [createdById], references: [id])
+  invoice      Invoice?      @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  payment      Payment?      @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   transactions Transaction[]
 
   @@unique([entryNumber, tenantId])
+  @@index([tenantId, date])
   @@map("journal_entries")
 }
 
-enum TransactionType {
-  DEBIT
-  CREDIT
-}
-
 model Transaction {
-  id            String   @id @default(cuid(2))
-  description   String?
-  amount        Decimal? @db.Decimal(10, 2)
-  currency      String   @default("USD")
-  type          TransactionType
-  accountId     String
+  id             String          @id @default(cuid(2))
+  accountId      String
+  amount         Decimal?        @db.Decimal(10, 2)
+  currency       String          @default("USD")
+  description    String?
   journalEntryId String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  tenantId       String
+  type           TransactionType
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
   // Relationships
-  account       Account @relation(fields: [accountId], references: [id])
-  journalEntry  JournalEntry @relation(fields: [journalEntryId], references: [id])
+  account        Account      @relation(fields: [accountId], references: [id])
+  journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id])
 
   @@map("transactions")
+}
+
+model FixedAsset {
+  id                   String   @id @default(cuid(2))
+  accountId            String // fixed asset account
+  accumulatedAccountId String // accumulated depreciation account
+  cost                 Decimal  @db.Decimal(12, 2)
+  depreciationMethod   String? // e.g., SL (straight-line)
+  name                 String
+  purchaseDate         DateTime
+  salvage              Decimal  @default("0.00") @db.Decimal(12, 2)
+  tenantId             String
+  usefulLifeMonths     Int
+
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  // Relationships
+  account       Account @relation("AccountFixedAssets", fields: [accountId], references: [id])
+  accumulatedOn Account @relation("AccountAccumulatedOn", fields: [accumulatedAccountId], references: [id])
+  tenant        Tenant  @relation(fields: [tenantId], references: [id])
+
+  @@map("fixed_assets")
+}
+
+model FiscalYear {
+  id        String   @id @default(cuid(2))
+  isClosed  Boolean  @default(false)
+  startDate DateTime
+  endDate   DateTime
+  tenantId  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+
+  @@map("fiscal_years")
+}
+
+// ===========================================
+// INVOICING & BILLING
+// ===========================================
+
+model Invoice {
+  id            String        @id @default(cuid(2))
+  balanceDue    Decimal       @db.Decimal(12, 2) // cached
+  createdById   String
+  currency      String        @default("USD")
+  customerId    String
+  date          DateTime
+  dueDate       DateTime?
+  invoiceNumber String
+  memo          String?
+  status        InvoiceStatus @default(DRAFT)
+  tenantId      String
+  totalAmount   Decimal       @db.Decimal(12, 2)
+
+  createdAt     DateTime      @default(now())
+  postedAt      DateTime?
+  updatedAt     DateTime      @updatedAt
+
+  // Relationships
+  attachments    Attachment[]
+  journalEntries JournalEntry[]
+  createdBy      User                @relation(fields: [createdById], references: [id])
+  customer       Customer            @relation(fields: [customerId], references: [id])
+  lines          InvoiceLine[]
+  payments       PaymentAllocation[]
+  tenant         Tenant              @relation(fields: [tenantId], references: [id])
+
+  @@unique([invoiceNumber, tenantId])
+  @@map("invoices")
+}
+
+model InvoiceLine {
+  id          String   @id @default(cuid(2))
+  invoiceId   String
+  description String
+  quantity    Decimal  @default("1.00") @db.Decimal(10, 2)
+  unitAmount  Decimal  @db.Decimal(12, 2)
+  lineAmount  Decimal  @db.Decimal(12, 2)
+  taxRateId   String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  invoice Invoice  @relation(fields: [invoiceId], references: [id])
+  taxRate TaxRate? @relation(fields: [taxRateId], references: [id])
+
+  @@map("invoice_lines")
+}
+
+model Bill {
+  id          String     @id @default(cuid(2))
+  createdById String
+  tenantId    String
+  vendorId    String
+  billNumber  String
+  date        DateTime
+  dueDate     DateTime?
+  status      BillStatus @default(DRAFT)
+  totalAmount Decimal    @db.Decimal(12, 2)
+  balanceDue  Decimal    @db.Decimal(12, 2)
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relationships
+  attachments    Attachment[]
+  journalEntries JournalEntry[]
+  createdBy      User                @relation(fields: [createdById], references: [id])
+  lines          BillLine[]
+  payments       PaymentAllocation[]
+  tenant         Tenant              @relation(fields: [tenantId], references: [id])
+  vendor         Vendor              @relation(fields: [vendorId], references: [id])
+
+  @@unique([billNumber, tenantId])
+  @@map("bills")
+}
+
+model BillLine {
+  id          String  @id @default(cuid(2))
+  billId      String
+  description String
+  quantity    Decimal @default("1.00") @db.Decimal(10, 2)
+  unitAmount  Decimal @db.Decimal(12, 2)
+  lineAmount  Decimal @db.Decimal(12, 2)
+  taxRateId   String?
+
+  // Relationships
+  bill    Bill     @relation(fields: [billId], references: [id])
+  taxRate TaxRate? @relation(fields: [taxRateId], references: [id])
+
+  @@map("bill_lines")
+}
+
+model Payment {
+  id            String        @id @default(cuid(2))
+  amount        Decimal       @db.Decimal(12, 2)
+  bankAccountId String? // where payment was deposited/paid from
+  createdById   String
+  currency      String        @default("USD")
+  date          DateTime
+  method        PaymentMethod
+  note          String?
+  reference     String?
+  tenantId      String
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relationships
+  allocations    PaymentAllocation[]
+  journalEntries JournalEntry[]
+  attachments    Attachment[]
+  bankAccount    BankAccount?        @relation(fields: [bankAccountId], references: [id])
+  createdBy      User                @relation(fields: [createdById], references: [id])
+  tenant         Tenant              @relation(fields: [tenantId], references: [id])
+
+  @@map("payments")
+}
+
+model PaymentAllocation {
+  id        String   @id @default(cuid(2))
+  amount    Decimal  @db.Decimal(12, 2)
+  billId    String?
+  invoiceId String?
+  paymentId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  bill        Bill?         @relation(fields: [billId], references: [id])
+  invoice     Invoice?      @relation(fields: [invoiceId], references: [id])
+  payment     Payment       @relation(fields: [paymentId], references: [id])
+
+  @@map("payment_allocations")
+}
+
+model TaxRate {
+  id         String   @id @default(cuid(2))
+  name       String
+  rate       Decimal  @db.Decimal(5, 4)
+  tenantId   String
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relationships
+  billLines    BillLine[]
+  invoiceLines InvoiceLine[]
+  tenant      Tenant  @relation(fields: [tenantId], references: [id])
+
+  @@map("tax_rates")
+}
+
+// ===========================================
+// BANKING
+// ===========================================
+
+model BankAccount {
+  id                  String   @id @default(cuid(2))
+  name                String
+  tenantId            String
+  type                BankAccountType
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relationships
+  journalEntries JournalEntry[]
+  payments       Payment[]
+  reconciliations Reconciliation[]
+  statements     BankStatement[]
+  tenant         Tenant           @relation(fields: [tenantId], references: [id])
+
+  @@map("bank_accounts")
+}
+
+model BankStatement {
+  id              String   @id @default(cuid(2))
+  bankAccountId   String
+  statementDate   DateTime
+  startingBalance Decimal  @db.Decimal(12, 2)
+  endingBalance   Decimal  @db.Decimal(12, 2)
+  tenantId        String
+  
+  createdAt      DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relationships
+  bankAccount BankAccount         @relation(fields: [bankAccountId], references: [id])
+  lines       BankStatementLine[]
+  tenant      Tenant              @relation(fields: [tenantId], references: [id])
+
+  @@map("bank_statements")
+}
+
+model BankStatementLine {
+  id                    String   @id @default(cuid(2))
+  amount                Decimal  @db.Decimal(12, 2)
+  date                  DateTime
+  description           String?
+  statementId           String
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relationships
+  statement BankStatement @relation(fields: [statementId], references: [id])
+
+  @@map("bank_statement_lines")
+}
+
+model Reconciliation {
+  id                     String    @id @default(cuid(2))
+  bankAccountId          String
+  clearedBalance         Decimal   @db.Decimal(12, 2)
+  periodStart            DateTime
+  periodEnd              DateTime
+  statementEndingBalance Decimal   @db.Decimal(12, 2)
+  tenantId               String
+
+  createdAt              DateTime  @default(now())
+  reconciledAt           DateTime?
+  updatedAt              DateTime  @updatedAt
+
+  // Relationships
+  tenant      Tenant      @relation(fields: [tenantId], references: [id])
+  bankAccount BankAccount @relation(fields: [bankAccountId], references: [id])
+
+  @@map("reconciliations")
+}
+
+// ===========================================
+// OTHER
+// ===========================================
+
+model Attachment {
+  id          String   @id @default(cuid(2))
+  createdById String
+  filename    String
+  mimeType    String?
+  size        Int?
+  tenantId    String
+  url         String
+
+  billId      String?
+  invoiceId   String?
+  paymentId   String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bill        Bill?    @relation(fields: [billId], references: [id])
+  createdBy   User?    @relation(fields: [createdById], references: [id])
+  invoice     Invoice? @relation(fields: [invoiceId], references: [id])
+  payment     Payment? @relation(fields: [paymentId], references: [id])
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+
+  @@map("attachments")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid(2))
+  action     String
+  objectType String
+  objectId   String
+  oldValue   Json?
+  newValue   Json?
+  tenantId   String
+  userId     String
+
+  createdAt  DateTime @default(now())
+
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+  user       User    @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
+
+model Sequence {
+  id        String   @id @default(cuid(2))
+  name      String // e.g., "invoice_number"
+  nextValue Int      @default(1)
+  prefix    String?
+  tenantId  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  tenant Tenant @relation(fields: [tenantId], references: [id])
+
+  @@unique([tenantId, name])
+  @@map("sequences")
 }

@@ -1,4 +1,13 @@
-import { ContactType } from "@prisma/client";
+import { ContactType, BankAccountType } from "@prisma/client";
+
+export const bankAccounts = [
+  {
+    name: "Stellar Defense Fleet Checking",
+    accountNumberMasked: "XXXX1234",
+    routingNumberMasked: "XXXX0000",
+    type: BankAccountType.CHECKING,
+  },
+];
 
 export const customerData = [
   {

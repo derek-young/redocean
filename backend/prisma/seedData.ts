@@ -1,4 +1,4 @@
-import { Account, AccountType, ContactType } from "@prisma/client";
+import { AccountType } from "@prisma/client";
 
 export const accounts = [
   // Assets (1000-1999)
