@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Michroma, Roboto } from "next/font/google";
-import "./globals.css";
 
+import AppSidebar from "@/components/AppSidebar";
 import Assistant from "@/components/Assistant";
 import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import AppProviders from "@/context/AppProviders";
+
+import "./globals.css";
 
 const michroma = Michroma({
   variable: "--font-michroma",
@@ -44,16 +46,17 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${michroma.variable} ${roboto.variable} antialiased`}>
         <AppProviders>
-          <div>
-            <div className="min-h-screen bg-background">
-              <Header />
-              <div className="flex">
-                <Sidebar />
-                <main className="flex-1 p-8">{children}</main>
-              </div>
+          <div className="min-h-screen bg-background">
+            <Header />
+            <div className="flex">
+              <AppSidebar />
+              <main className="flex-1 p-8">
+                <SidebarTrigger />
+                {children}
+              </main>
             </div>
-            <Assistant />
           </div>
+          <Assistant />
         </AppProviders>
       </body>
     </html>

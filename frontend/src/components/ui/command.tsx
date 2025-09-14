@@ -60,19 +60,24 @@ function CommandDialog({
   );
 }
 
+interface CommandInputProps
+  extends React.ComponentProps<typeof CommandPrimitive.Input> {
+  children?: React.ReactNode;
+  icon?: React.ReactNode;
+}
+
 function CommandInput({
   className,
   children,
+  icon = <SearchIcon className="size-4 shrink-0 text-muted-foreground" />,
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Input> & {
-  children?: React.ReactNode;
-}) {
+}: CommandInputProps) {
   return (
     <div
       data-slot="command-input-wrapper"
       className="flex h-9 items-center gap-2 px-3 text-lg text-foreground border border-input rounded-md bg-background"
     >
-      <SearchIcon className="size-4 shrink-0 text-red-500" />
+      {icon}
       <CommandPrimitive.Input
         data-slot="command-input"
         className={cn(

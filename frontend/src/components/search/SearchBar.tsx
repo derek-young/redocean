@@ -1,5 +1,8 @@
 "use client";
 
+import { SearchIcon } from "lucide-react";
+
+import Loading from "@/components/Loading";
 import ShipWheelIcon from "@/components/ShipWheelIcon";
 import {
   Command,
@@ -10,8 +13,6 @@ import {
 } from "@/components/ui/command";
 import type { HelpItem } from "@/context/SearchContext";
 import { SearchProvider, useSearchContext } from "@/context/SearchContext";
-
-import Loading from "../Loading";
 
 import { CustomerResults, RouteResults, VendorResults } from "./SearchResults";
 
@@ -31,9 +32,10 @@ function SearchBar() {
       <Command shouldFilter={false}>
         <CommandInput
           aria-label="Search"
-          value={searchTerm}
+          icon={<SearchIcon className="size-4 shrink-0 text-red-500" />}
           onValueChange={setSearchTerm}
           placeholder="Search in RedOcean"
+          value={searchTerm}
         >
           {isSearching && <Loading width={16} height={16} />}
         </CommandInput>
