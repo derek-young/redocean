@@ -34,7 +34,19 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
+
+interface SidebarItemType {
+  title: string;
+  description: string;
+  url: string;
+  icon: React.ComponentType<{ className?: string }>;
+  isImplemented: boolean;
+}
 
 const sidebarGroups = [
   {
@@ -214,47 +226,89 @@ const sidebarGroups = [
   },
 ];
 
-export function AppSidebar() {
+function SidebarItem({ item }: { item: SidebarItemType }) {
   const pathname = usePathname();
-
   const isActive = (url: string) => {
     return url === "/" ? pathname === "/" : pathname.startsWith(url);
   };
 
   return (
-    <Sidebar>
-      <SidebarHeader />
+    <SidebarMenuItem key={item.title}>
+      <SidebarMenuButton
+        asChild
+        className={cn(
+          "h-fit",
+          "group/sidebar-link transition-colors duration-200",
+          isActive(item.url)
+            ? "bg-gray-800 border border-gray-600 text-red-300"
+            : "text-gray-300 hover:bg-gray-800 hover:text-red-300",
+          !item.isImplemented ? "opacity-60" : ""
+        )}
+      >
+        <Link href={item.isImplemented ? item.url : "#"}>
+          <div className="flex items-center space-x-3">
+            <div
+              className={cn(
+                "flex-shrink-0 transition-colors duration-200",
+                isActive(item.url)
+                  ? "text-red-400"
+                  : "text-gray-400 group-hover/sidebar-link:text-red-400"
+              )}
+            >
+              <item.icon className="size-5" />
+            </div>
+            <div>
+              <div
+                className={cn(
+                  "font-medium truncate transition-colors duration-200",
+                  isActive(item.url)
+                    ? "text-red-300"
+                    : "text-gray-300 group-hover/sidebar-link:text-red-300"
+                )}
+              >
+                {item.title}
+                {!item.isImplemented && (
+                  <span className="ml-2 text-xs text-gray-500">
+                    (Coming Soon)
+                  </span>
+                )}
+              </div>
+              <div className="text-xs text-gray-500 truncate">
+                {item.description}
+              </div>
+            </div>
+          </div>
+          {isActive(item.url) && (
+            <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-6 bg-red-500 rounded-r-full" />
+          )}
+        </Link>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  );
+}
+
+export function AppSidebar() {
+  const { open } = useSidebar();
+  return (
+    <Sidebar
+      className="border-r border-gray-700 top-(--header-height)"
+      collapsible="icon"
+      style={{ height: "calc(100svh - var(--header-height))" }}
+    >
+      <SidebarHeader
+        className={cn(open ? "items-end" : "items-center")}
+      ></SidebarHeader>
+      <SidebarSeparator />
       <SidebarContent>
         {sidebarGroups.map((group) => (
-          <SidebarGroup key={group.title}>
-            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
+          <SidebarGroup key={group.title} className="mb-6">
+            <SidebarGroupLabel className="text-gray-500 uppercase tracking-wider">
+              {group.title}
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {group.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={isActive(item.url)}
-                      className={`${!item.isImplemented ? "opacity-60" : ""}`}
-                    >
-                      <Link href={item.isImplemented ? item.url : "#"}>
-                        <item.icon />
-                        <div className="flex flex-col items-start">
-                          <span className="flex items-center gap-2">
-                            {item.title}
-                            {!item.isImplemented && (
-                              <span className="text-xs text-muted-foreground">
-                                (Coming Soon)
-                              </span>
-                            )}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {item.description}
-                          </span>
-                        </div>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  <SidebarItem key={item.title} item={item} />
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
