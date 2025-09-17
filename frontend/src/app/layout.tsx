@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Michroma, Roboto } from "next/font/google";
 
-import AppSidebar from "@/components/AppSidebar";
+import AppSidebar from "@/components/app-sidebar";
 import Assistant from "@/components/Assistant";
 import Header from "@/components/Header";
 import AppProviders from "@/context/AppProviders";
