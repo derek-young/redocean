@@ -3,14 +3,9 @@ import { Address, Contact, Vendor } from "@prisma/client";
 
 import { prisma } from "@/db";
 
-type VendorWithRelations = Vendor & {
-  addresses: Address[];
-  contacts: Contact[];
-};
-
 const router = Router();
 
-router.get("/", async (req: Request, res: Response): Promise<void> => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     const vendors = await prisma.vendor.findMany({
       include: {
@@ -26,7 +21,7 @@ router.get("/", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-router.get("/:id", async (req: Request, res: Response): Promise<void> => {
+router.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const vendor = await prisma.vendor.findUnique({
@@ -49,7 +44,7 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-router.post("/", async (req: Request, res: Response): Promise<void> => {
+router.post("/", async (req: Request, res: Response) => {
   try {
     const vendorData = req.body;
     const vendor = await prisma.vendor.create({
@@ -63,7 +58,7 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-router.put("/:id", async (req: Request, res: Response): Promise<void> => {
+router.put("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const vendorData = req.body;

@@ -1,11 +1,11 @@
 import { Router } from "express";
 
-import naturalLanguage from "./naturalLanguage";
-import quick from "./quick";
+import naturalLanguageSearch from "./naturalLanguageSearch";
+import quickSearch from "./quickSearch";
 
 const router = Router();
 
-router.use("/quick", quick);
-router.use("/natural", naturalLanguage);
+router.use("/quick", quickSearch);
+router.use("/natural", naturalLanguageSearch);
 
 export default router;

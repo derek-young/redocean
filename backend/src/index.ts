@@ -11,6 +11,8 @@ dotenv.config();
 import customerRoutes from "./routes/customers";
 import vendorRoutes from "./routes/vendors";
 import searchRoutes from "./routes/search";
+import invoiceRoutes from "./routes/invoices";
+import { authenticateUser } from "./middleware/auth";
 
 const app = express();
 const PORT = process.env.PORT || 2550;
@@ -25,9 +27,12 @@ app.get("/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
+app.use(authenticateUser);
+
 app.use("/api/v1/customers", customerRoutes);
 app.use("/api/v1/vendors", vendorRoutes);
 app.use("/api/v1/search", searchRoutes);
+app.use("/api/v1/invoices", invoiceRoutes);
 
 app.use(
   (

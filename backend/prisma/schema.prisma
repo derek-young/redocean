@@ -287,7 +287,7 @@ model JournalEntry {
   id            String     @id @default(cuid(2))
   createdById   String?
   date          DateTime
-  entryNumber   Int // Reader-friendly ID: 1001, 1002, etc.
+  entryNumber   String // Sequence
   memo          String?
   postedAt      DateTime?
   reference     String?
@@ -386,17 +386,16 @@ model FiscalYear {
 
 model Invoice {
   id            String        @id @default(cuid(2))
-  balanceDue    Decimal       @db.Decimal(12, 2) // cached
   createdById   String
   currency      String        @default("USD")
   customerId    String
   date          DateTime
   dueDate       DateTime?
-  invoiceNumber String
+  invoiceNumber String // Sequence
   memo          String?
   status        InvoiceStatus @default(DRAFT)
   tenantId      String
-  totalAmount   Decimal       @db.Decimal(12, 2)
+  total         Decimal       @db.Decimal(12, 2)
 
   createdAt     DateTime      @default(now())
   postedAt      DateTime?
@@ -418,7 +417,7 @@ model Invoice {
 model InvoiceLine {
   id          String   @id @default(cuid(2))
   invoiceId   String
-  description String
+  description String?
   quantity    Decimal  @default("1.00") @db.Decimal(10, 2)
   unitAmount  Decimal  @db.Decimal(12, 2)
   lineAmount  Decimal  @db.Decimal(12, 2)
@@ -665,7 +664,7 @@ model AuditLog {
 
 model Sequence {
   id        String   @id @default(cuid(2))
-  name      String // e.g., "invoice_number"
+  name      String
   nextValue Int      @default(1)
   prefix    String?
   tenantId  String

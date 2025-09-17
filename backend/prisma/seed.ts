@@ -1,4 +1,10 @@
-import { Account, Customer, PrismaClient, Vendor } from "@prisma/client";
+import {
+  Account,
+  Customer,
+  PrismaClient,
+  Sequence,
+  Vendor,
+} from "@prisma/client";
 
 import { accounts } from "./seedData";
 import * as GTC from "./seedDataGalacticTradingCo";
@@ -17,7 +23,6 @@ async function main() {
       role: "ADMIN",
     },
   });
-  console.log("✅ Created user:", user.email);
 
   const tenantData = [
     {
@@ -56,6 +61,8 @@ async function main() {
 
     const vendors = await createVendors(vendorData, tenant.id);
     console.log(`✅ Created ${vendors.length} vendors for ${tenant.name}`);
+
+    await createSequences(tenant.id);
   }
 
   console.log("🎉 Database seeding completed!");
@@ -123,6 +130,22 @@ async function createVendors(vendors, tenantId: string) {
   }
 
   return createdVendors;
+}
+
+async function createSequences(tenantId: string) {
+  const sequences = [
+    { name: "invoice_number" },
+    { name: "journal_entry_number", nextValue: 10000 },
+  ];
+
+  for (const sequence of sequences) {
+    await prisma.sequence.create({
+      data: {
+        ...sequence,
+        tenantId,
+      },
+    });
+  }
 }
 
 main()

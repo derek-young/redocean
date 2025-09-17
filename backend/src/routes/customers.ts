@@ -1,18 +1,16 @@
-import { Router, Request, Response } from "express";
-import { Address, Contact, Customer } from "@prisma/client";
+import { Router, Request, Response, RequestHandler } from "express";
+import { Address, Contact } from "@prisma/client";
 
 import { prisma } from "@/db";
 
-type CustomerWithRelations = Customer & {
-  addresses: Address[];
-  contacts: Contact[];
-};
-
 const router = Router();
 
-router.get("/", async (req: Request, res: Response): Promise<void> => {
+router.get("/", async (req: Request, res: Response) => {
   try {
+    const { tenant } = req;
+
     const customers = await prisma.customer.findMany({
+      where: { tenantId: tenant.id },
       include: {
         addresses: true,
         contacts: true,
@@ -26,11 +24,16 @@ router.get("/", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-router.get("/:id", async (req: Request, res: Response): Promise<void> => {
+router.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const customer = await prisma.customer.findUnique({
-      where: { id },
+    const { tenant } = req;
+
+    const customer = await prisma.customer.findFirst({
+      where: {
+        id,
+        tenantId: tenant.id, // Ensure customer belongs to the tenant
+      },
       include: {
         addresses: true,
         contacts: true,
@@ -49,11 +52,17 @@ router.get("/:id", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-router.post("/", async (req: Request, res: Response): Promise<void> => {
+router.post("/", async (req: Request, res: Response) => {
   try {
+    const { tenant, user } = req;
     const customerData = req.body;
+
     const customer = await prisma.customer.create({
-      data: customerData,
+      data: {
+        ...customerData,
+        tenantId: tenant.id,
+        createdById: user.id,
+      },
     });
 
     res.status(201).json(customer);
@@ -63,14 +72,28 @@ router.post("/", async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-router.put("/:id", async (req: Request, res: Response): Promise<void> => {
+router.put("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const { tenant, user } = req;
     const customerData = req.body;
+
+    // First verify the customer belongs to the tenant
+    const existingCustomer = await prisma.customer.findFirst({
+      where: { id, tenantId: tenant.id },
+    });
+
+    if (!existingCustomer) {
+      res.status(404).json({ error: "Customer not found" });
+      return;
+    }
 
     const customer = await prisma.customer.update({
       where: { id },
-      data: customerData,
+      data: {
+        ...customerData,
+        updatedById: user.id,
+      },
     });
 
     res.json(customer);
