@@ -20,6 +20,7 @@ import {
   Shield,
   HelpCircle,
 } from "lucide-react";
+import { Fragment } from "react";
 
 import {
   Sidebar,
@@ -216,29 +217,28 @@ const sidebarGroups = [
 
 export function AppSidebar() {
   return (
-    <Sidebar
-      className="border-r border-gray-700 top-(--header-height)"
-      collapsible="icon"
-      style={{ height: "calc(100svh - var(--header-height))" }}
-    >
+    <Sidebar className="sticky border-r border-gray-700" collapsible="icon">
       <SidebarHeader className="items-center">
         <QuickCreate />
       </SidebarHeader>
       <SidebarSeparator />
       <SidebarContent>
-        {sidebarGroups.map((group) => (
-          <SidebarGroup key={group.title} className="mb-6">
-            <SidebarGroupLabel className="text-gray-500 uppercase tracking-wider">
-              {group.title}
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {group.items.map((item) => (
-                  <SidebarItem key={item.title} item={item} />
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+        {sidebarGroups.map((group, index) => (
+          <Fragment key={group.title}>
+            {index > 0 && <SidebarSeparator />}
+            <SidebarGroup>
+              <SidebarGroupLabel className="text-gray-500 uppercase tracking-wider">
+                {group.title}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {group.items.map((item) => (
+                    <SidebarItem key={item.title} item={item} />
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </Fragment>
         ))}
       </SidebarContent>
       <SidebarFooter />

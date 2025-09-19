@@ -1,10 +1,16 @@
 import { useState } from "react";
 
+const getDate30DaysFromNow = (): string => {
+  const date = new Date();
+  date.setDate(date.getDate() + 30);
+  return date.toISOString().split("T")[0];
+};
+
 function InvoiceDetails() {
   const [invoiceData, setInvoiceData] = useState({
     invoiceNumber: "",
     date: new Date().toISOString().split("T")[0],
-    dueDate: "",
+    dueDate: getDate30DaysFromNow(),
     memo: "",
   });
 
@@ -33,7 +39,7 @@ function InvoiceDetails() {
             }
             className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
             placeholder="INV-001"
-            required
+            disabled
           />
         </div>
         <div>
