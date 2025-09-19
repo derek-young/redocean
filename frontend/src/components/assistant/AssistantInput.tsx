@@ -4,7 +4,7 @@ import { Send } from "lucide-react";
 import { useState, KeyboardEvent } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Message, useAssistantContext } from "@/context/AssistantContext";
+import { useAssistantContext } from "@/context/AssistantContext";
 import { cn } from "@/lib/utils";
 
 interface AssistantInputProps {
