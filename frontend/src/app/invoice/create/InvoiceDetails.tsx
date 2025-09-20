@@ -1,17 +1,14 @@
 import { useState } from "react";
 
-const getDate30DaysFromNow = (): string => {
-  const date = new Date();
-  date.setDate(date.getDate() + 30);
-  return date.toISOString().split("T")[0];
-};
+import { useCreateInvoiceContext } from "./CreateInvoiceContext";
 
 function InvoiceDetails() {
+  const { onInputBlur, params } = useCreateInvoiceContext();
   const [invoiceData, setInvoiceData] = useState({
-    invoiceNumber: "",
-    date: new Date().toISOString().split("T")[0],
-    dueDate: getDate30DaysFromNow(),
-    memo: "",
+    invoiceNumber: params.get("invoice-number") ?? undefined,
+    invoiceDate: params.get("invoice-date") ?? undefined,
+    dueDate: params.get("due-date") ?? undefined,
+    memo: params.get("invoice-memo") ?? undefined,
   });
 
   return (
@@ -32,12 +29,13 @@ function InvoiceDetails() {
             name="invoice-number"
             type="text"
             value={invoiceData.invoiceNumber}
-            onChange={(e) =>
+            onBlur={onInputBlur}
+            onChange={(e) => {
               setInvoiceData({
                 ...invoiceData,
                 invoiceNumber: e.target.value,
-              })
-            }
+              });
+            }}
             className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
             placeholder="INV-001"
             disabled
@@ -54,11 +52,12 @@ function InvoiceDetails() {
             aria-label="Invoice Date"
             name="invoice-date"
             type="date"
-            value={invoiceData.date}
+            value={invoiceData.invoiceDate}
+            onBlur={onInputBlur}
             onChange={(e) =>
               setInvoiceData({
                 ...invoiceData,
-                date: e.target.value,
+                invoiceDate: e.target.value,
               })
             }
             className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
@@ -77,6 +76,7 @@ function InvoiceDetails() {
             name="due-date"
             type="date"
             value={invoiceData.dueDate}
+            onBlur={onInputBlur}
             onChange={(e) =>
               setInvoiceData({
                 ...invoiceData,

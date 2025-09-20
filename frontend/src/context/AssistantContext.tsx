@@ -44,7 +44,26 @@ export function AssistantContextProvider({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "1",
+      content:
+        "I have routed ye to create an invoice for Orion Spice Syndicate. The invoice date be set to today, and the due date be set for one month hence.",
+      role: "assistant",
+      route: {
+        path: "/invoice/create",
+        name: "Create Invoice",
+        params: {
+          "customer-select": "Orion Spice Syndicate",
+          "invoice-date": "2025-09-20",
+          "due-date": "2025-10-20",
+        },
+      },
+      timestamp: new Date(),
+    },
+  ]);
+
+  console.log("messages", messages);
 
   const setNewMessage = (
     message: string,

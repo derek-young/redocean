@@ -31,7 +31,10 @@ export default function AssistantMessage({ message }: AssistantMessageProps) {
         </div>
         {message.route?.path && (
           <Link
-            href={message.route.path}
+            href={{
+              pathname: message.route.path,
+              query: message.route.params,
+            }}
             className="inline-flex items-center px-2 py-1 text-xs bg-primary/10 hover:bg-primary/20 text-primary rounded transition-colors"
           >
             {message.route.name} →
