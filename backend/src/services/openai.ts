@@ -1,6 +1,4 @@
-import fs from "fs";
 import OpenAI from "openai";
-import routes from "../data/routes.json";
 
 // Lazy initialization of OpenAI client to ensure environment variables are loaded
 let client: OpenAI | null = null;

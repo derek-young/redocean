@@ -4,59 +4,24 @@
     "name": "Dashboard",
     "description": "Home view with smart search and quick actions",
     "quickActions": ["home", "dashboard"],
-    "fields": ["Search"]
-  },
-  {
-    "path": "/vendors",
-    "name": "Vendors",
-    "description": "View and manage existing vendors",
-    "quickActions": ["vendors", "view vendors", "find vendor", "find a vendor"],
     "fields": [
-      "Search vendors by name, email, or contact information",
-      "Filter vendors by status"
+      {
+        "type": "INPUT",
+        "name": "global-search"
+      }
     ]
-  },
-  {
-    "path": "/vendors/create",
-    "name": "Create Vendor",
-    "description": "Create a new vendor",
-    "quickActions": [
-      "create vendor",
-      "new vendor",
-      "create a vendor",
-      "create a new vendor"
-    ],
-    "fields": [
-      "Company Name",
-      "Email",
-      "Phone",
-      "Website",
-      "Tax ID",
-      "Contact First Name",
-      "Contact Last Name",
-      "Contact Email",
-      "Contact Phone",
-      "Street Address",
-      "City",
-      "State",
-      "ZIP Code",
-      "Country",
-      "Notes"
-    ]
-  },
-  {
-    "path": "/reports",
-    "name": "Reports",
-    "description": "View business analytics and financial reports",
-    "quickActions": ["reports", "view reports"],
-    "fields": []
   },
   {
     "path": "/payments",
     "name": "Payments",
     "description": "View and manage payments to suppliers",
     "quickActions": ["payments", "view payments"],
-    "fields": []
+    "fields": [
+      {
+        "type": "INPUT",
+        "name": "global-search"
+      }
+    ]
   },
   {
     "path": "/invoice/list",
@@ -68,7 +33,12 @@
       "find invoice",
       "find an invoice"
     ],
-    "fields": []
+    "fields": [
+      {
+        "type": "INPUT",
+        "name": "global-search"
+      }
+    ]
   },
   {
     "path": "/invoice/create",
@@ -81,18 +51,46 @@
       "create a new invoice"
     ],
     "fields": [
-      "Invoice Number",
-      "Issue Date",
-      "Due Date",
-      "Payment Terms",
-      "Customer Name",
-      "Customer Email",
-      "Customer Phone",
-      "Customer Address",
-      "Item Description",
-      "Item Quantity",
-      "Item Unit Price",
-      "Additional Notes"
+      {
+        "type": "INPUT",
+        "name": "global-search"
+      },
+      {
+        "type": "INPUT",
+        "name": "customer-select"
+      },
+      {
+        "type": "INPUT",
+        "name": "invoice-number"
+      },
+      {
+        "type": "INPUT",
+        "name": "invoice-date"
+      },
+      {
+        "type": "INPUT",
+        "name": "due-date"
+      },
+      {
+        "type": "TEXTAREA",
+        "name": "invoice-memo"
+      },
+      {
+        "type": "INPUT",
+        "name": "invoice-line-description"
+      },
+      {
+        "type": "INPUT",
+        "name": "invoice-line-quantity"
+      },
+      {
+        "type": "INPUT",
+        "name": "invoice-line-unit-amount"
+      },
+      {
+        "type": "SELECT",
+        "name": "invoice-line-tax-rate"
+      }
     ]
   },
   {
@@ -106,8 +104,50 @@
       "find a customer"
     ],
     "fields": [
-      "Search customers by name or contact information",
-      "Filter customers by status"
+      {
+        "type": "INPUT",
+        "name": "global-search"
+      },
+      {
+        "type": "INPUT",
+        "name": "search-customer-by-text"
+      },
+      {
+        "type": "SELECT",
+        "name": "filter-customer-by-status"
+      }
+    ]
+  },
+  {
+    "path": "/vendors",
+    "name": "Vendors",
+    "description": "View and manage existing vendors",
+    "quickActions": ["vendors", "view vendors", "find vendor", "find a vendor"],
+    "fields": [
+      {
+        "type": "INPUT",
+        "name": "global-search"
+      },
+      {
+        "type": "INPUT",
+        "name": "search-vendor-by-text"
+      },
+      {
+        "type": "SELECT",
+        "name": "filter-vendor-by-status"
+      }
+    ]
+  },
+  {
+    "path": "/reports",
+    "name": "Reports",
+    "description": "View business analytics and financial reports",
+    "quickActions": ["reports", "view reports"],
+    "fields": [
+      {
+        "type": "INPUT",
+        "name": "global-search"
+      }
     ]
   },
   {
@@ -121,21 +161,27 @@
       "create a new customer"
     ],
     "fields": [
-      "First Name",
-      "Last Name",
-      "Email",
-      "Phone",
-      "Company Name",
-      "Job Title",
-      "Website",
-      "Street Address",
-      "City",
-      "State",
-      "Postal Code",
-      "Country",
-      "Credit Limit",
-      "Tags",
-      "Notes"
+      {
+        "type": "INPUT",
+        "name": "global-search"
+      }
+    ]
+  },
+  {
+    "path": "/vendors/create",
+    "name": "Create Vendor",
+    "description": "Create a new vendor",
+    "quickActions": [
+      "create vendor",
+      "new vendor",
+      "create a vendor",
+      "create a new vendor"
+    ],
+    "fields": [
+      {
+        "type": "INPUT",
+        "name": "global-search"
+      }
     ]
   }
 ]

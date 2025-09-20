@@ -41,17 +41,17 @@ async function extractFields() {
     if (routeMap.has(link)) {
       const existing = routeMap.get(link);
       routes.push({
-        path: link,
-        description: existing.description,
-        quickActions: existing.quickActions,
+        ...existing,
         fields,
+        path: link,
       });
     } else {
       routes.push({
-        path: link,
         description: "no commit",
-        quickActions: [],
         fields,
+        name: "no commit",
+        path: link,
+        quickActions: [],
       });
     }
 
