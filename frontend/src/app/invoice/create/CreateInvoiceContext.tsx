@@ -4,10 +4,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   createContext,
   ReactNode,
+  Suspense,
   useCallback,
   useContext,
   useMemo,
 } from "react";
+
+import Loading from "@/components/Loading";
 
 interface CreateInvoiceContextType {
   onInputBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
@@ -18,11 +21,7 @@ const CreateInvoiceContext = createContext<
   CreateInvoiceContextType | undefined
 >(undefined);
 
-export function CreateInvoiceContextProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+function CreateInvoiceContextInner({ children }: { children: ReactNode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = useMemo(
@@ -65,4 +64,22 @@ export function useCreateInvoiceContext() {
     );
   }
   return context;
+}
+
+export function CreateInvoiceContextProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div>
+          <Loading />
+        </div>
+      }
+    >
+      <CreateInvoiceContextInner>{children}</CreateInvoiceContextInner>
+    </Suspense>
+  );
 }
