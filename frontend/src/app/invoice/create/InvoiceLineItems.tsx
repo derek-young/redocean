@@ -114,6 +114,7 @@ function InvoiceLineItems({
               <input
                 id={`description-${line.id}`}
                 aria-label="Invoice line description"
+                name="invoice-line-description"
                 type="text"
                 value={line.description}
                 onChange={(e) =>
@@ -134,6 +135,7 @@ function InvoiceLineItems({
               <input
                 id={`quantity-${line.id}`}
                 aria-label="Invoice line quantity"
+                name="invoice-line-quantity"
                 type="number"
                 value={line.quantity}
                 onChange={(e) =>
@@ -159,6 +161,7 @@ function InvoiceLineItems({
               <input
                 id={`unit-amount-${line.id}`}
                 aria-label="Invoice line unit amount"
+                name="invoice-line-unit-amount"
                 type="number"
                 value={line.unitAmount}
                 onChange={(e) =>
@@ -185,6 +188,7 @@ function InvoiceLineItems({
               <select
                 id={`tax-rate-${line.id}`}
                 aria-label="Invoice line tax rate"
+                name="invoice-line-tax-rate"
                 value={line.taxRateId || ""}
                 onChange={(e) =>
                   updateLine(line.id, "taxRateId", e.target.value || "")

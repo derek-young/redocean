@@ -118,6 +118,7 @@ export default function Vendors() {
             </label>
             <input
               aria-label="Search vendors by name, email, or contact information"
+              name="search-vendor-by-text"
               type="text"
               id="search"
               value={searchTerm}
@@ -135,6 +136,7 @@ export default function Vendors() {
             </label>
             <select
               aria-label="Filter vendors by status"
+              name="filter-vendor-by-status"
               id="status"
               value={statusFilter}
               onChange={(e) =>
@@ -306,6 +308,7 @@ export default function Vendors() {
                         <div className="flex justify-end space-x-2">
                           <button
                             aria-label="Edit vendor"
+                            name="edit-vendor"
                             className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                           >
                             Edit

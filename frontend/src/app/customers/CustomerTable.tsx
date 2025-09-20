@@ -160,6 +160,7 @@ function Table(props: { customers: CustomerWithRelations[] }) {
                     <div className="flex justify-end space-x-1 sm:space-x-2">
                       <button
                         aria-label="Edit customer"
+                        name="edit-customer"
                         className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 text-xs sm:text-sm"
                       >
                         Edit

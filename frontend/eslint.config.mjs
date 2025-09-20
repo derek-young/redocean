@@ -2,6 +2,8 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
 
+import eslintPluginLocalRules from "./.eslint-local-rules/index.mjs";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -25,6 +27,15 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+  },
+  {
+    files: ["**/*.tsx", "**/*.jsx"],
+    plugins: {
+      "local-rules": eslintPluginLocalRules,
+    },
+    rules: {
+      "local-rules/require-name-attribute": "error",
+    },
   },
   {
     files: ["**/*.tsx", "**/*.jsx", "**/*.ts", "**/*.js"],

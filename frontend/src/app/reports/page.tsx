@@ -24,7 +24,10 @@ export default function Reports() {
           <p className="text-gray-600 text-sm mb-4">
             View your revenue, expenses, and net profit over time.
           </p>
-          <button className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+          <button
+            className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
+            name="view-profit-loss-report"
+          >
             View Report
           </button>
         </div>
@@ -38,7 +41,10 @@ export default function Reports() {
           <p className="text-gray-600 text-sm mb-4">
             Track money coming in and going out of your business.
           </p>
-          <button className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+          <button
+            className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
+            name="view-cash-flow-report"
+          >
             View Report
           </button>
         </div>
@@ -54,7 +60,10 @@ export default function Reports() {
           <p className="text-gray-600 text-sm mb-4">
             See your assets, liabilities, and equity at a point in time.
           </p>
-          <button className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+          <button
+            className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
+            name="view-balance-sheet"
+          >
             View Report
           </button>
         </div>
@@ -70,7 +79,10 @@ export default function Reports() {
           <p className="text-gray-600 text-sm mb-4">
             Analyze your sales performance and trends.
           </p>
-          <button className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+          <button
+            className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
+            name="view-sales-report"
+          >
             View Report
           </button>
         </div>
@@ -86,7 +98,10 @@ export default function Reports() {
           <p className="text-gray-600 text-sm mb-4">
             Track and categorize your business expenses.
           </p>
-          <button className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+          <button
+            className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
+            name="view-expense-report"
+          >
             View Report
           </button>
         </div>
@@ -100,7 +115,10 @@ export default function Reports() {
           <p className="text-gray-600 text-sm mb-4">
             Prepare for tax season with organized financial data.
           </p>
-          <button className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors">
+          <button
+            className="w-full px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors"
+            name="view-tax-report"
+          >
             View Report
           </button>
         </div>

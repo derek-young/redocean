@@ -90,6 +90,7 @@ export default function Customers() {
             </label>
             <input
               aria-label="Search customers by name, email, or contact information"
+              name="search-customer-by-text"
               type="text"
               id="search"
               value={searchTerm}
@@ -107,6 +108,7 @@ export default function Customers() {
             </label>
             <select
               aria-label="Filter customers by status"
+              name="filter-customer-by-status"
               id="status"
               value={statusFilter}
               onChange={(e) =>

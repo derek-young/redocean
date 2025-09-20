@@ -31,8 +31,8 @@ function SearchBar() {
     <div className="relative">
       <Command shouldFilter={false}>
         <CommandInput
-          aria-label="Search"
           icon={<SearchIcon className="size-4 shrink-0 text-red-500" />}
+          name="global-search"
           onValueChange={setSearchTerm}
           placeholder="Search in RedOcean"
           value={searchTerm}

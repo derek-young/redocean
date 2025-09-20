@@ -73,6 +73,8 @@ const CustomerDropdown = ({
     <div className="relative">
       <Command>
         <CommandInput
+          aria-label="Select a customer"
+          name="customer-select"
           onBlur={handleBlur}
           onFocus={() => setIsFocused(true)}
           placeholder="Select a customer"

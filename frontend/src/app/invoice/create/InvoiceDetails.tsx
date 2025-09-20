@@ -29,6 +29,7 @@ function InvoiceDetails() {
           </label>
           <input
             aria-label="Invoice Number"
+            name="invoice-number"
             type="text"
             value={invoiceData.invoiceNumber}
             onChange={(e) =>
@@ -51,6 +52,7 @@ function InvoiceDetails() {
           </label>
           <input
             aria-label="Invoice Date"
+            name="invoice-date"
             type="date"
             value={invoiceData.date}
             onChange={(e) =>
@@ -72,6 +74,7 @@ function InvoiceDetails() {
           </label>
           <input
             aria-label="Due Date"
+            name="due-date"
             type="date"
             value={invoiceData.dueDate}
             onChange={(e) =>
@@ -101,6 +104,7 @@ function InvoiceDetails() {
         </label>
         <textarea
           aria-label="Memo"
+          name="invoice-memo"
           value={invoiceData.memo}
           onChange={(e) =>
             setInvoiceData({
