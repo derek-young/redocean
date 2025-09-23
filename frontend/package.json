@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "postbuild": "node scripts/extractFields.js",
+    "//": "The postbuild step requires Chromium which is a large depedency. For now, we should manually run build/postbuild locally to generate the routes file.",
+    "postbuild:dev": "node scripts/extractFields.js",
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
