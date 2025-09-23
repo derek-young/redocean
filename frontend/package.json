@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack && npm run postbuild",
+    "build": "next build --turbopack",
     "postbuild": "node scripts/extractFields.js",
     "start": "next start",
     "lint": "eslint",
