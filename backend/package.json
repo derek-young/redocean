@@ -4,8 +4,9 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
+    "deploy": "gcloud builds submit --config cloudbuild.yaml .",
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
     "db:dev": "prisma dev",
     "db:generate": "prisma generate",
@@ -37,6 +38,7 @@
     "@types/express": "^4.17.21",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.10.5",
+    "tsc-alias": "^1.8.16",
     "tsx": "^4.6.2",
     "typescript": "^5.3.3"
   }
