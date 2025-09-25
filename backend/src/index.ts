@@ -8,11 +8,8 @@ import { prisma } from "@/db";
 
 dotenv.config();
 
-import customerRoutes from "./routes/customers";
-import vendorRoutes from "./routes/vendors";
-import searchRoutes from "./routes/search";
-import invoiceRoutes from "./routes/invoices";
 import { authenticateUser } from "./middleware/auth";
+import v1Router from "./v1Router";
 
 const app = express();
 const PORT = process.env.PORT || 2550;
@@ -28,29 +25,11 @@ app.get("/health", (req, res) => {
 });
 
 app.use(authenticateUser);
-
-app.use("/api/v1/customers", customerRoutes);
-app.use("/api/v1/vendors", vendorRoutes);
-app.use("/api/v1/search", searchRoutes);
-app.use("/api/v1/invoices", invoiceRoutes);
-
-app.use(
-  (
-    err: any,
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) => {
-    console.error(err.stack);
-    res.status(500).json({ error: "Something went wrong!" });
-  }
-);
-
+app.use("/api/v1", v1Router);
 app.use("*", (req, res) => {
   res.status(404).json({ error: "Route not found" });
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
