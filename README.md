@@ -32,6 +32,20 @@ npm run dev
 - **Frontend**: http://localhost:3000 (Next.js app)
 - **Database**: PostgreSQL with Prisma ORM
 
+### Routing Behavior
+
+The NextJS routing is organized as follows:
+
+**Authentication routes (managed by NextJS)**
+
+- app/api/session/route.ts → Handles login/session creation
+- app/api/logout/route.ts → Handles logout and clears the cookie
+
+**Proxying to the backend API**
+
+- app/api/[...proxy]/route.ts → Catch-all route handler that proxies requests from /api/\* to the API service.
+- Cookies set during authentication are automatically forwarded to the backend, so the API receives authenticated requests.
+
 ### Deployment
 
 #### Prerequisites
