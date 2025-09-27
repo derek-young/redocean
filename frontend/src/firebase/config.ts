@@ -1,7 +1,4 @@
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-
-const firebaseConfig = {
+const config = {
   apiKey: "AIzaSyC94C9F5tAfwhdAWOlR3WIuG9xqSr2g0K0",
   authDomain: "redocean-e9f04.firebaseapp.com",
   projectId: "redocean-e9f04",
@@ -11,7 +8,4 @@ const firebaseConfig = {
   measurementId: "G-VK8F5Y1QRJ",
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-export { app, auth };
+export default config;

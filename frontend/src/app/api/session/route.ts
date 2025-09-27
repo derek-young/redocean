@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-import { auth } from "@/firebaseAdmin";
+import { auth } from "@/firebase/admin";
 
 export const POST = async (request: NextRequest) => {
   try {

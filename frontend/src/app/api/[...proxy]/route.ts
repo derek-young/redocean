@@ -1,16 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
-import { auth } from "@/firebaseAdmin";
+import { auth } from "@/firebase/admin";
 import { getAuthHeaders } from "@/gcpAuth";
 
 const backendUrl = process.env.BACKEND_URL;
 
 async function handler(
   request: NextRequest,
-  { params }: { params: Promise<{ path: string[] }> }
+  context: RouteContext<"/api/[...proxy]">
 ) {
   try {
+    const { params } = context;
+    const { proxy: pathSegments } = await params;
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get("session")?.value;
 
@@ -37,9 +39,6 @@ async function handler(
     if (contentType) {
       apiReqHeaders.set("content-type", contentType);
     }
-    // if (authHeaders?.Authorization) {
-    //   headers.set("Authorization", authHeaders.Authorization);
-    // }
 
     const body =
       request.method === "GET" || request.method === "DELETE"
@@ -48,7 +47,6 @@ async function handler(
 
     console.log("apiReqHeaders:", apiReqHeaders);
 
-    const pathSegments = (await params).path;
     const apiPath = pathSegments.join("/");
     const backendApiUrl = `${backendUrl}/api/${apiPath}`;
 

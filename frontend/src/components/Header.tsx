@@ -4,6 +4,7 @@ import Logo from "./Logo";
 import RedOcean from "./RedOcean";
 import SearchBar from "./search/SearchBar";
 import { SidebarTrigger } from "./ui/sidebar";
+import UserMenu from "./UserMenu";
 
 export default function Header() {
   return (
@@ -12,15 +13,18 @@ export default function Header() {
         <SidebarTrigger />
         <Link
           href="/"
-          className="hover:opacity-80 transition-opacity flex-shrink-0"
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity flex-shrink-0"
         >
+          <Logo />
           <RedOcean className="text-3xl mb-1" />
         </Link>
       </div>
-      <div className="flex-1">
+      <div className="flex-1 mx-2">
         <SearchBar />
       </div>
-      <Logo />
+      <div className="flex items-center gap-2">
+        <UserMenu />
+      </div>
     </header>
   );
 }

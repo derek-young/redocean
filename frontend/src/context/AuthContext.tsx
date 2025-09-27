@@ -8,7 +8,7 @@ import {
 } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { auth } from "@/firebaseClient";
+import { auth } from "@/firebase/client";
 
 interface AuthContextType {
   user: User | null;
@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const idToken = await userCredential.user.getIdToken();
 
-    const response = await fetch("/session", {
+    const response = await fetch("/api/session", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -60,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      await fetch("/logout", { method: "POST" });
+      await fetch("/api/logout", { method: "POST" });
     } catch (error) {
       console.error("Backend logout error:", error);
     }

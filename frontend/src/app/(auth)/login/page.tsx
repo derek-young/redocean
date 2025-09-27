@@ -11,7 +11,7 @@ import { useAuthContext } from "@/context/AuthContext";
 
 export default function LoginPage() {
   const { user, signIn, isLoading } = useAuthContext();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("demo@redoceanapp.com");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");

@@ -1,11 +1,12 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-import { auth } from "@/firebaseAdmin";
+import { auth } from "@/firebase/admin";
 
 export const POST = async (request: NextRequest) => {
+  const cookieStore = await cookies();
+
   try {
-    const cookieStore = await cookies();
     const sessionCookie = cookieStore.get("session")?.value;
 
     if (sessionCookie) {
