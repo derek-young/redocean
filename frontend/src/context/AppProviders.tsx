@@ -3,12 +3,15 @@ import { ReactNode } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 import { AssistantContextProvider } from "./AssistantContext";
+import { AuthProvider } from "./AuthContext";
 
 function AppProviders({ children }: { children: ReactNode }) {
   return (
-    <SidebarProvider>
-      <AssistantContextProvider>{children}</AssistantContextProvider>
-    </SidebarProvider>
+    <AuthProvider>
+      <SidebarProvider>
+        <AssistantContextProvider>{children}</AssistantContextProvider>
+      </SidebarProvider>
+    </AuthProvider>
   );
 }
 

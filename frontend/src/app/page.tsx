@@ -1,57 +1,111 @@
+"use client";
+
+import { redirect } from "next/navigation";
+import { useState } from "react";
+
+import Loading from "@/components/Loading";
+import Logo from "@/components/Logo";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useAuthContext } from "@/context/AuthContext";
+
 export default function Home() {
+  const { user, signIn, isLoading } = useAuthContext();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  if (user) {
+    return redirect("/dashboard");
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex-col gap-4 min-h-screen flex items-center justify-center bg-background">
+        <div className="text-foreground">Loading...</div>
+        <Loading />
+      </div>
+    );
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      await signIn(email, password);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login failed");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div>
-      <div className="bg-card rounded-lg shadow-sm border border-border p-8">
-        <h1 className="text-3xl font-bold text-foreground mb-4">Welcome!</h1>
-        <p className="text-muted-foreground text-lg mb-6">
-          Use the search bar above for natural language queries or the quick
-          actions in the sidebar to get started.
-        </p>
-
-        <div className="bg-muted rounded-lg p-6 border border-border">
-          <h3 className="text-lg font-semibold text-foreground mb-4">
-            Insights & Recommendations
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-start space-x-3 p-3 bg-card rounded-lg border border-border">
-              <div className="flex-shrink-0 w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
-              <div>
-                <h4 className="font-medium text-foreground mb-1">
-                  Review Outstanding Invoices
-                </h4>
-                <p className="text-sm text-muted-foreground">
-                  You have 3 invoices over 30 days past due totaling $12,450.
-                  Consider following up with clients.
-                </p>
-              </div>
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <div className="w-full max-w-md">
+        <div className="bg-card rounded-lg shadow-sm border border-border p-8">
+          <div className="flex flex-col items-center mb-8">
+            <div className="mb-4">
+              <Logo />
             </div>
-
-            <div className="flex items-start space-x-3 p-3 bg-card rounded-lg border border-border">
-              <div className="flex-shrink-0 w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-              <div>
-                <h4 className="font-medium text-foreground mb-1">
-                  Cash Flow Alert
-                </h4>
-                <p className="text-sm text-muted-foreground">
-                  Projected cash flow for next month shows a potential
-                  shortfall. Review upcoming expenses.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-3 p-3 bg-card rounded-lg border border-border">
-              <div className="flex-shrink-0 w-2 h-2 bg-green-500 rounded-full mt-2"></div>
-              <div>
-                <h4 className="font-medium text-foreground mb-1">
-                  Tax Preparation
-                </h4>
-                <p className="text-sm text-muted-foreground">
-                  Quarterly tax payments are due in 2 weeks. Ensure sufficient
-                  funds are set aside.
-                </p>
-              </div>
-            </div>
+            <h1 className="text-2xl font-bold text-foreground">
+              Welcome to RedOcean
+            </h1>
+            <p className="text-muted-foreground text-center mt-2">
+              Sign in to continue
+            </p>
           </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-foreground mb-2"
+              >
+                Email
+              </label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+                className="w-full"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-foreground mb-2"
+              >
+                Password
+              </label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+                className="w-full"
+              />
+            </div>
+
+            {error && (
+              <div className="text-destructive text-sm bg-destructive/10 border border-destructive/20 rounded-md p-3">
+                {error}
+              </div>
+            )}
+
+            <Button type="submit" disabled={isSubmitting} className="w-full">
+              {isSubmitting ? "Signing in..." : "Sign In"}
+            </Button>
+          </form>
         </div>
       </div>
     </div>
