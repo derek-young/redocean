@@ -5,6 +5,9 @@ import { useEffect } from "react";
 
 import { useAuthContext } from "@/context/AuthContext";
 
+import Initializing from "./Initializing";
+import Redirecting from "./Redirecting";
+
 interface ProtectedRouteProps {
   children: React.ReactNode;
   fallback?: React.ReactNode;
@@ -12,31 +15,23 @@ interface ProtectedRouteProps {
 
 export default function ProtectedRoute({
   children,
-  fallback = <div>Loading...</div>,
+  fallback = <Initializing />,
 }: ProtectedRouteProps) {
-  const { user, loading } = useAuthContext();
+  const { user, isLoading } = useAuthContext();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!isLoading && !user) {
       router.push("/");
     }
-  }, [user, loading, router]);
+  }, [user, isLoading, router]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        {fallback}
-      </div>
-    );
+  if (isLoading) {
+    return fallback;
   }
 
   if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Redirecting to login...
-      </div>
-    );
+    return <Redirecting message="Redirecting to login..." />;
   }
 
   return children;

@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Michroma, Roboto } from "next/font/google";
 
-import AppSidebar from "@/components/app-sidebar";
-import Assistant from "@/components/Assistant";
-import Header from "@/components/Header";
 import AppProviders from "@/context/AppProviders";
 
 import "./globals.css";
@@ -44,16 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${michroma.variable} ${roboto.variable} antialiased`}>
-        <AppProviders>
-          <div className="w-full min-h-screen bg-background">
-            <Header />
-            <div className="flex">
-              <AppSidebar />
-              <main className="flex-1 p-8">{children}</main>
-            </div>
-          </div>
-          <Assistant />
-        </AppProviders>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import Logo from "./Logo";
+import RedOcean from "./RedOcean";
 import SearchBar from "./search/SearchBar";
 import { SidebarTrigger } from "./ui/sidebar";
 
@@ -13,9 +14,7 @@ export default function Header() {
           href="/"
           className="hover:opacity-80 transition-opacity flex-shrink-0"
         >
-          <div className="font-bold text-3xl font-michroma mb-1 text-red-500">
-            RED OCEAN
-          </div>
+          <RedOcean className="text-3xl mb-1" />
         </Link>
       </div>
       <div className="flex-1">

@@ -18,6 +18,7 @@ async function handler(
       return NextResponse.json({ error: "Missing session" }, { status: 401 });
     }
 
+    console.log("Backend URL:", backendUrl);
     if (!backendUrl) {
       throw new Error("BACKEND_URL environment variable is not set");
     }

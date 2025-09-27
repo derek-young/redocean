@@ -69,7 +69,7 @@ function QuickCreate() {
         <Button
           variant="outline"
           className="w-fit bg-gray-800 border-gray-600 hover:bg-gray-700 hover:border-gray-500 hover:text-red-300 transition-all duration-200"
-          style={{ paddingInline: "calc(var(--spacing) * 2.25);" }}
+          style={{ paddingInline: "calc(var(--spacing) * 2.25)" }}
         >
           <PlusIcon />
         </Button>
