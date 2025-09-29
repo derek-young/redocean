@@ -44,7 +44,7 @@ const sidebarGroups = [
       {
         title: "Dashboard",
         description: "Your financial flight deck",
-        url: "/",
+        url: "/dashboard",
         icon: LayoutDashboard,
         isImplemented: true,
       },

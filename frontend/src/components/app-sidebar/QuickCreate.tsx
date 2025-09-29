@@ -8,13 +8,14 @@ import {
   ReceiptIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 const createOptions = [
@@ -63,16 +64,18 @@ const createOptions = [
 ];
 
 function QuickCreate() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button
+        <SidebarMenuButton
           variant="outline"
-          className="w-fit bg-gray-800 border-gray-600 hover:bg-gray-700 hover:border-gray-500 hover:text-red-300 transition-all duration-200"
-          style={{ paddingInline: "calc(var(--spacing) * 2.25)" }}
+          className="bg-gray-800 border-gray-600 hover:bg-gray-700 hover:border-gray-500 hover:text-red-300 transition-all duration-200"
         >
           <PlusIcon />
-        </Button>
+          <span>Create New...</span>
+        </SidebarMenuButton>
       </PopoverTrigger>
       <PopoverContent
         className="w-64 p-2 bg-gray-800 border-gray-600"
@@ -91,6 +94,11 @@ function QuickCreate() {
                   ? "opacity-60 cursor-not-allowed"
                   : "cursor-pointer"
               )}
+              onClick={() => {
+                setTimeout(() => {
+                  setIsOpen(false);
+                }, 150);
+              }}
             >
               <div className="flex-shrink-0 text-gray-400">
                 <option.icon className="size-4" />
