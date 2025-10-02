@@ -1,0 +1,56 @@
+export function getCustomers(tenantId: string) {
+  if (!tenantId) {
+    throw new Error("Tenant ID is required");
+  }
+  return fetch(`/api/v1/tenants/${tenantId}/customers`);
+}
+
+export function getCustomer({
+  tenantId,
+  customerId,
+}: {
+  tenantId: string;
+  customerId: string;
+}) {
+  if (!tenantId) {
+    throw new Error("Tenant ID is required");
+  }
+  if (!customerId) {
+    throw new Error("Customer ID is required");
+  }
+
+  return fetch(`/api/v1/tenants/${tenantId}/customers/${customerId}`);
+}
+
+export function getVendors(tenantId: string) {
+  if (!tenantId) {
+    throw new Error("Tenant ID is required");
+  }
+
+  return fetch(`/api/v1/tenants/${tenantId}/vendors`);
+}
+
+export function getVendor({
+  tenantId,
+  vendorId,
+}: {
+  tenantId: string;
+  vendorId: string;
+}) {
+  if (!tenantId) {
+    throw new Error("Tenant ID is required");
+  }
+  if (!vendorId) {
+    throw new Error("Vendor ID is required");
+  }
+
+  return fetch(`/api/v1/tenants/${tenantId}/vendors/${vendorId}`);
+}
+
+export function getTaxRates(tenantId: string) {
+  if (!tenantId) {
+    throw new Error("Tenant ID is required");
+  }
+
+  return fetch(`/api/v1/tenants/${tenantId}/tax-rates`);
+}

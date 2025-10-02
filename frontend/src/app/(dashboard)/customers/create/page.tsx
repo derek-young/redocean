@@ -8,32 +8,38 @@ export default function CreateCustomer() {
     <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Create Customer</h1>
-          <p className="text-gray-600 mt-1">Add a new customer to the system</p>
+          <h1 className="text-3xl font-bold text-foreground">
+            Create Customer
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Add a new customer to the system
+          </p>
         </div>
         <div className="flex space-x-4">
           <Link
             href="/customers"
-            className="px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+            className="px-4 py-2 text-muted-foreground hover:text-foreground transition-colors"
           >
             ← Back to Customers
           </Link>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-card rounded-lg shadow p-6">
         <div className="text-center py-12">
-          <div className="text-gray-400 mb-4">
+          <div className="text-muted-foreground mb-4">
             <People className="text-6xl" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <h3 className="text-xl font-semibold text-card-foreground mb-2">
             Customer Creation
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="text-muted-foreground mb-6">
             This page would contain a form to create new customers.
           </p>
-          <p className="text-sm text-gray-500">Features to be implemented:</p>
-          <ul className="text-sm text-gray-500 mt-2 space-y-1">
+          <p className="text-sm text-muted-foreground">
+            Features to be implemented:
+          </p>
+          <ul className="text-sm text-muted-foreground mt-2 space-y-1">
             <li>• Basic customer information (name, email, phone)</li>
             <li>• Company details and job title</li>
             <li>• Address information</li>

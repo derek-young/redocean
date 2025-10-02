@@ -11,9 +11,11 @@ import {
 } from "react";
 
 import useDebounce from "@/hooks/useDebounce";
+import { postSearchQuick } from "@/services/api";
 import { Customer, Vendor } from "@/types";
 
 import { useAssistantContext } from "./AssistantContext";
+import { useTenantContext } from "./TenantContext";
 
 export interface Route {
   description: string;
@@ -55,6 +57,7 @@ function doResultsExist(results: SearchResults | null) {
 
 export function SearchProvider({ children }: { children: ReactNode }) {
   const { openAndSubmit } = useAssistantContext();
+  const { selectedTenantId } = useTenantContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState<SearchResults | null>(null);
@@ -77,12 +80,9 @@ export function SearchProvider({ children }: { children: ReactNode }) {
     setIsSearching(true);
 
     try {
-      const response = await fetch("/api/v1/search/quick", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ searchTerm }),
+      const response = await postSearchQuick({
+        tenantIds: [selectedTenantId ?? ""],
+        searchTerm,
       });
 
       const data: SearchResults = await response.json();

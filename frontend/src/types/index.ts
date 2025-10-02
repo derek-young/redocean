@@ -3,6 +3,16 @@ export enum Status {
   ARCHIVED = "ARCHIVED",
 }
 
+export interface Tenant {
+  id: string;
+  name: string;
+  subdomain: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string;
+}
+
 export enum ContactType {
   PRIMARY = "PRIMARY",
   SECONDARY = "SECONDARY",

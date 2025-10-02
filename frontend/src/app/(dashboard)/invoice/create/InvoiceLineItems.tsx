@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { useTenantApi } from "@/context/TenantApiContext";
 
 export interface InvoiceLine {
   id: string;
@@ -24,13 +25,14 @@ function InvoiceLineItems({
   lines: InvoiceLine[];
   setLines: (lines: InvoiceLine[]) => void;
 }) {
+  const { getTaxRates } = useTenantApi();
   const [taxRates, setTaxRates] = useState<TaxRate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const taxRatesResponse = await fetch("/api/v1/tax-rates");
+        const taxRatesResponse = await getTaxRates();
         if (taxRatesResponse.ok) {
           const taxRatesData: TaxRate[] = await taxRatesResponse.json();
           setTaxRates(taxRatesData);
@@ -43,7 +45,7 @@ function InvoiceLineItems({
     };
 
     fetchData();
-  }, []);
+  }, [getTaxRates]);
 
   const addLine = () => {
     const newLine: InvoiceLine = {

@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
+import { useTenantApi } from "@/context/TenantApiContext";
 import { Vendor, Contact, Address, Status, ContactType } from "@/types";
 
 type VendorWithRelations = Vendor & {
@@ -56,6 +57,7 @@ function formatAddress(address: Address) {
 }
 
 export default function VendorDetail() {
+  const { getVendor } = useTenantApi();
   const params = useParams();
   const vendorId = params.id as string;
 
@@ -66,7 +68,7 @@ export default function VendorDetail() {
   useEffect(() => {
     const fetchVendor = async () => {
       try {
-        const response = await fetch(`/api/v1/vendors/${vendorId}`);
+        const response = await getVendor({ vendorId });
         if (response.ok) {
           const data: VendorWithRelations = await response.json();
           setVendor(data);
@@ -86,7 +88,7 @@ export default function VendorDetail() {
     if (vendorId) {
       fetchVendor();
     }
-  }, [vendorId]);
+  }, [vendorId, getVendor]);
 
   if (isLoading) {
     return (

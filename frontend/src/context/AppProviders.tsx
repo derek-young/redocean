@@ -4,13 +4,19 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 
 import { AssistantContextProvider } from "./AssistantContext";
 import { AuthProvider } from "./AuthContext";
+import { TenantApiProvider } from "./TenantApiContext";
+import { TenantContextProvider } from "./TenantContext";
 
 function AppProviders({ children }: { children: ReactNode }) {
   return (
     <AuthProvider>
-      <SidebarProvider>
-        <AssistantContextProvider>{children}</AssistantContextProvider>
-      </SidebarProvider>
+      <TenantContextProvider>
+        <TenantApiProvider>
+          <SidebarProvider>
+            <AssistantContextProvider>{children}</AssistantContextProvider>
+          </SidebarProvider>
+        </TenantApiProvider>
+      </TenantContextProvider>
     </AuthProvider>
   );
 }

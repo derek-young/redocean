@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 
 import Loading from "@/components/Loading";
+import { useTenantApi } from "@/context/TenantApiContext";
 import { Vendor, Contact, Address } from "@/types";
 
 type VendorWithRelations = Vendor & {
@@ -13,6 +14,7 @@ type VendorWithRelations = Vendor & {
 };
 
 export default function Vendors() {
+  const { getVendors } = useTenantApi();
   const [vendors, setVendors] = useState<VendorWithRelations[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
@@ -23,7 +25,7 @@ export default function Vendors() {
   useEffect(() => {
     const fetchVendors = async () => {
       try {
-        const response = await fetch("/api/v1/vendors");
+        const response = await getVendors();
         if (response.ok) {
           const data: VendorWithRelations[] = await response.json();
           setVendors(data);
@@ -42,7 +44,7 @@ export default function Vendors() {
     };
 
     fetchVendors();
-  }, []);
+  }, [getVendors]);
 
   // Filter vendors based on search and status
   const filteredVendors = vendors.filter((vendor) => {

@@ -9,6 +9,10 @@ import {
   useState,
 } from "react";
 
+import { postSearchNatural } from "@/services/api";
+
+import { useTenantContext } from "./TenantContext";
+
 export interface Message {
   id: string;
   content: string;
@@ -42,6 +46,7 @@ export function AssistantContextProvider({
 }: {
   children: ReactNode;
 }) {
+  const { selectedTenantId } = useTenantContext();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -109,12 +114,9 @@ export function AssistantContextProvider({
       setIsSubmitting(true);
 
       try {
-        const response = await fetch("/api/v1/search/natural", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ searchTerm: message }),
+        const response = await postSearchNatural({
+          tenantIds: [selectedTenantId],
+          searchTerm: message,
         });
 
         const data = await response.json();
@@ -128,7 +130,7 @@ export function AssistantContextProvider({
         setIsSubmitting(false);
       }
     },
-    [replyAndClose]
+    [replyAndClose, selectedTenantId]
   );
 
   const openAndSubmit = useCallback(

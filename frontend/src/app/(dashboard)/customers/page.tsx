@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
+import { useTenantApi } from "@/context/TenantApiContext";
 import { Customer, Contact, Address, Status } from "@/types";
 
 import CustomerEmpty from "./CustomerEmpty";
@@ -16,6 +17,7 @@ type CustomerWithRelations = Customer & {
 };
 
 export default function Customers() {
+  const { getCustomers } = useTenantApi();
   const [customers, setCustomers] = useState<CustomerWithRelations[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
@@ -26,7 +28,7 @@ export default function Customers() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await fetch("/api/v1/customers");
+        const response = await getCustomers();
         if (response.ok) {
           const data: CustomerWithRelations[] = await response.json();
           setCustomers(data);
@@ -43,7 +45,7 @@ export default function Customers() {
     };
 
     fetchCustomers();
-  }, []);
+  }, [getCustomers]);
 
   // Filter customers based on search and status
   const filteredCustomers = customers.filter((customer) => {
@@ -79,12 +81,12 @@ export default function Customers() {
       </div>
 
       {/* Search and Filter */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+      <div className="bg-card rounded-lg shadow p-6 mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <label
               htmlFor="search"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-foreground mb-2"
             >
               Search Customers
             </label>
@@ -96,13 +98,13 @@ export default function Customers() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by customer name, email, or contact info..."
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full px-3 py-2 border border-input rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder-muted-foreground"
             />
           </div>
           <div className="md:w-48">
             <label
               htmlFor="status"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-foreground mb-2"
             >
               Status
             </label>
@@ -116,7 +118,7 @@ export default function Customers() {
                   e.target.value as "all" | Status.ACTIVE | Status.ARCHIVED
                 )
               }
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              className="w-full px-3 py-2 border border-input rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground"
             >
               <option value="all">All Customers</option>
               <option value={Status.ACTIVE}>Active</option>
@@ -127,9 +129,9 @@ export default function Customers() {
       </div>
 
       {/* Customer List */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+      <div className="bg-card rounded-lg shadow overflow-hidden">
+        <div className="px-6 py-4 border-b border-border">
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-card-foreground">
             Customer List&nbsp;
             {isLoading && <Loading />}
           </h2>

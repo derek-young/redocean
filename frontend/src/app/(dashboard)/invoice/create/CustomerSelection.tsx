@@ -10,6 +10,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { useTenantApi } from "@/context/TenantApiContext";
 import { Customer, Contact, ContactType, Address } from "@/types";
 
 interface CustomerOption {
@@ -145,6 +146,7 @@ function CustomerInformation({
 }
 
 function CustomerSelection() {
+  const { getCustomers } = useTenantApi();
   const [customers, setCustomers] = useState<CustomerOption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCustomer, setSelectedCustomer] =
@@ -163,7 +165,7 @@ function CustomerSelection() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const customersResponse = await fetch("/api/v1/customers");
+        const customersResponse = await getCustomers();
         if (customersResponse.ok) {
           const customersData: Customer[] = await customersResponse.json();
           const customerOptions: CustomerOption[] = customersData.map(
@@ -188,7 +190,7 @@ function CustomerSelection() {
     };
 
     fetchData();
-  }, []);
+  }, [getCustomers]);
 
   return (
     <div className="bg-card rounded-lg shadow p-6 border border-border">

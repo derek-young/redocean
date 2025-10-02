@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
+import { useTenantApi } from "@/context/TenantApiContext";
 import { Customer, Contact, Address, Status, ContactType } from "@/types";
 
 type CustomerWithRelations = Customer & {
@@ -56,6 +57,7 @@ function formatAddress(address: Address) {
 }
 
 export default function CustomerDetail() {
+  const { getCustomer } = useTenantApi();
   const params = useParams();
   const customerId = params.id as string;
 
@@ -66,7 +68,7 @@ export default function CustomerDetail() {
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
-        const response = await fetch(`/api/v1/customers/${customerId}`);
+        const response = await getCustomer({ customerId });
         if (response.ok) {
           const data: CustomerWithRelations = await response.json();
           setCustomer(data);
@@ -86,7 +88,7 @@ export default function CustomerDetail() {
     if (customerId) {
       fetchCustomer();
     }
-  }, [customerId]);
+  }, [customerId, getCustomer]);
 
   if (isLoading) {
     return (
