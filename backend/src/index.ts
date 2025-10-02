@@ -8,7 +8,7 @@ import { prisma } from "@/db";
 
 dotenv.config();
 
-import { authenticateUser } from "./middleware/auth";
+import { authenticateUser, validateAuthHeaders } from "./middleware/auth";
 import v1Router from "./v1Router";
 
 const app = express();
@@ -24,6 +24,7 @@ app.get("/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
+app.use(validateAuthHeaders);
 app.use(authenticateUser);
 app.use("/api/v1", v1Router);
 app.use("*", (req, res) => {

@@ -56,6 +56,12 @@ enum DocStatus {
   VOID
 }
 
+enum IdentityProvider {
+  FIREBASE
+  AUTH0
+  SAML
+}
+
 enum InvoiceStatus {
   DRAFT
   SENT
@@ -88,10 +94,10 @@ enum TransactionType {
 
 model User {
   id        String    @id @default(cuid(2))
-  email     String    @unique
+  email     String?   @unique
   firstName String?
   lastName  String?
-  role      Role
+  role      Role      @default(ADMIN)
   status    ActiveStatus    @default(ACTIVE)
 
   createdAt DateTime  @default(now())
@@ -102,12 +108,25 @@ model User {
   attachments           Attachment[]
   auditLogs             AuditLog[]
   bills                 Bill[]
+  identities            Identity[]
   invoices              Invoice[]
   journalEntries        JournalEntry[]
   payments              Payment[]
   userTenantMemberships UserTenantMembership[]
 
   @@map("users")
+}
+
+
+model Identity {
+  id          String   @id @default(cuid(2))
+  provider    IdentityProvider
+  externalUid String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@unique([provider, externalUid])
+  @@map("identities")
 }
 
 model Tenant {

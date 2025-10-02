@@ -7,10 +7,10 @@ const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const { tenant } = req;
+    const { tenantId } = req.params;
 
     const customers = await prisma.customer.findMany({
-      where: { tenantId: tenant.id },
+      where: { tenantId },
       include: {
         addresses: true,
         contacts: true,
@@ -26,13 +26,12 @@ router.get("/", async (req: Request, res: Response) => {
 
 router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const { tenant } = req;
+    const { id, tenantId } = req.params;
 
     const customer = await prisma.customer.findFirst({
       where: {
         id,
-        tenantId: tenant.id, // Ensure customer belongs to the tenant
+        tenantId,
       },
       include: {
         addresses: true,
@@ -54,14 +53,15 @@ router.get("/:id", async (req: Request, res: Response) => {
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    const { tenant, user } = req;
+    const { userId } = req;
+    const { tenantId } = req.params;
     const customerData = req.body;
 
     const customer = await prisma.customer.create({
       data: {
         ...customerData,
-        tenantId: tenant.id,
-        createdById: user.id,
+        tenantId,
+        createdById: userId,
       },
     });
 
@@ -74,13 +74,13 @@ router.post("/", async (req: Request, res: Response) => {
 
 router.put("/:id", async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const { tenant, user } = req;
+    const { userId } = req;
+    const { id, tenantId } = req.params;
     const customerData = req.body;
 
     // First verify the customer belongs to the tenant
     const existingCustomer = await prisma.customer.findFirst({
-      where: { id, tenantId: tenant.id },
+      where: { id, tenantId },
     });
 
     if (!existingCustomer) {
@@ -92,7 +92,7 @@ router.put("/:id", async (req: Request, res: Response) => {
       where: { id },
       data: {
         ...customerData,
-        updatedById: user.id,
+        updatedById: userId,
       },
     });
 

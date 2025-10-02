@@ -7,11 +7,12 @@ import { prisma } from "@/db";
 export const createInvoice = async (req: Request, res: Response) => {
   try {
     const { total, lines, ...invoiceData } = req.body;
-    const { tenant, user } = req;
+    const { userId } = req;
+    const { tenantId } = req.params;
 
     const sequenceResult = await generateNextSequenceValue(
       "invoice_number",
-      tenant.id
+      tenantId
     );
     const invoiceNumber = sequenceResult.value;
 
@@ -20,8 +21,8 @@ export const createInvoice = async (req: Request, res: Response) => {
         ...invoiceData,
         invoiceNumber,
         total: new Prisma.Decimal(total),
-        createdById: user.id,
-        tenantId: tenant.id,
+        createdById: userId,
+        tenantId: tenantId,
         lines: {
           create: lines.map((line: InvoiceLine) => ({
             ...line,

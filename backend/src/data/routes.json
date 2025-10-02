@@ -1,6 +1,6 @@
 [
   {
-    "path": "/",
+    "path": "/dashboard",
     "name": "Dashboard",
     "description": "Home view with smart search and quick actions",
     "quickActions": ["home", "dashboard"],
