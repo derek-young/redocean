@@ -20,7 +20,6 @@ async function handler(
       return NextResponse.json({ error: "Missing session" }, { status: 401 });
     }
 
-    console.log("Backend URL:", backendUrl);
     if (!backendUrl) {
       throw new Error("BACKEND_URL environment variable is not set");
     }
@@ -29,10 +28,12 @@ async function handler(
     const authHeaders = await getAuthHeaders(backendUrl);
     const apiReqHeaders = new Headers(authHeaders);
 
-    apiReqHeaders.set("X-User-Id", decoded.uid);
-    apiReqHeaders.set("X-User-Email", decoded.email || "");
+    console.log("decoded", decoded);
 
-    console.log("Auth headers:", authHeaders);
+    apiReqHeaders.set("Auth-User-Id", decoded.uid);
+    apiReqHeaders.set("Auth-User-Email", (decoded.email ?? "").toLowerCase());
+    // TODO: Use Enum from backend
+    apiReqHeaders.set("Auth-Provider", "FIREBASE");
 
     const contentType = request.headers.get("content-type");
 
@@ -45,13 +46,8 @@ async function handler(
         ? undefined
         : request.body;
 
-    console.log("apiReqHeaders:", apiReqHeaders);
-
     const apiPath = pathSegments.join("/");
     const backendApiUrl = `${backendUrl}/api/${apiPath}`;
-
-    console.log("Processing proxy request for path:", apiPath);
-    console.log("Fetching backend API URL:", backendApiUrl);
 
     const apiServiceResponse = await fetch(backendApiUrl, {
       method: request.method,
@@ -69,18 +65,6 @@ async function handler(
     });
 
     return response;
-
-    // const contentType = apiResp.headers.get("content-type");
-
-    // if (contentType?.includes("application/json")) {
-    //   const jsonBody = await apiResp.json();
-
-    //   return res.status(apiResp.status).json(jsonBody);
-    // } else {
-    //   const textBody = await apiResp.text();
-
-    //   return res.status(apiResp.status).send(textBody);
-    // }
   } catch (error) {
     console.error("Error proxying request to backend:", error);
 
