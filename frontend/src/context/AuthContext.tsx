@@ -8,7 +8,25 @@ import {
 } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 
+import { setHandler } from "@/fetch";
 import { auth } from "@/firebase/client";
+import { postSession } from "@/services/api";
+
+async function signIn(email: string, password: string) {
+  return signInWithEmailAndPassword(auth, email, password);
+}
+
+async function signOut() {
+  try {
+    await fetch("/api/logout", { method: "POST" });
+  } catch (error) {
+    console.error("Backend logout error:", error);
+  }
+
+  return firebaseSignOut(auth);
+}
+
+setHandler(signOut);
 
 interface AuthContextType {
   user: User | null;
@@ -24,49 +42,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      setIsLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setIsLoading(true);
+        const idToken = await firebaseUser.getIdToken();
+
+        await postSession(idToken);
+
+        setUser(firebaseUser);
+        setIsLoading(false);
+      } else {
+        setUser(null);
+        setIsLoading(false);
+      }
     });
 
     return () => unsubscribe();
   }, []);
-
-  const signIn = async (email: string, password: string) => {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-
-    const idToken = await userCredential.user.getIdToken();
-
-    const response = await fetch("/api/session", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${idToken}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || "Failed to login");
-    }
-
-    const data = await response.json();
-    console.log("login data", data);
-  };
-
-  const signOut = async () => {
-    try {
-      await fetch("/api/logout", { method: "POST" });
-    } catch (error) {
-      console.error("Backend logout error:", error);
-    }
-
-    return firebaseSignOut(auth);
-  };
 
   const value: AuthContextType = {
     user,

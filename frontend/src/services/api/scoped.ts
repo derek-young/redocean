@@ -1,8 +1,10 @@
+import fetchClient from "@/fetch";
+
 export function getCustomers(tenantId: string) {
   if (!tenantId) {
     throw new Error("Tenant ID is required");
   }
-  return fetch(`/api/v1/tenants/${tenantId}/customers`);
+  return fetchClient(`/api/v1/tenants/${tenantId}/customers`);
 }
 
 export function getCustomer({
@@ -19,7 +21,7 @@ export function getCustomer({
     throw new Error("Customer ID is required");
   }
 
-  return fetch(`/api/v1/tenants/${tenantId}/customers/${customerId}`);
+  return fetchClient(`/api/v1/tenants/${tenantId}/customers/${customerId}`);
 }
 
 export function getVendors(tenantId: string) {
@@ -27,7 +29,7 @@ export function getVendors(tenantId: string) {
     throw new Error("Tenant ID is required");
   }
 
-  return fetch(`/api/v1/tenants/${tenantId}/vendors`);
+  return fetchClient(`/api/v1/tenants/${tenantId}/vendors`);
 }
 
 export function getVendor({
@@ -44,7 +46,7 @@ export function getVendor({
     throw new Error("Vendor ID is required");
   }
 
-  return fetch(`/api/v1/tenants/${tenantId}/vendors/${vendorId}`);
+  return fetchClient(`/api/v1/tenants/${tenantId}/vendors/${vendorId}`);
 }
 
 export function getTaxRates(tenantId: string) {
@@ -52,5 +54,5 @@ export function getTaxRates(tenantId: string) {
     throw new Error("Tenant ID is required");
   }
 
-  return fetch(`/api/v1/tenants/${tenantId}/tax-rates`);
+  return fetchClient(`/api/v1/tenants/${tenantId}/tax-rates`);
 }

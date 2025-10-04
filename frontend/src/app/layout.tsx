@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Michroma, Roboto } from "next/font/google";
 
-import AppProviders from "@/context/AppProviders";
+import { AuthProvider } from "@/context/AuthContext";
 
 import "./globals.css";
 
@@ -41,7 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${michroma.variable} ${roboto.variable} antialiased`}>
-        <AppProviders>{children}</AppProviders>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

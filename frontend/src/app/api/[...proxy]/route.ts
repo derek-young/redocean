@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/firebase/admin";
 import { getAuthHeaders } from "@/gcpAuth";
 
-const backendUrl = process.env.BACKEND_URL;
+const backendUrl = process.env.BACKEND_URL!;
 
 async function handler(
   request: NextRequest,
@@ -20,11 +20,15 @@ async function handler(
       return NextResponse.json({ error: "Missing session" }, { status: 401 });
     }
 
-    if (!backendUrl) {
-      throw new Error("BACKEND_URL environment variable is not set");
+    let decoded;
+    try {
+      decoded = await auth.verifySessionCookie(sessionCookie, true);
+    } catch (error) {
+      console.error("Session cookie verification failed:", error);
+
+      return NextResponse.json({ error: "Session expired" }, { status: 401 });
     }
 
-    const decoded = await auth.verifySessionCookie(sessionCookie, true);
     const authHeaders = await getAuthHeaders(backendUrl);
     const apiReqHeaders = new Headers(authHeaders);
 
