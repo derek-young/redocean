@@ -14,7 +14,7 @@
     "db:push:reset": "prisma db push --force-reset",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
-    "db:seed": "tsx prisma/seed.ts",
+    "db:seed": "npx tsx prisma/seed.ts",
     "db:restore-readonly": "./scripts/restore-readonly-access.sh",
     "generate:embeddings": "tsx scripts/generateEmbeddings.ts",
     "test": "echo \"Error: no test specified\" && exit 1"

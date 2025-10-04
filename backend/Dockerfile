@@ -37,8 +37,8 @@ RUN npx prisma generate
 USER nodejs
 EXPOSE 8080
 
-# For prototyping: push schema changes automatically
-CMD npx prisma db push && npm start
+# For prototyping:
+CMD npm run db:push:reset && npm run db:seed && npm start
 
-# For production: push schema changes automatically
+# For production:
 # CMD npx prisma migrate deploy && npm start

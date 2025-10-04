@@ -115,7 +115,7 @@ export function AssistantContextProvider({
 
       try {
         const response = await postSearchNatural({
-          tenantIds: [selectedTenantId],
+          tenantIds: selectedTenantId ? [selectedTenantId] : [],
           searchTerm: message,
         });
 

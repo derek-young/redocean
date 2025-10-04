@@ -106,6 +106,7 @@ export function SearchProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     onUserInput(debouncedSearchTerm);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm]);
 
   useEffect(() => {

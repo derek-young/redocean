@@ -47,6 +47,33 @@ export function validateAuthHeaders(
   next();
 }
 
+// For the demo@redoceanapp.com user
+// Create user tenant membership for Galactic Trading Company
+// if Galactic Trading Company exists and the user is not a member
+async function addDemoUserToGalacticTradingCompany(userId: string) {
+  const galacticTradingCompany = await prisma.tenant.findUnique({
+    where: { subdomain: "galacticetradingco" },
+  });
+  if (galacticTradingCompany) {
+    const existingMembership = await prisma.userTenantMembership.findUnique({
+      where: {
+        userId_tenantId: {
+          userId,
+          tenantId: galacticTradingCompany.id,
+        },
+      },
+    });
+    if (!existingMembership) {
+      await prisma.userTenantMembership.create({
+        data: {
+          userId,
+          tenantId: galacticTradingCompany.id,
+        },
+      });
+    }
+  }
+}
+
 export const authenticateUser = async (
   req: Request,
   res: Response,
@@ -111,6 +138,10 @@ export const authenticateUser = async (
     if (!identity) {
       res.status(401).json({ error: "Identity not found" });
       return;
+    }
+
+    if (externalUid === "YumX8xisePNUjt53B8fK0VMAIXf2") {
+      await addDemoUserToGalacticTradingCompany(identity.user.id);
     }
 
     req.userId = identity.user.id;
