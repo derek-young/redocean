@@ -22,6 +22,7 @@ const requireNameAttribute = {
           "select",
           "button",
           "CommandInput",
+          "Select",
         ].includes(elementName);
 
         if (isInteractiveElement) {

@@ -13,7 +13,7 @@ import {
 import Loading from "@/components/Loading";
 
 interface CreateInvoiceContextType {
-  onInputBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onValueChange: (paramName: string, value: string) => void;
   params: URLSearchParams;
 }
 
@@ -29,12 +29,14 @@ function CreateInvoiceContextInner({ children }: { children: ReactNode }) {
     [searchParams]
   );
 
-  const onInputBlur = useCallback(
-    (e: React.FocusEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
-
-      if (value !== params.get(name)) {
-        params.set(name, value);
+  const onValueChange = useCallback(
+    (paramName: string, value: string) => {
+      if (value !== params.get(paramName)) {
+        if (value.trim() === "") {
+          params.delete(paramName);
+        } else {
+          params.set(paramName, value);
+        }
         router.push(`?${params.toString()}`);
       }
     },
@@ -43,10 +45,10 @@ function CreateInvoiceContextInner({ children }: { children: ReactNode }) {
 
   const value = useMemo(
     () => ({
-      onInputBlur,
+      onValueChange,
       params,
     }),
-    [onInputBlur, params]
+    [onValueChange, params]
   );
 
   return (
@@ -54,16 +56,6 @@ function CreateInvoiceContextInner({ children }: { children: ReactNode }) {
       {children}
     </CreateInvoiceContext.Provider>
   );
-}
-
-export function useCreateInvoiceContext() {
-  const context = useContext(CreateInvoiceContext);
-  if (context === undefined) {
-    throw new Error(
-      "useCreateInvoiceContext must be used within a CreateInvoiceContextProvider"
-    );
-  }
-  return context;
 }
 
 export function CreateInvoiceContextProvider({
@@ -82,4 +74,14 @@ export function CreateInvoiceContextProvider({
       <CreateInvoiceContextInner>{children}</CreateInvoiceContextInner>
     </Suspense>
   );
+}
+
+export function useCreateInvoiceContext() {
+  const context = useContext(CreateInvoiceContext);
+  if (context === undefined) {
+    throw new Error(
+      "useCreateInvoiceContext must be used within a CreateInvoiceContextProvider"
+    );
+  }
+  return context;
 }
