@@ -17,12 +17,13 @@ const requireNameAttribute = {
       JSXOpeningElement(node) {
         const elementName = node.name.name;
         const isInteractiveElement = [
-          "input",
-          "textarea",
-          "select",
           "button",
           "CommandInput",
+          "input",
+          "Input",
+          "select",
           "Select",
+          "textarea",
         ].includes(elementName);
 
         if (isInteractiveElement) {

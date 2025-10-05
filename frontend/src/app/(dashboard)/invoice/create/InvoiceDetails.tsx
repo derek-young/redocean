@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { Input } from "@/components/ui/input";
+
 import { useCreateInvoiceContext } from "./CreateInvoiceContext";
 import InvoiceTerms, { Terms, calculateDueDate } from "./InvoiceTerms";
 
@@ -40,18 +42,18 @@ function InvoiceDetails() {
         Invoice Details
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
+        <div className="w-fit">
           <label
-            htmlFor="invoiceNumber"
+            htmlFor="invoice-number"
             className="block text-sm font-medium text-foreground mb-2"
           >
             Invoice Number
           </label>
-          <input
+          <Input
             aria-label="Invoice Number"
+            className="w-fit"
+            id="invoice-number"
             name="invoice-number"
-            type="text"
-            value={invoiceData.invoiceNumber}
             onBlur={onInputBlur}
             onChange={(e) => {
               setInvoiceData({
@@ -59,22 +61,23 @@ function InvoiceDetails() {
                 invoiceNumber: e.target.value,
               });
             }}
-            className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
             placeholder="INV-001"
+            type="text"
+            value={invoiceData.invoiceNumber}
           />
         </div>
-        <div>
+        <div className="w-fit">
           <label
-            htmlFor="date"
+            htmlFor="invoice-date"
             className="block text-sm font-medium text-foreground mb-2"
           >
             Invoice Date
           </label>
-          <input
+          <Input
             aria-label="Invoice Date"
+            className="w-fit"
+            id="invoice-date"
             name="invoice-date"
-            type="date"
-            value={invoiceData.invoiceDate}
             onBlur={onInputBlur}
             onChange={(e) =>
               setInvoiceData({
@@ -82,23 +85,26 @@ function InvoiceDetails() {
                 invoiceDate: e.target.value,
               })
             }
-            className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
             required
+            type="date"
+            value={invoiceData.invoiceDate}
           />
         </div>
-        <InvoiceTerms value={terms} onValueChange={setTerms} />
-        <div>
+        <div className="w-fit">
+          <InvoiceTerms value={terms} onValueChange={setTerms} />
+        </div>
+        <div className="w-fit">
           <label
-            htmlFor="dueDate"
+            htmlFor="due-date"
             className="block text-sm font-medium text-foreground mb-2"
           >
             Due Date
           </label>
-          <input
+          <Input
             aria-label="Due Date"
+            className="w-fit"
+            id="due-date"
             name="due-date"
-            type="date"
-            value={invoiceData.dueDate}
             onBlur={onInputBlur}
             onChange={(e) =>
               setInvoiceData({
@@ -106,7 +112,8 @@ function InvoiceDetails() {
                 dueDate: e.target.value,
               })
             }
-            className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
+            type="date"
+            value={invoiceData.dueDate}
           />
         </div>
       </div>

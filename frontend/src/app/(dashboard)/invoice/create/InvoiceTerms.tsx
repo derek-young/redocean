@@ -45,7 +45,7 @@ function InvoiceTerms({
   value?: Terms;
 }) {
   return (
-    <div>
+    <>
       <label
         htmlFor="terms"
         className="block text-sm font-medium text-foreground mb-2"
@@ -53,7 +53,7 @@ function InvoiceTerms({
         Terms
       </label>
       <Select name="invoice-terms" value={value} onValueChange={onValueChange}>
-        <SelectTrigger className="w-full">
+        <SelectTrigger id="terms" className="w-43">
           <SelectValue placeholder="Select payment terms" />
         </SelectTrigger>
         <SelectContent>
@@ -63,7 +63,7 @@ function InvoiceTerms({
           <SelectItem value={Terms.NET_60}>Net 60</SelectItem>
         </SelectContent>
       </Select>
-    </div>
+    </>
   );
 }
 

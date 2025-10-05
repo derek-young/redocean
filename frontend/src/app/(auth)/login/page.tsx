@@ -67,13 +67,14 @@ export default function LoginPage() {
                 Email
               </label>
               <Input
+                className="w-full"
                 id="email"
-                type="email"
-                value={email}
+                name="email"
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 required
-                className="w-full"
+                type="email"
+                value={email}
               />
             </div>
 
@@ -85,13 +86,14 @@ export default function LoginPage() {
                 Password
               </label>
               <Input
+                className="w-full"
                 id="password"
-                type="password"
-                value={password}
+                name="password"
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 required
-                className="w-full"
+                type="password"
+                value={password}
               />
             </div>
 

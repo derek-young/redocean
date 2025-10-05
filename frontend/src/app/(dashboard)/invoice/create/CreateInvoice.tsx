@@ -56,8 +56,10 @@ function CreateInvoice() {
         </Link>
       </div>
       <form onSubmit={handleSubmit} className="space-y-8">
-        <CustomerSelection />
-        <InvoiceDetails />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <CustomerSelection />
+          <InvoiceDetails />
+        </div>
         <InvoiceLineItems lines={lines} setLines={setLines} />
 
         <div className="bg-card rounded-lg shadow p-6 border border-border">
@@ -90,7 +92,7 @@ function CreateInvoice() {
 
         <div className="flex justify-end space-x-4">
           <Button asChild variant="outline" size="lg">
-            <Link href="/">Cancel</Link>
+            <Link href="/invoice/list">Cancel</Link>
           </Button>
           <Button
             type="submit"

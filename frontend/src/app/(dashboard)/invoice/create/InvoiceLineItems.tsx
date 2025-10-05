@@ -88,21 +88,24 @@ function InvoiceLine({
       </TableCell>
       <TableCell>
         <Input
-          value={line.item}
+          name="invoice-line-item"
           onChange={(e) => updateLine(line.id, "item", e.target.value)}
           placeholder="Enter item or service"
+          value={line.item}
         />
       </TableCell>
       <TableCell>
         <Input
-          value={line.description}
+          name="invoice-line-description"
           onChange={(e) => updateLine(line.id, "description", e.target.value)}
           placeholder="Enter description"
+          value={line.description}
         />
       </TableCell>
       <TableCell>
         <Input
           className={classRemoveSpinner}
+          name="invoice-line-quantity"
           onChange={(e) =>
             updateLine(
               line.id,
@@ -118,6 +121,7 @@ function InvoiceLine({
       <TableCell>
         <Input
           className={classRemoveSpinner}
+          name="invoice-line-unit-amount"
           onChange={(e) =>
             updateLine(
               line.id,

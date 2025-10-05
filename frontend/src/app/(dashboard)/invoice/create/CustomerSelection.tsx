@@ -132,15 +132,15 @@ function CustomerInformation({
             </div>
           )}
         </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={onChangeCustomer}
-        >
-          Change Customer
-        </Button>
       </div>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        onClick={onChangeCustomer}
+      >
+        Change Customer
+      </Button>
     </div>
   );
 }
