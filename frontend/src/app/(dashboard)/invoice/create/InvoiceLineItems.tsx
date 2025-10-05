@@ -1,10 +1,38 @@
-import { useEffect, useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { GripVertical } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { useTenantApi } from "@/context/TenantApiContext";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableBody,
+} from "@/components/ui/table";
+
+import AddLineItemDropdown, { LineItemType } from "./AddLineItemDropdown";
 
 export interface InvoiceLine {
   id: string;
+  type: LineItemType;
+  item: string;
   description: string;
   quantity: number;
   unitAmount: number;
@@ -12,10 +40,101 @@ export interface InvoiceLine {
   taxRateId?: string;
 }
 
-interface TaxRate {
-  id: string;
-  name: string;
-  rate: number;
+const classRemoveSpinner =
+  "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
+
+const usdCurrencyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
+function InvoiceLine({
+  line,
+  updateLine,
+}: {
+  line: InvoiceLine;
+  updateLine: (
+    id: string,
+    field: keyof InvoiceLine,
+    value: string | number
+  ) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: line.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <TableRow ref={setNodeRef} style={style}>
+      <TableCell className="w-8">
+        <button
+          name="drag-handle"
+          className="cursor-grab active:cursor-grabbing touch-none"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="h-5 w-5 text-muted-foreground" />
+        </button>
+      </TableCell>
+      <TableCell>
+        <Input
+          value={line.item}
+          onChange={(e) => updateLine(line.id, "item", e.target.value)}
+          placeholder="Enter item or service"
+        />
+      </TableCell>
+      <TableCell>
+        <Input
+          value={line.description}
+          onChange={(e) => updateLine(line.id, "description", e.target.value)}
+          placeholder="Enter description"
+        />
+      </TableCell>
+      <TableCell>
+        <Input
+          className={classRemoveSpinner}
+          onChange={(e) =>
+            updateLine(
+              line.id,
+              "quantity",
+              e.target.value === "" ? 0 : parseFloat(e.target.value) || 0
+            )
+          }
+          placeholder="0"
+          type="number"
+          value={line.quantity || ""}
+        />
+      </TableCell>
+      <TableCell>
+        <Input
+          className={classRemoveSpinner}
+          onChange={(e) =>
+            updateLine(
+              line.id,
+              "unitAmount",
+              e.target.value === "" ? 0 : parseFloat(e.target.value) || 0
+            )
+          }
+          placeholder="0.00"
+          type="number"
+          value={line.unitAmount || ""}
+        />
+      </TableCell>
+      <TableCell className="text-right font-medium">
+        {usdCurrencyFormatter.format(line.quantity * line.unitAmount)}
+      </TableCell>
+    </TableRow>
+  );
 }
 
 function InvoiceLineItems({
@@ -25,43 +144,15 @@ function InvoiceLineItems({
   lines: InvoiceLine[];
   setLines: (lines: InvoiceLine[]) => void;
 }) {
-  const { getTaxRates } = useTenantApi();
-  const [taxRates, setTaxRates] = useState<TaxRate[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const taxRatesResponse = await getTaxRates();
-        if (taxRatesResponse.ok) {
-          const taxRatesData: TaxRate[] = await taxRatesResponse.json();
-          setTaxRates(taxRatesData);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [getTaxRates]);
-
-  const addLine = () => {
-    const newLine: InvoiceLine = {
-      id: Date.now().toString(),
-      description: "",
-      quantity: 1,
-      unitAmount: 0,
-      lineAmount: 0,
-    };
-    setLines([...lines, newLine]);
-  };
-
-  const removeLine = (id: string) => {
-    if (lines.length > 1) {
-      setLines(lines.filter((line) => line.id !== id));
-    }
+  const addLine = (type: LineItemType) => {
+    console.log("Adding line of type", type);
   };
 
   const updateLine = (
@@ -73,10 +164,7 @@ function InvoiceLineItems({
       lines.map((line) => {
         if (line.id === id) {
           const updatedLine = { ...line, [field]: value };
-          if (field === "quantity" || field === "unitAmount") {
-            updatedLine.lineAmount =
-              updatedLine.quantity * updatedLine.unitAmount;
-          }
+
           return updatedLine;
         }
         return line;
@@ -84,155 +172,60 @@ function InvoiceLineItems({
     );
   };
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = lines.findIndex((line) => line.id === active.id);
+      const newIndex = lines.findIndex((line) => line.id === over.id);
+
+      setLines(arrayMove(lines, oldIndex, newIndex));
+    }
+  };
+
+  // TODO: Add text line
+  // add subtotal line
+
   return (
     <div className="bg-card rounded-lg shadow p-6 border border-border">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-card-foreground">
           Invoice Line Items
         </h2>
-        <Button
-          type="button"
-          onClick={addLine}
-          variant="default"
-          size="default"
+        <AddLineItemDropdown onAddLine={addLine} />
+      </div>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={lines.map((line) => line.id)}
+          strategy={verticalListSortingStrategy}
         >
-          + Add Line Item
-        </Button>
-      </div>
-
-      <div className="space-y-4">
-        {lines.map((line) => (
-          <div
-            key={line.id}
-            className="grid grid-cols-12 gap-4 items-center p-4 border border-border rounded-lg bg-muted/30"
-          >
-            <div className="col-span-4">
-              <label
-                htmlFor={`description-${line.id}`}
-                className="block text-xs font-medium text-muted-foreground mb-1"
-              >
-                Description
-              </label>
-              <input
-                id={`description-${line.id}`}
-                aria-label="Invoice line description"
-                name="invoice-line-description"
-                type="text"
-                value={line.description}
-                onChange={(e) =>
-                  updateLine(line.id, "description", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                placeholder="Item or service description"
-                required
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                htmlFor={`quantity-${line.id}`}
-                className="block text-xs font-medium text-muted-foreground mb-1"
-              >
-                Qty
-              </label>
-              <input
-                id={`quantity-${line.id}`}
-                aria-label="Invoice line quantity"
-                name="invoice-line-quantity"
-                type="number"
-                value={line.quantity}
-                onChange={(e) =>
-                  updateLine(
-                    line.id,
-                    "quantity",
-                    parseFloat(e.target.value) || 0
-                  )
-                }
-                className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                min="0"
-                step="0.01"
-                required
-              />
-            </div>
-            <div className="col-span-2">
-              <label
-                htmlFor={`unit-amount-${line.id}`}
-                className="block text-xs font-medium text-muted-foreground mb-1"
-              >
-                Unit Amount
-              </label>
-              <input
-                id={`unit-amount-${line.id}`}
-                aria-label="Invoice line unit amount"
-                name="invoice-line-unit-amount"
-                type="number"
-                value={line.unitAmount}
-                onChange={(e) =>
-                  updateLine(
-                    line.id,
-                    "unitAmount",
-                    parseFloat(e.target.value) || 0
-                  )
-                }
-                className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-                min="0"
-                step="0.01"
-                placeholder="0.00"
-                required
-              />
-            </div>
-            <div className="col-span-2">
-              <label
-                htmlFor={`tax-rate-${line.id}`}
-                className="block text-xs font-medium text-muted-foreground mb-1"
-              >
-                Tax Rate
-              </label>
-              <select
-                id={`tax-rate-${line.id}`}
-                aria-label="Invoice line tax rate"
-                name="invoice-line-tax-rate"
-                value={line.taxRateId || ""}
-                onChange={(e) =>
-                  updateLine(line.id, "taxRateId", e.target.value || "")
-                }
-                className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground focus:ring-2 focus:ring-ring focus:border-transparent"
-              >
-                <option value="">No Tax</option>
-                {taxRates.map((taxRate) => (
-                  <option key={taxRate.id} value={taxRate.id}>
-                    {taxRate.name} ({(taxRate.rate * 100).toFixed(1)}%)
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="col-span-2">
-              <div className="block text-xs font-medium text-muted-foreground mb-1">
-                Line Total
-              </div>
-              <div className="px-3 py-2 bg-muted rounded-md text-right font-medium text-foreground">
-                ${line.lineAmount.toFixed(2)}
-              </div>
-            </div>
-            <div className="col-span-1">
-              <div className="block text-xs font-medium text-muted-foreground mb-1">
-                Actions
-              </div>
-              {lines.length > 1 && (
-                <Button
-                  type="button"
-                  onClick={() => removeLine(line.id)}
-                  variant="ghost"
-                  size="icon"
-                  className="text-destructive hover:text-destructive/80"
-                  aria-label={`Remove line item ${line.id}`}
-                >
-                  ×
-                </Button>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-8"></TableHead>
+                <TableHead>Item or Service</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead className="w-24">Quantity</TableHead>
+                <TableHead className="w-32">Unit Amount</TableHead>
+                <TableHead className="w-32 text-right">Line Amount</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {lines.map((line) => (
+                <InvoiceLine
+                  key={line.id}
+                  line={line}
+                  updateLine={updateLine}
+                />
+              ))}
+            </TableBody>
+          </Table>
+        </SortableContext>
+      </DndContext>
     </div>
   );
 }
