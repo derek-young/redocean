@@ -5,6 +5,14 @@ import { useState, useEffect } from "react";
 
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useTenantApi } from "@/context/TenantApiContext";
 import { Customer, Contact, Address, Status } from "@/types";
 
@@ -90,7 +98,7 @@ export default function Customers() {
             >
               Search Customers
             </label>
-            <input
+            <Input
               aria-label="Search customers by name, email, or contact information"
               name="search-customer-by-text"
               type="text"
@@ -98,32 +106,32 @@ export default function Customers() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by customer name, email, or contact info..."
-              className="w-full px-3 py-2 border border-input rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder-muted-foreground"
             />
           </div>
           <div className="md:w-48">
             <label
-              htmlFor="status"
+              htmlFor="filter-customer-by-status"
               className="block text-sm font-medium text-foreground mb-2"
             >
               Status
             </label>
-            <select
-              aria-label="Filter customers by status"
-              name="filter-customer-by-status"
-              id="status"
+            <Select
               value={statusFilter}
-              onChange={(e) =>
+              onValueChange={(value) =>
                 setStatusFilter(
-                  e.target.value as "all" | Status.ACTIVE | Status.ARCHIVED
+                  value as "all" | Status.ACTIVE | Status.ARCHIVED
                 )
               }
-              className="w-full px-3 py-2 border border-input rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground"
             >
-              <option value="all">All Customers</option>
-              <option value={Status.ACTIVE}>Active</option>
-              <option value={Status.ARCHIVED}>Archived</option>
-            </select>
+              <SelectTrigger id="filter-customer-by-status">
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Customers</SelectItem>
+                <SelectItem value={Status.ACTIVE}>Active</SelectItem>
+                <SelectItem value={Status.ARCHIVED}>Archived</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>

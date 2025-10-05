@@ -9,7 +9,7 @@ export default function Home() {
   const { user, isLoading } = useAuthContext();
 
   if (isLoading) {
-    return <Initializing />;
+    return <Initializing message="Loading User Information..." />;
   }
 
   if (user) {

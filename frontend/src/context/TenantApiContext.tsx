@@ -40,7 +40,7 @@ export function TenantApiProvider({ children }: { children: React.ReactNode }) {
   );
 
   if (isLoading) {
-    return <Initializing />;
+    return <Initializing message="Loading Tenants..." />;
   }
 
   return (
