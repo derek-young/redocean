@@ -1,35 +1,21 @@
-import { useEffect, useState } from "react";
-
 import { Input } from "@/components/ui/input";
 
 import { useCreateInvoiceContext } from "./CreateInvoiceContext";
-import InvoiceTerms, { Terms, calculateDueDate } from "./InvoiceTerms";
-
-const today = () => {
-  return new Date().toISOString().split("T")[0];
-};
+import InvoiceTerms from "./InvoiceTerms";
 
 function InvoiceDetails() {
-  const { onValueChange, params } = useCreateInvoiceContext();
-  const [terms, setTerms] = useState<Terms>(Terms.DUE_ON_RECEIPT);
-  const [invoiceData, setInvoiceData] = useState({
-    invoiceNumber: params.get("invoice-number") ?? "",
-    invoiceDate: params.get("invoice-date") ?? today(),
-    dueDate: params.get("due-date") ?? "",
-    memo: params.get("invoice-memo") ?? "",
-  });
-
-  useEffect(() => {
-    if (invoiceData.invoiceDate && terms) {
-      const newDueDate = calculateDueDate(invoiceData.invoiceDate, terms);
-      if (newDueDate !== invoiceData.dueDate) {
-        setInvoiceData((prev) => ({ ...prev, dueDate: newDueDate }));
-        onValueChange("due-date", newDueDate);
-      }
-    }
-    // Do not update the due date when the user sets the due date manually
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [invoiceData.invoiceDate, terms, onValueChange]);
+  const {
+    dueDate,
+    invoiceDate,
+    invoiceNumber,
+    isLoadingSequenceNumber,
+    onValueChange,
+    setDueDate,
+    setInvoiceDate,
+    setInvoiceNumber,
+    setTerms,
+    terms,
+  } = useCreateInvoiceContext();
 
   const onInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -51,19 +37,27 @@ function InvoiceDetails() {
           </label>
           <Input
             aria-label="Invoice Number"
-            className="w-fit"
+            className="w-fit no-spinner"
             id="invoice-number"
             name="invoice-number"
-            onBlur={onInputBlur}
-            onChange={(e) => {
-              setInvoiceData({
-                ...invoiceData,
-                invoiceNumber: e.target.value,
-              });
+            onBlur={(e) => {
+              const { name, value } = e.target;
+              const rawValue = value.replace(/^0+/, "") || "0";
+
+              onValueChange(name, rawValue);
             }}
-            placeholder="INV-001"
-            type="text"
-            value={invoiceData.invoiceNumber}
+            onChange={(e) => {
+              const rawValue = e.target.value.replace(/^0+/, "") || "0";
+
+              if (rawValue === "0") {
+                setInvoiceNumber("");
+              } else {
+                setInvoiceNumber(rawValue);
+              }
+            }}
+            placeholder={isLoadingSequenceNumber ? "Loading..." : "1001"}
+            type="number"
+            value={invoiceNumber ? invoiceNumber.padStart(4, "0") : ""}
           />
         </div>
         <div className="w-fit">
@@ -79,15 +73,10 @@ function InvoiceDetails() {
             id="invoice-date"
             name="invoice-date"
             onBlur={onInputBlur}
-            onChange={(e) =>
-              setInvoiceData({
-                ...invoiceData,
-                invoiceDate: e.target.value,
-              })
-            }
+            onChange={(e) => setInvoiceDate(e.target.value)}
             required
             type="date"
-            value={invoiceData.invoiceDate}
+            value={invoiceDate}
           />
         </div>
         <div className="w-fit">
@@ -106,14 +95,9 @@ function InvoiceDetails() {
             id="due-date"
             name="due-date"
             onBlur={onInputBlur}
-            onChange={(e) =>
-              setInvoiceData({
-                ...invoiceData,
-                dueDate: e.target.value,
-              })
-            }
+            onChange={(e) => setDueDate(e.target.value)}
             type="date"
-            value={invoiceData.dueDate}
+            value={dueDate}
           />
         </div>
       </div>

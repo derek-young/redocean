@@ -7,14 +7,33 @@ import {
   Suspense,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useState,
 } from "react";
 
 import Loading from "@/components/Loading";
+import { useTenantApi } from "@/context/TenantApiContext";
+
+import { Terms, calculateDueDate } from "./InvoiceTerms";
+
+function today() {
+  return new Date().toISOString().split("T")[0];
+}
 
 interface CreateInvoiceContextType {
+  dueDate: string;
+  invoiceDate: string;
+  invoiceNumber: string;
+  isLoadingSequenceNumber: boolean;
+  memo: string;
   onValueChange: (paramName: string, value: string) => void;
-  params: URLSearchParams;
+  setDueDate: (value: string) => void;
+  setInvoiceDate: (value: string) => void;
+  setInvoiceNumber: (value: string) => void;
+  setMemo: (value: string) => void;
+  setTerms: (value: Terms) => void;
+  terms: Terms;
 }
 
 const CreateInvoiceContext = createContext<
@@ -24,10 +43,21 @@ const CreateInvoiceContext = createContext<
 function CreateInvoiceContextInner({ children }: { children: ReactNode }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { getInvoiceSequenceNumber } = useTenantApi();
   const params = useMemo(
     () => new URLSearchParams(searchParams),
     [searchParams]
   );
+  const [isLoadingSequenceNumber, setIsLoadingSequenceNumber] = useState(false);
+  const [invoiceNumber, setInvoiceNumber] = useState(
+    params.get("invoice-number") ?? ""
+  );
+  const [invoiceDate, setInvoiceDate] = useState(
+    params.get("invoice-date") ?? today()
+  );
+  const [dueDate, setDueDate] = useState(params.get("due-date") ?? "");
+  const [memo, setMemo] = useState(params.get("invoice-memo") ?? "");
+  const [terms, setTerms] = useState<Terms>(Terms.DUE_ON_RECEIPT);
 
   const onValueChange = useCallback(
     (paramName: string, value: string) => {
@@ -43,12 +73,67 @@ function CreateInvoiceContextInner({ children }: { children: ReactNode }) {
     [router, params]
   );
 
+  useEffect(() => {
+    if (invoiceDate && terms) {
+      const newDueDate = calculateDueDate(invoiceDate, terms);
+      if (newDueDate !== dueDate) {
+        setDueDate(newDueDate);
+        onValueChange("due-date", newDueDate);
+      }
+    }
+    // Do not update the due date when the user sets the due date manually
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [invoiceDate, terms, onValueChange]);
+
+  useEffect(() => {
+    const fetchInvoiceSequenceNumber = async () => {
+      try {
+        setIsLoadingSequenceNumber(true);
+        const response = await getInvoiceSequenceNumber();
+        const data = await response.json();
+        setInvoiceNumber(data.nextNumber.toString());
+        onValueChange("invoice-number", data.nextNumber);
+      } catch (error) {
+        console.error("Error fetching invoice sequence number:", error);
+      } finally {
+        setIsLoadingSequenceNumber(false);
+      }
+    };
+
+    if (invoiceNumber === "") {
+      fetchInvoiceSequenceNumber();
+    }
+  }, [getInvoiceSequenceNumber, invoiceNumber, onValueChange]);
+
   const value = useMemo(
     () => ({
+      dueDate,
+      invoiceDate,
+      invoiceNumber,
+      isLoadingSequenceNumber,
+      memo,
       onValueChange,
-      params,
+      setDueDate,
+      setInvoiceDate,
+      setInvoiceNumber,
+      setMemo,
+      setTerms,
+      terms,
     }),
-    [onValueChange, params]
+    [
+      dueDate,
+      invoiceDate,
+      invoiceNumber,
+      isLoadingSequenceNumber,
+      memo,
+      onValueChange,
+      terms,
+      setDueDate,
+      setInvoiceDate,
+      setInvoiceNumber,
+      setMemo,
+      setTerms,
+    ]
   );
 
   return (

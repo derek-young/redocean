@@ -6,9 +6,10 @@ import Initializing from "@/components/Initializing";
 import {
   getCustomers,
   getCustomer,
-  getTaxRates,
+  getInvoiceSequenceNumber,
   getVendor,
   getVendors,
+  getTaxRates,
 } from "@/services/api/scoped";
 
 import { useTenantContext } from "./TenantContext";
@@ -18,6 +19,7 @@ function createTenantApi(tenantId: string) {
     getCustomer: ({ customerId }: { customerId: string }) =>
       getCustomer({ tenantId, customerId }),
     getCustomers: () => getCustomers(tenantId),
+    getInvoiceSequenceNumber: () => getInvoiceSequenceNumber(tenantId),
     getVendor: ({ vendorId }: { vendorId: string }) =>
       getVendor({ tenantId, vendorId }),
     getVendors: () => getVendors(tenantId),

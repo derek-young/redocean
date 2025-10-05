@@ -24,6 +24,10 @@ export function getCustomer({
   return fetchClient(`/api/v1/tenants/${tenantId}/customers/${customerId}`);
 }
 
+export function getInvoiceSequenceNumber(tenantId: string) {
+  return fetchClient(`/api/v1/tenants/${tenantId}/invoices/sequence-number`);
+}
+
 export function getVendors(tenantId: string) {
   if (!tenantId) {
     throw new Error("Tenant ID is required");

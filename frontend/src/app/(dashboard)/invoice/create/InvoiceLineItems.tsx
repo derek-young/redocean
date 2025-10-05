@@ -40,9 +40,6 @@ export interface InvoiceLine {
   taxRateId?: string;
 }
 
-const classRemoveSpinner =
-  "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
-
 const usdCurrencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -104,7 +101,7 @@ function InvoiceLine({
       </TableCell>
       <TableCell>
         <Input
-          className={classRemoveSpinner}
+          className="no-spinner"
           name="invoice-line-quantity"
           onChange={(e) =>
             updateLine(
@@ -120,7 +117,7 @@ function InvoiceLine({
       </TableCell>
       <TableCell>
         <Input
-          className={classRemoveSpinner}
+          className="no-spinner"
           name="invoice-line-unit-amount"
           onChange={(e) =>
             updateLine(
