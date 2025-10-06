@@ -1,28 +1,19 @@
 import { Input } from "@/components/ui/input";
 
-import { useCreateInvoiceContext } from "./CreateInvoiceContext";
+import { useInvoiceTotalsContext } from "./context/InvoiceTotalsContext";
 
 function InvoiceTotals() {
   const {
-    lines,
     discount,
+    discountAmount,
     discountType,
+    salesTax,
     setDiscount,
     setDiscountType,
-    salesTaxRate,
-  } = useCreateInvoiceContext();
-
-  const subtotal = lines.reduce(
-    (sum, line) =>
-      line.type === "item" ? sum + line.quantity * line.unitAmount : sum,
-    0
-  );
-
-  const discountAmount =
-    discountType === "percentage" ? subtotal * (discount / 100) : discount;
-  const taxableSubtotal = subtotal - discountAmount;
-  const salesTax = taxableSubtotal * (salesTaxRate / 100);
-  const totalAmount = taxableSubtotal + salesTax;
+    subtotal,
+    taxableSubtotal,
+    totalAmount,
+  } = useInvoiceTotalsContext();
 
   return (
     <div className="bg-card rounded-lg shadow p-6 border border-border">

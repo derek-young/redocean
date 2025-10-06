@@ -1,25 +1,25 @@
 import { Input } from "@/components/ui/input";
 
-import { useCreateInvoiceContext } from "./CreateInvoiceContext";
+import { useInvoiceDetailsContext } from "./context/InvoiceDetailsContext";
+import { useInvoiceParams } from "./context/InvoiceParamsContext";
 import InvoiceTerms from "./InvoiceTerms";
 
 function InvoiceDetails() {
+  const { setParam } = useInvoiceParams();
   const {
     dueDate,
     invoiceDate,
     invoiceNumber,
-    isLoadingSequenceNumber,
-    onValueChange,
     setDueDate,
     setInvoiceDate,
     setInvoiceNumber,
     setTerms,
     terms,
-  } = useCreateInvoiceContext();
+  } = useInvoiceDetailsContext();
 
   const onInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    onValueChange(name, value);
+    setParam(name, value);
   };
 
   return (
@@ -44,7 +44,7 @@ function InvoiceDetails() {
               const { name, value } = e.target;
               const rawValue = value.replace(/^0+/, "") || "0";
 
-              onValueChange(name, rawValue);
+              setParam(name, rawValue);
             }}
             onChange={(e) => {
               const rawValue = e.target.value.replace(/^0+/, "") || "0";
@@ -55,7 +55,7 @@ function InvoiceDetails() {
                 setInvoiceNumber(rawValue);
               }
             }}
-            placeholder={isLoadingSequenceNumber ? "Loading..." : "1001"}
+            placeholder="1001"
             type="number"
             value={invoiceNumber ? invoiceNumber.padStart(4, "0") : ""}
           />

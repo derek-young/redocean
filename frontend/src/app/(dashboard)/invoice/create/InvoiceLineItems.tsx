@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/table";
 
 import AddLineItemDropdown from "./AddLineItemDropdown";
-import { useCreateInvoiceContext } from "./CreateInvoiceContext";
+import { useInvoiceLinesContext } from "./context/InvoiceLinesContext";
 import { type InvoiceLine, type LineItemType } from "./types";
 
 const usdCurrencyFormatter = new Intl.NumberFormat("en-US", {
@@ -130,7 +130,7 @@ function InvoiceLine({
 }
 
 function InvoiceLineItems() {
-  const { lines, setLines } = useCreateInvoiceContext();
+  const { lines, setLines } = useInvoiceLinesContext();
 
   const sensors = useSensors(
     useSensor(PointerSensor),

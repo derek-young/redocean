@@ -1,11 +1,11 @@
+import CreateInvoiceProvider from "./context/CreateInvoiceProvider";
 import CreateInvoice from "./CreateInvoice";
-import { CreateInvoiceContextProvider } from "./CreateInvoiceContext";
 
 function CreateInvoicePage() {
   return (
-    <CreateInvoiceContextProvider>
+    <CreateInvoiceProvider>
       <CreateInvoice />
-    </CreateInvoiceContextProvider>
+    </CreateInvoiceProvider>
   );
 }
 
