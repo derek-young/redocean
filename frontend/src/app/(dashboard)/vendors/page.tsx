@@ -65,11 +65,11 @@ export default function Vendors() {
 
   const getStatusBadge = (status: string) => {
     return status === "ACTIVE" ? (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
         Active
       </span>
     ) : (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
         Archived
       </span>
     );
@@ -91,17 +91,15 @@ export default function Vendors() {
     <div className="max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-            Vendors
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Vendors</h1>
+          <p className="text-muted-foreground mt-1">
             Manage your vendor relationships and supplier contacts
           </p>
         </div>
         <div className="flex space-x-4">
           <Link
             href="/vendors/create"
-            className="px-4 py-2 bg-gray-800 dark:bg-gray-700 text-white dark:text-gray-100 rounded-md hover:bg-gray-900 dark:hover:bg-gray-600 transition-colors"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
           >
             + New Vendor
           </Link>
@@ -109,12 +107,12 @@ export default function Vendors() {
       </div>
 
       {/* Search and Filter */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+      <div className="bg-card rounded-lg shadow p-6 mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <label
               htmlFor="search"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-foreground mb-2"
             >
               Search Vendors
             </label>
@@ -126,13 +124,13 @@ export default function Vendors() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by vendor name, email, or contact info..."
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full px-3 py-2 border border-input rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground"
             />
           </div>
           <div className="md:w-48">
             <label
               htmlFor="status"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              className="block text-sm font-medium text-foreground mb-2"
             >
               Status
             </label>
@@ -144,7 +142,7 @@ export default function Vendors() {
               onChange={(e) =>
                 setStatusFilter(e.target.value as "all" | "ACTIVE" | "ARCHIVED")
               }
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-gray-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              className="w-full px-3 py-2 border border-input rounded-md focus:ring-2 focus:ring-ring focus:border-transparent bg-background text-foreground"
             >
               <option value="all">All Vendors</option>
               <option value="ACTIVE">Active</option>
@@ -155,9 +153,9 @@ export default function Vendors() {
       </div>
 
       {/* Vendor List */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+      <div className="bg-card rounded-lg shadow overflow-hidden">
+        <div className="px-6 py-4 border-b border-border">
+          <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
             Vendor List&nbsp;
             {isLoading && <Loading />}
           </h2>
@@ -165,13 +163,13 @@ export default function Vendors() {
 
         {isLoading ? null : filteredVendors.length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
+            <div className="text-muted-foreground mb-4">
               <Business className="text-6xl" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            <h3 className="text-xl font-semibold text-foreground mb-2">
               No vendors found
             </h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-6">
+            <p className="text-muted-foreground mb-6">
               {searchTerm || statusFilter !== "all"
                 ? "Try adjusting your search or filter criteria."
                 : "Get started by adding your first vendor."}
@@ -179,7 +177,7 @@ export default function Vendors() {
             {!searchTerm && statusFilter === "all" && (
               <Link
                 href="/vendors/create"
-                className="px-4 py-2 bg-gray-800 dark:bg-gray-700 text-white dark:text-gray-100 rounded-md hover:bg-gray-900 dark:hover:bg-gray-600 transition-colors"
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
               >
                 + Add First Vendor
               </Link>
@@ -187,33 +185,27 @@ export default function Vendors() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700">
+            <table className="min-w-full divide-y border-border">
+              <thead className="bg-muted">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Vendor
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Primary Contact
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Primary Address
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Contacts
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Created
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="bg-card divide-y border-border">
                 {filteredVendors.map((vendor) => {
                   const primaryContact = getPrimaryContact(vendor.contacts);
                   const primaryAddress = getPrimaryAddress(vendor.addresses);
@@ -229,12 +221,12 @@ export default function Vendors() {
                             Vendor name:
                           </span>
                           <div
-                            className="text-sm font-medium text-gray-900 dark:text-gray-100"
+                            className="text-sm font-medium text-foreground"
                             aria-labelledby={`vendor-name-${vendor.id}`}
                           >
                             {vendor.name}
                           </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                          <div className="text-sm text-muted-foreground">
                             ID: {vendor.id}
                           </div>
                         </div>
@@ -249,23 +241,23 @@ export default function Vendors() {
                               Primary contact:
                             </span>
                             <div
-                              className="text-sm text-gray-900 dark:text-gray-100"
+                              className="text-sm text-foreground"
                               aria-labelledby={`vendor-contact-${vendor.id}`}
                             >
                               {primaryContact.firstName}{" "}
                               {primaryContact.lastName}
                             </div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                            <div className="text-sm text-muted-foreground">
                               {primaryContact.email}
                             </div>
                             {primaryContact.phone && (
-                              <div className="text-sm text-gray-500 dark:text-gray-400">
+                              <div className="text-sm text-muted-foreground">
                                 {primaryContact.phone}
                               </div>
                             )}
                           </div>
                         ) : (
-                          <div className="text-sm text-gray-400 dark:text-gray-500">
+                          <div className="text-sm text-muted-foreground">
                             No contacts
                           </div>
                         )}
@@ -280,18 +272,18 @@ export default function Vendors() {
                               Primary address:
                             </span>
                             <div
-                              className="text-sm text-gray-900 dark:text-gray-100"
+                              className="text-sm text-foreground"
                               aria-labelledby={`vendor-address-${vendor.id}`}
                             >
                               {primaryAddress.street1}
                             </div>
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                            <div className="text-sm text-muted-foreground">
                               {primaryAddress.city}, {primaryAddress.state}{" "}
                               {primaryAddress.zip}
                             </div>
                           </div>
                         ) : (
-                          <div className="text-sm text-gray-400 dark:text-gray-500">
+                          <div className="text-sm text-muted-foreground">
                             No addresses
                           </div>
                         )}
@@ -299,26 +291,19 @@ export default function Vendors() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         {getStatusBadge(vendor.status)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                        {vendor.contacts.length} contact
-                        {vendor.contacts.length !== 1 ? "s" : ""}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                        {new Date(vendor.createdAt).toLocaleDateString()}
-                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-2">
                           <button
                             aria-label="Edit vendor"
                             name="edit-vendor"
-                            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                            className="text-muted-foreground hover:text-foreground"
                           >
                             Edit
                           </button>
                           <Link
                             href={`/vendors/${vendor.id}`}
                             aria-label="View vendor"
-                            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                            className="text-muted-foreground hover:text-foreground"
                           >
                             View
                           </Link>

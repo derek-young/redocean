@@ -22,7 +22,6 @@ const requireNameAttribute = {
           "input",
           "Input",
           "select",
-          "Select",
           "textarea",
         ].includes(elementName);
 

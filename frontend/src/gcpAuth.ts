@@ -1,6 +1,6 @@
-import { GoogleAuth } from "google-auth-library";
+import { GoogleAuth, IdTokenClient } from "google-auth-library";
 
-let client: any = null;
+let client: IdTokenClient | null = null;
 let cachedTokenExpiry = 0;
 
 export async function getAuthHeaders(targetAudience: string) {

@@ -1,5 +1,7 @@
+import { DecodedIdToken } from "firebase-admin/auth";
+
 interface CachedToken {
-  decodedToken: any;
+  decodedToken: DecodedIdToken;
   expiresAt: number;
 }
 
@@ -7,7 +9,7 @@ class TokenCache {
   private cache = new Map<string, CachedToken>();
   private readonly TTL = 30 * 60 * 1000; // 30 minutes
 
-  set(token: string, decodedToken: any): void {
+  set(token: string, decodedToken: DecodedIdToken): void {
     const expiresAt = Date.now() + this.TTL;
     this.cache.set(token, {
       decodedToken,
@@ -15,7 +17,7 @@ class TokenCache {
     });
   }
 
-  get(token: string): any | null {
+  get(token: string): DecodedIdToken | null {
     const cached = this.cache.get(token);
 
     if (!cached) {
