@@ -25,7 +25,7 @@ function InvoiceDetails() {
   return (
     <div className="bg-card rounded-lg shadow p-6 border border-border">
       <h2 className="text-xl font-semibold mb-4 text-card-foreground">
-        Invoice Details
+        Details
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="w-fit">
@@ -65,10 +65,10 @@ function InvoiceDetails() {
             htmlFor="invoice-date"
             className="block text-sm font-medium text-foreground mb-2"
           >
-            Invoice Date
+            Issue Date
           </label>
           <Input
-            aria-label="Invoice Date"
+            aria-label="Issue Date"
             className="w-fit"
             id="invoice-date"
             name="invoice-date"

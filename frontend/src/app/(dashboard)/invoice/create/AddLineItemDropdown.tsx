@@ -5,7 +5,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export type LineItemType = "item" | "text" | "subtotal";
+import { LineItemType } from "./types";
 
 interface AddLineItemDropdownProps {
   onAddLine: (type: LineItemType) => void;

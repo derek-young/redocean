@@ -7,28 +7,12 @@ import { Button } from "@/components/ui/button";
 
 import CustomerSelection from "./CustomerSelection";
 import InvoiceDetails from "./InvoiceDetails";
-import InvoiceLineItems, { InvoiceLine } from "./InvoiceLineItems";
+import InvoiceLineItems from "./InvoiceLineItems";
+import InvoiceNotes from "./InvoiceNotes";
+import InvoiceTotals from "./InvoiceTotals";
 
 function CreateInvoice() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const [lines, setLines] = useState<InvoiceLine[]>([
-    {
-      id: "1",
-      type: "item",
-      item: "",
-      description: "",
-      quantity: 1,
-      unitAmount: 0,
-      lineAmount: 0,
-    },
-  ]);
-
-  const subtotal = lines.reduce(
-    (sum, line) => (line.type === "item" ? sum + line.lineAmount : sum),
-    0
-  );
-  const totalAmount = subtotal;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,36 +44,11 @@ function CreateInvoice() {
           <CustomerSelection />
           <InvoiceDetails />
         </div>
-        <InvoiceLineItems lines={lines} setLines={setLines} />
-
-        <div className="bg-card rounded-lg shadow p-6 border border-border">
-          <h2 className="text-xl font-semibold mb-4 text-card-foreground">
-            Invoice Totals
-          </h2>
-          <div className="flex justify-end">
-            <div className="w-64 space-y-2">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Subtotal:</span>
-                <span className="font-medium text-foreground">
-                  ${subtotal.toFixed(2)}
-                </span>
-              </div>
-              <div className="border-t border-border pt-2 flex justify-between text-lg font-semibold">
-                <span className="text-foreground">Total Amount:</span>
-                <span className="text-foreground">
-                  ${totalAmount.toFixed(2)}
-                </span>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                <p>
-                  Note: Tax calculations are applied per line item based on
-                  selected tax rates.
-                </p>
-              </div>
-            </div>
-          </div>
+        <InvoiceLineItems />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <InvoiceNotes />
+          <InvoiceTotals />
         </div>
-
         <div className="flex justify-end space-x-4">
           <Button asChild variant="outline" size="lg">
             <Link href="/invoice/list">Cancel</Link>

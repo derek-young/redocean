@@ -27,18 +27,9 @@ import {
   TableBody,
 } from "@/components/ui/table";
 
-import AddLineItemDropdown, { LineItemType } from "./AddLineItemDropdown";
-
-export interface InvoiceLine {
-  id: string;
-  type: LineItemType;
-  item: string;
-  description: string;
-  quantity: number;
-  unitAmount: number;
-  lineAmount: number;
-  taxRateId?: string;
-}
+import AddLineItemDropdown from "./AddLineItemDropdown";
+import { useCreateInvoiceContext } from "./CreateInvoiceContext";
+import { type InvoiceLine, type LineItemType } from "./types";
 
 const usdCurrencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -138,13 +129,9 @@ function InvoiceLine({
   );
 }
 
-function InvoiceLineItems({
-  lines,
-  setLines,
-}: {
-  lines: InvoiceLine[];
-  setLines: (lines: InvoiceLine[]) => void;
-}) {
+function InvoiceLineItems() {
+  const { lines, setLines } = useCreateInvoiceContext();
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -191,7 +178,7 @@ function InvoiceLineItems({
     <div className="bg-card rounded-lg shadow p-6 border border-border">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-card-foreground">
-          Invoice Line Items
+          Line Items
         </h2>
         <AddLineItemDropdown onAddLine={addLine} />
       </div>
