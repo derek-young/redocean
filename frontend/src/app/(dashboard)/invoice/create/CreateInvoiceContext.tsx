@@ -15,8 +15,8 @@ import {
 import Loading from "@/components/Loading";
 import { useTenantApi } from "@/context/TenantApiContext";
 
-import { Terms, calculateDueDate } from "./InvoiceTerms";
-import { DiscountType, InvoiceLine } from "./types";
+import { calculateDueDate } from "./InvoiceTerms";
+import { DiscountType, InvoiceLine, Terms } from "./types";
 
 function today() {
   return new Date().toISOString().split("T")[0];
