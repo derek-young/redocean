@@ -15,7 +15,7 @@ interface ProtectedRouteProps {
 
 export default function ProtectedRoute({
   children,
-  fallback = <Initializing message="Loading User Information..." />,
+  fallback = <Initializing />,
 }: ProtectedRouteProps) {
   const { user, isLoading } = useAuthContext();
   const router = useRouter();

@@ -1,5 +1,8 @@
 import { GoogleAuth } from "google-auth-library";
 
+let client: any = null;
+let cachedTokenExpiry = 0;
+
 export async function getAuthHeaders(targetAudience: string) {
   const options =
     process.env.NODE_ENV === "production"
@@ -12,7 +15,11 @@ export async function getAuthHeaders(targetAudience: string) {
         }
       : undefined;
   const auth = new GoogleAuth(options);
-  const client = await auth.getIdTokenClient(targetAudience);
 
-  return await client.getRequestHeaders();
+  if (!client || Date.now() > cachedTokenExpiry) {
+    client = await auth.getIdTokenClient(targetAudience);
+    cachedTokenExpiry = Date.now() + 50 * 60 * 1000; // 50 min buffer
+  }
+
+  return client.getRequestHeaders();
 }

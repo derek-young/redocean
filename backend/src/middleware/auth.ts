@@ -85,9 +85,6 @@ export const authenticateUser = async (
     const externalEmail = req.headers["auth-user-email"];
     const provider = req.headers["auth-provider"] as IdentityProvider;
 
-    console.log("authenticateUser");
-    console.log(req.headers);
-
     // Check if this identity already exists
     let identity = await prisma.identity.findUnique({
       where: {

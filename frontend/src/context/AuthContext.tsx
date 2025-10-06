@@ -44,13 +44,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        setIsLoading(true);
-        const idToken = await firebaseUser.getIdToken();
-
-        await postSession(idToken);
-
-        setUser(firebaseUser);
-        setIsLoading(false);
+        try {
+          setIsLoading(true);
+          const idToken = await firebaseUser.getIdToken();
+          await postSession(idToken);
+          setUser(firebaseUser);
+        } catch (error) {
+          console.error("Session creation failed:", error);
+          setUser(null);
+        } finally {
+          setIsLoading(false);
+        }
       } else {
         setUser(null);
         setIsLoading(false);

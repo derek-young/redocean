@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { auth } from "@/firebase/admin";
 import { getAuthHeaders } from "@/gcpAuth";
+import { sessionTokenCache } from "@/lib/tokenCache";
 
 const backendUrl = process.env.BACKEND_URL!;
 
@@ -20,19 +21,20 @@ async function handler(
       return NextResponse.json({ error: "Missing session" }, { status: 401 });
     }
 
-    let decoded;
-    try {
-      decoded = await auth.verifySessionCookie(sessionCookie, true);
-    } catch (error) {
-      console.error("Session cookie verification failed:", error);
+    let decoded = sessionTokenCache.get(sessionCookie);
 
-      return NextResponse.json({ error: "Session expired" }, { status: 401 });
+    if (!decoded) {
+      try {
+        decoded = await auth.verifySessionCookie(sessionCookie, true);
+        sessionTokenCache.set(sessionCookie, decoded);
+      } catch (error) {
+        console.error("Session cookie verification failed:", error);
+        return NextResponse.json({ error: "Session expired" }, { status: 401 });
+      }
     }
 
     const authHeaders = await getAuthHeaders(backendUrl);
     const apiReqHeaders = new Headers(authHeaders);
-
-    console.log("decoded", decoded);
 
     apiReqHeaders.set("Auth-User-Id", decoded.uid);
     apiReqHeaders.set("Auth-User-Email", (decoded.email ?? "").toLowerCase());

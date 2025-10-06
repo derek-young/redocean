@@ -2,7 +2,6 @@ import {
   cert,
   initializeApp,
   getApps,
-  getApp,
   ServiceAccount,
 } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
@@ -13,20 +12,15 @@ const serviceAccount: ServiceAccount = {
   projectId: process.env.FIREBASE_PROJECT_ID,
 };
 
-function initializeFirebase() {
+if (!getApps().length) {
   const options =
     process.env.NODE_ENV === "production"
       ? { credential: cert(serviceAccount) }
       : undefined;
 
-  if (getApps().length === 0) {
-    return initializeApp(options);
-  } else {
-    return getApp();
-  }
+  initializeApp(options);
 }
 
-const app = initializeFirebase();
-const auth = getAuth(app);
+const auth = getAuth();
 
 export { auth };
