@@ -5,6 +5,7 @@ const tenantsRouter = Router();
 
 tenantsRouter.get("/", async (req: Request, res: Response) => {
   try {
+    console.log("Fetching tenants: ", Date.now());
     const { userId } = req;
     const tenants = await prisma.tenant.findMany({
       where: {
@@ -13,6 +14,7 @@ tenantsRouter.get("/", async (req: Request, res: Response) => {
         },
       },
     });
+    console.log("Tenants fetched: ", Date.now());
     res.json(tenants);
   } catch (error) {
     console.error("Error fetching tenants:", error);

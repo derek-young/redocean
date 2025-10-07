@@ -33,7 +33,9 @@ export function TenantContextProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const fetchTenants = async () => {
       try {
+        console.log("Fetching tenants: ", Date.now());
         const response = await getTenants();
+        console.log("Tenants fetched: ", Date.now());
 
         if (!response.ok) {
           throw new Error("Failed to fetch tenants");

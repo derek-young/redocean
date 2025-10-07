@@ -80,6 +80,7 @@ export const authenticateUser = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    console.log("Authenticating user: ", Date.now());
     // Values are type-cast since their existence is checked in validateAuthHeaders
     const externalUid = req.headers["auth-user-id"] as string;
     const externalEmail = req.headers["auth-user-email"];
@@ -96,6 +97,7 @@ export const authenticateUser = async (
     });
 
     if (identity) {
+      console.log("Identity found: ", Date.now());
       // Identity exists - update email if provided
       if (externalEmail && identity.user.email !== externalEmail) {
         await prisma.user.update({
@@ -105,6 +107,7 @@ export const authenticateUser = async (
       }
     } else {
       // Identity doesn't exist - check if a user with this email already exists
+      console.log("Identity being created: ", Date.now());
       let user = externalEmail
         ? await prisma.user.findUnique({
             where: { email: externalEmail as string },
@@ -132,14 +135,16 @@ export const authenticateUser = async (
       });
     }
 
+    console.log("Identity created or updated: ", Date.now());
+
     if (!identity) {
       res.status(401).json({ error: "Identity not found" });
       return;
     }
 
-    if (externalUid === "YumX8xisePNUjt53B8fK0VMAIXf2") {
-      await addDemoUserToGalacticTradingCompany(identity.user.id);
-    }
+    // if (externalUid === "YumX8xisePNUjt53B8fK0VMAIXf2") {
+    //   await addDemoUserToGalacticTradingCompany(identity.user.id);
+    // }
 
     req.userId = identity.user.id;
 
