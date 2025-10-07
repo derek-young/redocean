@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
-import config from "./firebaseConfig";
+import config from "./config";
 
 const app = initializeApp(config);
 const auth = getAuth(app);
