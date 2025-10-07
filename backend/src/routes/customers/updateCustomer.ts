@@ -3,7 +3,7 @@ import { prisma } from "@/db";
 
 async function updateCustomer(req: Request, res: Response) {
   try {
-    const { userId } = req;
+    const { user } = req;
     const { id, tenantId } = req.params;
     const customerData = req.body;
 
@@ -21,7 +21,7 @@ async function updateCustomer(req: Request, res: Response) {
       where: { id },
       data: {
         ...customerData,
-        updatedById: userId,
+        updatedById: user.id,
       },
     });
 

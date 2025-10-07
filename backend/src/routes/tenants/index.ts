@@ -5,11 +5,11 @@ const tenantsRouter = Router();
 
 tenantsRouter.get("/", async (req: Request, res: Response) => {
   try {
-    const { userId } = req;
+    const { user } = req;
     const tenants = await prisma.tenant.findMany({
       where: {
         userTenantMemberships: {
-          some: { userId },
+          some: { userId: user.id },
         },
       },
     });

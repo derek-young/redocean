@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
+import { useCreateInvoiceContext } from "./context/CreateInvoiceContext";
 import CustomerSelection from "./CustomerSelection";
 import InvoiceDetails from "./InvoiceDetails";
 import InvoiceLineItems from "./InvoiceLineItems";
@@ -12,21 +12,7 @@ import InvoiceNotes from "./InvoiceNotes";
 import InvoiceTotals from "./InvoiceTotals";
 
 function CreateInvoice() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      console.log("TODO");
-    } catch (error) {
-      console.error("Error creating invoice:", error);
-      alert("Error creating invoice. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const { handleSubmit, isSubmitting } = useCreateInvoiceContext();
 
   return (
     <div className="max-w-7xl mx-auto">

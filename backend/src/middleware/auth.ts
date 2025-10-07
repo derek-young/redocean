@@ -1,12 +1,12 @@
-import { IdentityProvider } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 
 import { prisma } from "@/db";
+import { IdentityProvider, User } from "@prisma/client";
 
 declare global {
   namespace Express {
     interface Request {
-      userId: string;
+      user: User;
     }
   }
 }
@@ -68,6 +68,7 @@ async function addDemoUserToGalacticTradingCompany(userId: string) {
         data: {
           userId,
           tenantId: galacticTradingCompany.id,
+          role: "ADMIN",
         },
       });
     }
@@ -141,7 +142,7 @@ export const authenticateUser = async (
       await addDemoUserToGalacticTradingCompany(identity.user.id);
     }
 
-    req.userId = identity.user.id;
+    req.user = identity.user;
 
     next();
   } catch (error) {

@@ -1,14 +1,14 @@
-"use client";
 import { ReactNode, Suspense } from "react";
 
 import Loading from "@/components/Loading";
 
+import { CreateInvoiceProvider } from "./CreateInvoiceContext";
 import { InvoiceDetailsProvider } from "./InvoiceDetailsContext";
 import { InvoiceLinesProvider } from "./InvoiceLinesContext";
 import { InvoiceParamsProvider } from "./InvoiceParamsContext";
 import { InvoiceTotalsProvider } from "./InvoiceTotalsContext";
 
-function CreateInvoiceProvider({ children }: { children: ReactNode }) {
+function CreateInvoiceProviders({ children }: { children: ReactNode }) {
   return (
     <Suspense
       fallback={
@@ -20,7 +20,9 @@ function CreateInvoiceProvider({ children }: { children: ReactNode }) {
       <InvoiceParamsProvider>
         <InvoiceDetailsProvider>
           <InvoiceLinesProvider>
-            <InvoiceTotalsProvider>{children}</InvoiceTotalsProvider>
+            <InvoiceTotalsProvider>
+              <CreateInvoiceProvider>{children}</CreateInvoiceProvider>
+            </InvoiceTotalsProvider>
           </InvoiceLinesProvider>
         </InvoiceDetailsProvider>
       </InvoiceParamsProvider>
@@ -28,4 +30,4 @@ function CreateInvoiceProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export default CreateInvoiceProvider;
+export default CreateInvoiceProviders;

@@ -3,7 +3,7 @@ import { prisma } from "@/db";
 
 async function createVendor(req: Request, res: Response) {
   try {
-    const { userId } = req;
+    const { user } = req;
     const { tenantId } = req.params;
     const vendorData = req.body;
 
@@ -11,7 +11,7 @@ async function createVendor(req: Request, res: Response) {
       data: {
         ...vendorData,
         tenantId,
-        createdById: userId,
+        createdById: user.id,
       },
     });
 

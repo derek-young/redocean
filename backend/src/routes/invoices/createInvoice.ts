@@ -1,34 +1,48 @@
 import { Request, Response } from "express";
-import { InvoiceLine, Prisma } from "@prisma/client";
+import { InvoiceLine, Prisma, UserTenantMembership } from "@prisma/client";
 
-import { generateNextSequenceValue } from "@/utils/sequences";
 import { prisma } from "@/db";
 
-export const createInvoice = async (req: Request, res: Response) => {
+async function createInvoice(
+  req: Request & { tenantMembership?: UserTenantMembership },
+  res: Response
+) {
   try {
     const { total, lines, ...invoiceData } = req.body;
-    const { userId } = req;
-    const { tenantId } = req.params;
+    const { tenantMembership, user } = req;
 
-    const sequenceResult = await generateNextSequenceValue(
-      "invoice_number",
-      tenantId
-    );
-    const invoiceNumber = sequenceResult.value;
+    if (!tenantMembership) {
+      res.status(404).json({ error: "Tenant not found or access denied" });
+      return;
+    }
+
+    const { tenantId } = tenantMembership;
+
+    const customer = await prisma.customer.findUnique({
+      where: {
+        id: invoiceData.customerId,
+        tenantId: tenantId,
+      },
+    });
+
+    if (!customer) {
+      res.status(404).json({ error: "Customer not found" });
+      return;
+    }
 
     const invoice = await prisma.invoice.create({
       data: {
         ...invoiceData,
-        invoiceNumber,
-        total: new Prisma.Decimal(total),
-        createdById: userId,
+        createdById: user.id,
         tenantId: tenantId,
+        total: new Prisma.Decimal(total),
         lines: {
           create: lines.map((line: InvoiceLine) => ({
-            ...line,
-            quantity: new Prisma.Decimal(line.quantity),
-            unitAmount: new Prisma.Decimal(line.unitAmount),
+            description: line.description ?? null,
             lineAmount: new Prisma.Decimal(line.lineAmount),
+            unitAmount: new Prisma.Decimal(line.unitAmount),
+            quantity: new Prisma.Decimal(line.quantity),
+            taxRateId: line.taxRateId ?? null,
           })),
         },
       },
@@ -39,4 +53,6 @@ export const createInvoice = async (req: Request, res: Response) => {
     console.error("Error creating invoice:", error);
     res.status(500).json({ error: "Failed to create invoice" });
   }
-};
+}
+
+export default createInvoice;

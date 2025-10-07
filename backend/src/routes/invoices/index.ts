@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { createInvoice } from "./createInvoice";
+import createInvoice from "./createInvoice";
 import { getInvoiceSequenceNumber } from "./invoiceSequenceNumber";
 
 const invoicesRouter = Router({ mergeParams: true });

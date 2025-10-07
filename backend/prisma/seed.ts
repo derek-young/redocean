@@ -20,7 +20,6 @@ async function main() {
       email: "az@galactictradingco.com",
       firstName: "Admiral Zelara",
       lastName: "Vey",
-      role: "ADMIN",
     },
   });
 
@@ -48,6 +47,7 @@ async function main() {
       data: {
         userId: user.id,
         tenantId: tenant.id,
+        role: "ADMIN",
       },
     });
 
