@@ -1,7 +1,14 @@
-import { IdentityProvider } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
+import { and, eq } from "drizzle-orm";
 
-import { prisma } from "@/db";
+import {
+  db,
+  identities,
+  users,
+  tenants,
+  userTenantMemberships,
+  identityProviderEnum,
+} from "@/db";
 
 declare global {
   namespace Express {
@@ -10,6 +17,8 @@ declare global {
     }
   }
 }
+
+type IdentityProvider = (typeof identityProviderEnum.enumValues)[number];
 
 export function validateAuthHeaders(
   req: Request,
@@ -35,7 +44,7 @@ export function validateAuthHeaders(
     return;
   }
 
-  const validProviders = Object.values(IdentityProvider);
+  const validProviders = identityProviderEnum.enumValues;
 
   if (!validProviders.includes(provider as IdentityProvider)) {
     res.status(401).json({
@@ -51,24 +60,22 @@ export function validateAuthHeaders(
 // Create user tenant membership for Galactic Trading Company
 // if Galactic Trading Company exists and the user is not a member
 async function addDemoUserToGalacticTradingCompany(userId: string) {
-  const galacticTradingCompany = await prisma.tenant.findUnique({
-    where: { subdomain: "galacticetradingco" },
+  const galacticTradingCompany = await db.query.tenants.findFirst({
+    where: eq(tenants.subdomain, "galacticetradingco"),
   });
+
   if (galacticTradingCompany) {
-    const existingMembership = await prisma.userTenantMembership.findUnique({
-      where: {
-        userId_tenantId: {
-          userId,
-          tenantId: galacticTradingCompany.id,
-        },
-      },
+    const existingMembership = await db.query.userTenantMemberships.findFirst({
+      where: and(
+        eq(userTenantMemberships.userId, userId),
+        eq(userTenantMemberships.tenantId, galacticTradingCompany.id)
+      ),
     });
+
     if (!existingMembership) {
-      await prisma.userTenantMembership.create({
-        data: {
-          userId,
-          tenantId: galacticTradingCompany.id,
-        },
+      await db.insert(userTenantMemberships).values({
+        userId,
+        tenantId: galacticTradingCompany.id,
       });
     }
   }
@@ -86,11 +93,12 @@ export const authenticateUser = async (
     const provider = req.headers["auth-provider"] as IdentityProvider;
 
     // Check if this identity already exists
-    let identity = await prisma.identity.findUnique({
-      where: {
-        provider_externalUid: { provider, externalUid },
-      },
-      include: {
+    let identity = await db.query.identities.findFirst({
+      where: and(
+        eq(identities.provider, provider),
+        eq(identities.externalUid, externalUid)
+      ),
+      with: {
         user: true,
       },
     });
@@ -98,38 +106,43 @@ export const authenticateUser = async (
     if (identity) {
       // Identity exists - update email if provided
       if (externalEmail && identity.user.email !== externalEmail) {
-        await prisma.user.update({
-          where: { id: identity.user.id },
-          data: { email: externalEmail as string },
-        });
+        await db
+          .update(users)
+          .set({ email: externalEmail as string })
+          .where(eq(users.id, identity.user.id));
       }
     } else {
       // Identity doesn't exist - check if a user with this email already exists
       let user = externalEmail
-        ? await prisma.user.findUnique({
-            where: { email: externalEmail as string },
+        ? await db.query.users.findFirst({
+            where: eq(users.email, externalEmail as string),
           })
         : null;
 
       if (!user) {
-        user = await prisma.user.create({
-          data: {
+        const [newUser] = await db
+          .insert(users)
+          .values({
             email: externalEmail as string | undefined,
-          },
-        });
+          })
+          .returning();
+        user = newUser;
       }
 
       // Create new identity linked to the newly created or existing user
-      identity = await prisma.identity.create({
-        data: {
+      const [newIdentity] = await db
+        .insert(identities)
+        .values({
           provider,
           externalUid,
           userId: user.id,
-        },
-        include: {
-          user: true,
-        },
-      });
+        })
+        .returning();
+
+      identity = {
+        ...newIdentity,
+        user,
+      };
     }
 
     if (!identity) {

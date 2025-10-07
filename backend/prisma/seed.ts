@@ -1,28 +1,36 @@
+import { db } from "../src/db";
 import {
-  Account,
-  Customer,
-  PrismaClient,
-  Sequence,
-  Vendor,
-} from "@prisma/client";
+  users,
+  tenants,
+  userTenantMemberships,
+  accounts as accountsTable,
+  customers as customersTable,
+  vendors as vendorsTable,
+  addresses as addressesTable,
+  contacts as contactsTable,
+  sequences as sequencesTable,
+} from "../src/schema";
 
 import { accounts } from "./seedData";
 import * as GTC from "./seedDataGalacticTradingCo";
 import * as SDF from "./seedDataStellarDefense";
 
-const prisma = new PrismaClient();
+type Account = typeof accountsTable.$inferInsert;
+type Customer = typeof customersTable.$inferInsert;
+type Vendor = typeof vendorsTable.$inferInsert;
 
 async function main() {
   console.log("🌱 Starting database seed...");
 
-  const user = await prisma.user.create({
-    data: {
+  const [user] = await db
+    .insert(users)
+    .values({
       email: "az@galactictradingco.com",
       firstName: "Admiral Zelara",
       lastName: "Vey",
       role: "ADMIN",
-    },
-  });
+    })
+    .returning();
 
   const tenantData = [
     {
@@ -41,26 +49,31 @@ async function main() {
 
   for (const data of tenantData) {
     const { name, subdomain, vendorData, customerData } = data;
-    const tenant = await prisma.tenant.create({ data: { name, subdomain } });
+    const [tenant] = await db
+      .insert(tenants)
+      .values({ name, subdomain })
+      .returning();
     console.log("✅ Created tenant:", tenant.name);
 
-    await prisma.userTenantMembership.create({
-      data: {
-        userId: user.id,
-        tenantId: tenant.id,
-      },
+    await db.insert(userTenantMemberships).values({
+      userId: user.id,
+      tenantId: tenant.id,
     });
 
-    const accounts = await createStandardAccounts(tenant.id);
+    const accountsCreated = await createStandardAccounts(tenant.id);
     console.log(
-      `✅ Created ${accounts.length} standard accounts for ${tenant.name}`
+      `✅ Created ${accountsCreated.length} standard accounts for ${tenant.name}`
     );
 
-    const customers = await createCustomers(customerData, tenant.id);
-    console.log(`✅ Created ${customers.length} customers for ${tenant.name}`);
+    const customersCreated = await createCustomers(customerData, tenant.id);
+    console.log(
+      `✅ Created ${customersCreated.length} customers for ${tenant.name}`
+    );
 
-    const vendors = await createVendors(vendorData, tenant.id);
-    console.log(`✅ Created ${vendors.length} vendors for ${tenant.name}`);
+    const vendorsCreated = await createVendors(vendorData, tenant.id);
+    console.log(
+      `✅ Created ${vendorsCreated.length} vendors for ${tenant.name}`
+    );
 
     await createSequences(tenant.id);
   }
@@ -69,64 +82,96 @@ async function main() {
 }
 
 async function createStandardAccounts(tenantId: string) {
-  const createdAccounts: Account[] = [];
+  const accountsToCreate = accounts.map((account) => ({
+    ...account,
+    tenantId,
+  }));
 
-  for (const account of accounts) {
-    const created = await prisma.account.create({
-      data: {
-        ...account,
-        tenantId,
-      },
-    });
-    createdAccounts.push(created);
-  }
+  const createdAccounts = await db
+    .insert(accountsTable)
+    .values(accountsToCreate)
+    .returning();
 
   return createdAccounts;
 }
 
-async function createCustomers(customers, tenantId: string) {
-  const createdCustomers: Customer[] = [];
+async function createCustomers(customers: any[], tenantId: string) {
+  const createdCustomers: any[] = [];
 
   for (const customer of customers) {
     const { addresses, contacts, ...customerData } = customer;
-    const created = await prisma.customer.create({
-      data: {
+
+    // Insert customer first
+    const [createdCustomer] = await db
+      .insert(customersTable)
+      .values({
         ...customerData,
         tenantId,
-        addresses: {
-          create: addresses,
-        },
-        contacts: {
-          create: contacts,
-        },
-      },
-    });
+      })
+      .returning();
 
-    createdCustomers.push(created);
+    // Insert addresses
+    if (addresses && addresses.length > 0) {
+      await db.insert(addressesTable).values(
+        addresses.map((addr: any) => ({
+          ...addr,
+          customerId: createdCustomer.id,
+        }))
+      );
+    }
+
+    // Insert contacts
+    if (contacts && contacts.length > 0) {
+      await db.insert(contactsTable).values(
+        contacts.map((contact: any) => ({
+          ...contact,
+          customerId: createdCustomer.id,
+        }))
+      );
+    }
+
+    createdCustomers.push(createdCustomer);
   }
 
   return createdCustomers;
 }
 
-async function createVendors(vendors, tenantId: string) {
-  const createdVendors: Vendor[] = [];
+async function createVendors(vendors: any[], tenantId: string) {
+  const createdVendors: any[] = [];
 
   for (const vendor of vendors) {
     const { addresses, contacts, ...vendorData } = vendor;
-    const created = await prisma.vendor.create({
-      data: {
+
+    // Insert vendor first
+    const [createdVendor] = await db
+      .insert(vendorsTable)
+      .values({
         ...vendorData,
         tenantId,
-        addresses: {
-          create: addresses,
-        },
-        contacts: {
-          create: contacts,
-        },
-      },
-    });
+      })
+      .returning();
 
-    createdVendors.push(created);
+    // Insert addresses
+    if (addresses && addresses.length > 0) {
+      await db.insert(addressesTable).values(
+        addresses.map((addr: any) => ({
+          ...addr,
+          vendorId: createdVendor.id,
+        }))
+      );
+    }
+
+    // Insert contacts
+    if (contacts && contacts.length > 0) {
+      await db.insert(contactsTable).values(
+        contacts.map((contact: any) => ({
+          ...contact,
+          vendorId: createdVendor.id,
+        }))
+      );
+    }
+
+    createdVendors.push(createdVendor);
   }
 
   return createdVendors;
@@ -134,26 +179,19 @@ async function createVendors(vendors, tenantId: string) {
 
 async function createSequences(tenantId: string) {
   const sequences = [
-    { name: "invoice_number" },
-    { name: "journal_entry_number", nextValue: 10000 },
+    { name: "invoice_number", tenantId, nextValue: 1 },
+    { name: "journal_entry_number", tenantId, nextValue: 10000 },
   ];
 
-  for (const sequence of sequences) {
-    await prisma.sequence.create({
-      data: {
-        ...sequence,
-        tenantId,
-      },
-    });
-  }
+  await db.insert(sequencesTable).values(sequences);
 }
 
 main()
   .catch((e) => {
     console.error("❌ Error during seeding:", e);
-    // @ts-ignore-next-line
     process.exit(1);
   })
-  .finally(async () => {
-    await prisma.$disconnect();
+  .finally(() => {
+    console.log("Seed completed");
+    process.exit(0);
   });

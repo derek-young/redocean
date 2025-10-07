@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { prisma } from "@/db";
+import { and, eq } from "drizzle-orm";
+import { db, customers } from "@/db";
 
 async function updateCustomer(req: Request, res: Response) {
   try {
@@ -8,8 +9,8 @@ async function updateCustomer(req: Request, res: Response) {
     const customerData = req.body;
 
     // First verify the customer belongs to the tenant
-    const existingCustomer = await prisma.customer.findFirst({
-      where: { id, tenantId },
+    const existingCustomer = await db.query.customers.findFirst({
+      where: and(eq(customers.id, id), eq(customers.tenantId, tenantId)),
     });
 
     if (!existingCustomer) {
@@ -17,13 +18,14 @@ async function updateCustomer(req: Request, res: Response) {
       return;
     }
 
-    const customer = await prisma.customer.update({
-      where: { id },
-      data: {
+    const [customer] = await db
+      .update(customers)
+      .set({
         ...customerData,
-        updatedById: userId,
-      },
-    });
+        updatedAt: new Date(),
+      })
+      .where(eq(customers.id, id))
+      .returning();
 
     res.json(customer);
   } catch (error) {

@@ -1,5 +1,8 @@
-import { Sequence, Tenant } from "@prisma/client";
-import { prisma } from "@/db";
+import { and, eq } from "drizzle-orm";
+import { db, sequences } from "@/db";
+
+type Sequence = typeof sequences.$inferSelect;
+type TenantId = string;
 
 interface SequenceResult {
   value: string;
@@ -45,7 +48,7 @@ function formatResult(seq: Sequence): SequenceResult {
  */
 export async function generateNextSequenceValue(
   name: string,
-  tenantId: Tenant["id"],
+  tenantId: TenantId,
   options: SequenceOptions = {}
 ): Promise<SequenceResult> {
   const { retries = 3, retryDelay = 100 } = options;
@@ -62,14 +65,12 @@ export async function generateNextSequenceValue(
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       // Use a transaction to ensure atomicity
-      const result = await prisma.$transaction(async (tx) => {
-        const seq = await tx.sequence.findUnique({
-          where: {
-            tenantId_name: {
-              tenantId,
-              name,
-            },
-          },
+      const result = await db.transaction(async (tx) => {
+        const seq = await tx.query.sequences.findFirst({
+          where: and(
+            eq(sequences.tenantId, tenantId),
+            eq(sequences.name, name)
+          ),
         });
 
         if (!seq) {
@@ -83,10 +84,10 @@ export async function generateNextSequenceValue(
 
         const currentValue = seq.nextValue;
 
-        await tx.sequence.update({
-          where: { id: seq.id },
-          data: { nextValue: currentValue + 1 },
-        });
+        await tx
+          .update(sequences)
+          .set({ nextValue: currentValue + 1 })
+          .where(eq(sequences.id, seq.id));
 
         return formatResult(seq);
       });
@@ -130,23 +131,18 @@ export async function generateNextSequenceValue(
  * @returns Promise<SequenceResult[]> - Array of sequence results
  */
 export async function generateNextSequenceValues(
-  requests: Array<{ name: string; tenantId: Tenant["id"] }>
+  requests: Array<{ name: string; tenantId: TenantId }>
 ): Promise<SequenceResult[]> {
   if (!requests.length) {
     return [];
   }
 
-  return await prisma.$transaction(async (tx) => {
+  return await db.transaction(async (tx) => {
     const results: SequenceResult[] = [];
 
     for (const { name, tenantId } of requests) {
-      const seq = await tx.sequence.findUnique({
-        where: {
-          tenantId_name: {
-            tenantId,
-            name,
-          },
-        },
+      const seq = await tx.query.sequences.findFirst({
+        where: and(eq(sequences.tenantId, tenantId), eq(sequences.name, name)),
       });
 
       if (!seq) {
@@ -159,10 +155,10 @@ export async function generateNextSequenceValues(
 
       const currentValue = seq.nextValue;
 
-      await tx.sequence.update({
-        where: { id: seq.id },
-        data: { nextValue: currentValue + 1 },
-      });
+      await tx
+        .update(sequences)
+        .set({ nextValue: currentValue + 1 })
+        .where(eq(sequences.id, seq.id));
 
       results.push(formatResult(seq));
     }
@@ -179,26 +175,23 @@ export async function generateNextSequenceValues(
  */
 export async function createSequenceIfNotExists(
   name: string,
-  tenantId: Tenant["id"],
+  tenantId: TenantId,
   options: { prefix?: string; startValue?: number } = {}
 ): Promise<void> {
   const { prefix, startValue = 1 } = options;
 
-  await prisma.sequence.upsert({
-    where: {
-      tenantId_name: {
-        tenantId,
-        name,
-      },
-    },
-    update: {},
-    create: {
+  const existing = await db.query.sequences.findFirst({
+    where: and(eq(sequences.tenantId, tenantId), eq(sequences.name, name)),
+  });
+
+  if (!existing) {
+    await db.insert(sequences).values({
       name,
       tenantId,
-      prefix,
+      prefix: prefix ?? null,
       nextValue: startValue,
-    },
-  });
+    });
+  }
 }
 
 /**
@@ -209,15 +202,10 @@ export async function createSequenceIfNotExists(
  */
 export async function getCurrentSequenceValue(
   name: string,
-  tenantId: Tenant["id"]
+  tenantId: TenantId
 ): Promise<SequenceResult> {
-  const seq = await prisma.sequence.findUnique({
-    where: {
-      tenantId_name: {
-        tenantId,
-        name,
-      },
-    },
+  const seq = await db.query.sequences.findFirst({
+    where: and(eq(sequences.tenantId, tenantId), eq(sequences.name, name)),
   });
 
   if (!seq) {

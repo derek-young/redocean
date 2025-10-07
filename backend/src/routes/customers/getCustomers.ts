@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
-import { prisma } from "@/db";
+import { eq } from "drizzle-orm";
+import { db } from "@/db";
 
 async function getCustomers(req: Request, res: Response) {
   try {
     const { tenantId } = req.params;
 
-    const customers = await prisma.customer.findMany({
-      where: { tenantId },
-      include: {
+    const customers = await db.query.customers.findMany({
+      where: (customers, { eq }) => eq(customers.tenantId, tenantId),
+      with: {
         addresses: true,
         contacts: true,
       },

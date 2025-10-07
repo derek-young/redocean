@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { prisma } from "@/db";
+import { and, eq } from "drizzle-orm";
+import { db, tenants, userTenantMemberships } from "@/db";
 
 import customerRoutes from "../../customers";
 import vendorRoutes from "../../vendors";
@@ -17,18 +18,22 @@ async function validateTenantId(
     const { userId } = req;
     const { tenantId } = req.params;
 
-    const tenant = await prisma.tenant.findFirst({
-      where: {
-        id: tenantId,
-        userTenantMemberships: {
-          some: {
-            userId,
-          },
-        },
-      },
-    });
+    // Check if tenant exists and user is a member
+    const membership = await db
+      .select({
+        tenant: tenants,
+      })
+      .from(tenants)
+      .innerJoin(
+        userTenantMemberships,
+        eq(userTenantMemberships.tenantId, tenants.id)
+      )
+      .where(
+        and(eq(tenants.id, tenantId), eq(userTenantMemberships.userId, userId))
+      )
+      .limit(1);
 
-    if (!tenant) {
+    if (!membership.length) {
       res.status(404).json({ error: "Tenant not found" });
       return;
     }

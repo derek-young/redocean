@@ -2,11 +2,8 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
-import dotenv from "dotenv";
 
-import { prisma } from "@/db";
-
-dotenv.config();
+import { db, dbReadOnly } from "@/db";
 
 import { authenticateUser, validateAuthHeaders } from "./middleware/auth";
 import v1Router from "./v1Router";
@@ -38,12 +35,14 @@ app.listen(PORT, () => {
 
 process.on("SIGTERM", async () => {
   console.log("SIGTERM received, shutting down gracefully");
-  await prisma.$disconnect();
+  await db.$client.end();
+  await dbReadOnly.$client.end();
   process.exit(0);
 });
 
 process.on("SIGINT", async () => {
   console.log("SIGINT received, shutting down gracefully");
-  await prisma.$disconnect();
+  await db.$client.end();
+  await dbReadOnly.$client.end();
   process.exit(0);
 });

@@ -1,8 +1,15 @@
 import { Request, Response } from "express";
-import { InvoiceLine, Prisma } from "@prisma/client";
 
 import { generateNextSequenceValue } from "@/utils/sequences";
-import { prisma } from "@/db";
+import { db, invoices, invoiceLines } from "@/db";
+
+interface InvoiceLineInput {
+  description?: string;
+  quantity: string | number;
+  unitAmount: string | number;
+  lineAmount: string | number;
+  taxRateId?: string;
+}
 
 export const createInvoice = async (req: Request, res: Response) => {
   try {
@@ -16,25 +23,35 @@ export const createInvoice = async (req: Request, res: Response) => {
     );
     const invoiceNumber = sequenceResult.value;
 
-    const invoice = await prisma.invoice.create({
-      data: {
-        ...invoiceData,
-        invoiceNumber,
-        total: new Prisma.Decimal(total),
-        createdById: userId,
-        tenantId: tenantId,
-        lines: {
-          create: lines.map((line: InvoiceLine) => ({
+    // Insert invoice and lines in a transaction
+    const result = await db.transaction(async (tx) => {
+      const [invoice] = await tx
+        .insert(invoices)
+        .values({
+          ...invoiceData,
+          invoiceNumber,
+          total: total.toString(),
+          createdById: userId,
+          tenantId: tenantId,
+        })
+        .returning();
+
+      if (lines && lines.length > 0) {
+        await tx.insert(invoiceLines).values(
+          lines.map((line: InvoiceLineInput) => ({
             ...line,
-            quantity: new Prisma.Decimal(line.quantity),
-            unitAmount: new Prisma.Decimal(line.unitAmount),
-            lineAmount: new Prisma.Decimal(line.lineAmount),
-          })),
-        },
-      },
+            invoiceId: invoice.id,
+            quantity: line.quantity.toString(),
+            unitAmount: line.unitAmount.toString(),
+            lineAmount: line.lineAmount.toString(),
+          }))
+        );
+      }
+
+      return invoice;
     });
 
-    res.status(201).json(invoice);
+    res.status(201).json(result);
   } catch (error) {
     console.error("Error creating invoice:", error);
     res.status(500).json({ error: "Failed to create invoice" });

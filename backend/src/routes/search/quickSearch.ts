@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express";
+import { ilike } from "drizzle-orm";
 
-import { prisma } from "@/db";
+import { db, customers, vendors } from "@/db";
 
 import { findRoutesByQuickAction } from "./findRoute";
 
@@ -24,27 +25,19 @@ const handler = async (req: Request, res: Response): Promise<void> => {
   const term = searchTerm.toLowerCase().trim();
 
   // Step one: fuzzy match on customers and vendors (case-insensitive)
-  const customers = await prisma.customer.findMany({
-    where: {
-      name: {
-        contains: term,
-        mode: "insensitive",
-      },
-    },
-  });
+  const customersResult = await db
+    .select()
+    .from(customers)
+    .where(ilike(customers.name, `%${term}%`));
 
-  const vendors = await prisma.vendor.findMany({
-    where: {
-      name: {
-        contains: term,
-        mode: "insensitive",
-      },
-    },
-  });
+  const vendorsResult = await db
+    .select()
+    .from(vendors)
+    .where(ilike(vendors.name, `%${term}%`));
 
   console.log("searchTerm", term);
-  console.log("customers found:", customers.length);
-  console.log("vendors found:", vendors.length);
+  console.log("customers found:", customersResult.length);
+  console.log("vendors found:", vendorsResult.length);
   const routes = findRoutesByQuickAction(term);
 
   // NOTE: The text embedding comparison may not be useful after evaluating the quick action
@@ -55,8 +48,8 @@ const handler = async (req: Request, res: Response): Promise<void> => {
 
   res.json({
     type: "entity_match",
-    customers,
-    vendors,
+    customers: customersResult,
+    vendors: vendorsResult,
     routes: routes.map((route) => ({
       description: route.description,
       matchedAction: route.matchedAction,

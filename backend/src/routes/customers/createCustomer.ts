@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { prisma } from "@/db";
+import { db, customers } from "@/db";
 
 async function createCustomer(req: Request, res: Response) {
   try {
@@ -7,13 +7,13 @@ async function createCustomer(req: Request, res: Response) {
     const { tenantId } = req.params;
     const customerData = req.body;
 
-    const customer = await prisma.customer.create({
-      data: {
+    const [customer] = await db
+      .insert(customers)
+      .values({
         ...customerData,
         tenantId,
-        createdById: userId,
-      },
-    });
+      })
+      .returning();
 
     res.status(201).json(customer);
   } catch (error) {

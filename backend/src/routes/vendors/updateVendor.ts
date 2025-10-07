@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { prisma } from "@/db";
+import { and, eq } from "drizzle-orm";
+import { db, vendors } from "@/db";
 
 async function updateVendor(req: Request, res: Response) {
   try {
@@ -8,8 +9,8 @@ async function updateVendor(req: Request, res: Response) {
     const vendorData = req.body;
 
     // First verify the vendor belongs to the tenant
-    const existingVendor = await prisma.vendor.findFirst({
-      where: { id, tenantId },
+    const existingVendor = await db.query.vendors.findFirst({
+      where: and(eq(vendors.id, id), eq(vendors.tenantId, tenantId)),
     });
 
     if (!existingVendor) {
@@ -17,13 +18,14 @@ async function updateVendor(req: Request, res: Response) {
       return;
     }
 
-    const vendor = await prisma.vendor.update({
-      where: { id },
-      data: {
+    const [vendor] = await db
+      .update(vendors)
+      .set({
         ...vendorData,
-        updatedById: userId,
-      },
-    });
+        updatedAt: new Date(),
+      })
+      .where(eq(vendors.id, id))
+      .returning();
 
     res.json(vendor);
   } catch (error) {

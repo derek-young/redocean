@@ -1,16 +1,14 @@
 import { Request, Response } from "express";
-import { prisma } from "@/db";
+import { and, eq } from "drizzle-orm";
+import { db, vendors } from "@/db";
 
 async function getVendor(req: Request, res: Response) {
   try {
     const { id, tenantId } = req.params;
 
-    const vendor = await prisma.vendor.findFirst({
-      where: {
-        id,
-        tenantId,
-      },
-      include: {
+    const vendor = await db.query.vendors.findFirst({
+      where: and(eq(vendors.id, id), eq(vendors.tenantId, tenantId)),
+      with: {
         addresses: true,
         contacts: true,
       },

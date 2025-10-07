@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { prisma } from "@/db";
+import { db, vendors } from "@/db";
 
 async function createVendor(req: Request, res: Response) {
   try {
@@ -7,13 +7,13 @@ async function createVendor(req: Request, res: Response) {
     const { tenantId } = req.params;
     const vendorData = req.body;
 
-    const vendor = await prisma.vendor.create({
-      data: {
+    const [vendor] = await db
+      .insert(vendors)
+      .values({
         ...vendorData,
         tenantId,
-        createdById: userId,
-      },
-    });
+      })
+      .returning();
 
     res.status(201).json(vendor);
   } catch (error) {
