@@ -12,13 +12,10 @@ async function handler(
   context: RouteContext<"/api/[...proxy]">
 ) {
   try {
-    console.log("Request received: ", Date.now());
     const { params } = context;
     const { proxy: pathSegments } = await params;
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get("session")?.value;
-
-    console.log("Cookie store accessed: ", Date.now());
 
     if (!sessionCookie) {
       return NextResponse.json({ error: "Missing session" }, { status: 401 });
@@ -36,12 +33,7 @@ async function handler(
       }
     }
 
-    console.log("Session cookie verified: ", Date.now());
-
     const authHeaders = await getAuthHeaders(backendUrl);
-
-    console.log("Auth headers fetched: ", Date.now());
-
     const apiReqHeaders = new Headers(authHeaders);
 
     apiReqHeaders.set("Auth-User-Id", decoded.uid);
@@ -63,15 +55,11 @@ async function handler(
     const apiPath = pathSegments.join("/");
     const backendApiUrl = `${backendUrl}/api/${apiPath}`;
 
-    console.log("Initiating backend API request: ", Date.now());
-
     const apiServiceResponse = await fetch(backendApiUrl, {
       method: request.method,
       headers: apiReqHeaders,
       body,
     });
-
-    console.log("Backend API response received: ", Date.now());
 
     const response = new NextResponse(apiServiceResponse.body, {
       status: apiServiceResponse.status,
