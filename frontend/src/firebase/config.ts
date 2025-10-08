@@ -1,31 +1,11 @@
-interface FirebaseConfig {
-  apiKey: string;
-  authDomain: string;
-  projectId: string;
-  storageBucket: string;
-  messagingSenderId: string;
-  appId: string;
-  measurementId: string;
-}
-
-let config: FirebaseConfig;
-
-if (process.env.NODE_ENV === "production") {
-  const projectId = process.env.FIREBASE_PROJECT_ID!;
-
-  config = {
-    apiKey: process.env.FIREBASE_API_KEY!,
-    authDomain: `${projectId}.firebaseapp.com`,
-    projectId: projectId,
-    storageBucket: `${projectId}.firebasestorage.app`,
-    messagingSenderId: "989102844665",
-    appId: "1:989102844665:web:a25e950e99a120cafed028",
-    measurementId: "G-DCVHHZMFV1",
-  };
-} else {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const firebaseConfig = require("./firebaseConfig");
-  config = firebaseConfig.default;
-}
+const config = {
+  apiKey: "AIzaSyC94C9F5tAfwhdAWOlR3WIuG9xqSr2g0K0",
+  authDomain: "redocean-e9f04.firebaseapp.com",
+  projectId: "redocean-e9f04",
+  storageBucket: "redocean-e9f04.firebasestorage.app",
+  messagingSenderId: "989102844665",
+  appId: "1:989102844665:web:a25e950e99a120cafed028",
+  measurementId: "G-DCVHHZMFV1",
+};
 
 export default config;
