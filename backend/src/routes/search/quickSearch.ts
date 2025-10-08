@@ -20,7 +20,8 @@ const validator = (req: Request, res: Response, next: NextFunction): void => {
 };
 
 const handler = async (req: Request, res: Response): Promise<void> => {
-  const { searchTerm }: { searchTerm: string } = req.body;
+  const { searchTerm, tenantIds }: { searchTerm: string; tenantIds: string[] } =
+    req.body;
   const term = searchTerm.toLowerCase().trim();
 
   // Step one: fuzzy match on customers and vendors (case-insensitive)
@@ -30,6 +31,7 @@ const handler = async (req: Request, res: Response): Promise<void> => {
         contains: term,
         mode: "insensitive",
       },
+      tenantId: { in: tenantIds },
     },
   });
 
@@ -39,6 +41,7 @@ const handler = async (req: Request, res: Response): Promise<void> => {
         contains: term,
         mode: "insensitive",
       },
+      tenantId: { in: tenantIds },
     },
   });
 
