@@ -23,6 +23,7 @@ if (process.env.NODE_ENV === "production") {
     measurementId: "G-DCVHHZMFV1",
   };
 } else {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const firebaseConfig = require("./firebaseConfig");
   config = firebaseConfig.default;
 }
