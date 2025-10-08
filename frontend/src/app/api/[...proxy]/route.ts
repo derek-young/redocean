@@ -47,11 +47,10 @@ async function handler(
       apiReqHeaders.set("content-type", contentType);
     }
 
-    const body =
+    const body: BodyInit | undefined =
       request.method === "GET" || request.method === "DELETE"
         ? undefined
-        : request.body;
-
+        : await request.clone().arrayBuffer();
     const apiPath = pathSegments.join("/");
     const backendApiUrl = `${backendUrl}/api/${apiPath}`;
 
