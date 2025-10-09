@@ -1,5 +1,5 @@
 import AppSidebar from "@/components/app-sidebar";
-import Assistant from "@/components/Assistant";
+import Assistant from "@/components/assistant/Assistant";
 import Header from "@/components/Header";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import AppProviders from "@/context/AppProviders";

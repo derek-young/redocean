@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTenantApi } from "@/context/TenantApiContext";
-import { Customer, Contact, Address, Status } from "@/types";
+import { Customer, Contact, Address, ActiveStatus } from "@/types";
 
 import CustomerEmpty from "./CustomerEmpty";
 import CustomerTable from "./CustomerTable";
@@ -29,7 +29,7 @@ export default function Customers() {
   const [customers, setCustomers] = useState<CustomerWithRelations[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<
-    "all" | Status.ACTIVE | Status.ARCHIVED
+    "all" | ActiveStatus.ACTIVE | ActiveStatus.ARCHIVED
   >("all");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -119,7 +119,7 @@ export default function Customers() {
               value={statusFilter}
               onValueChange={(value) =>
                 setStatusFilter(
-                  value as "all" | Status.ACTIVE | Status.ARCHIVED
+                  value as "all" | ActiveStatus.ACTIVE | ActiveStatus.ARCHIVED
                 )
               }
             >
@@ -128,8 +128,8 @@ export default function Customers() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Customers</SelectItem>
-                <SelectItem value={Status.ACTIVE}>Active</SelectItem>
-                <SelectItem value={Status.ARCHIVED}>Archived</SelectItem>
+                <SelectItem value={ActiveStatus.ACTIVE}>Active</SelectItem>
+                <SelectItem value={ActiveStatus.ARCHIVED}>Archived</SelectItem>
               </SelectContent>
             </Select>
           </div>

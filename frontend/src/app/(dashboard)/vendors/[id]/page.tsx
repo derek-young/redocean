@@ -7,16 +7,16 @@ import { useState, useEffect } from "react";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
 import { useTenantApi } from "@/context/TenantApiContext";
-import { Vendor, Contact, Address, Status, ContactType } from "@/types";
+import { Vendor, Contact, Address, ActiveStatus, ContactType } from "@/types";
 
 type VendorWithRelations = Vendor & {
   contacts: Contact[];
   addresses: Address[];
 };
 
-function getStatusBadge(status: Status) {
+function getStatusBadge(status: ActiveStatus) {
   const badgeColor =
-    status === Status.ACTIVE
+    status === ActiveStatus.ACTIVE
       ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
       : "bg-muted text-muted-foreground";
 

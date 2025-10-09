@@ -2,6 +2,8 @@
 
 import { createContext, ReactNode, useContext, useState } from "react";
 
+import { useInvoiceDetailsContext } from "./InvoiceDetailsContext";
+
 interface CreateInvoiceContextType {
   handleSubmit: (e: React.FormEvent) => void;
   isSubmitting: boolean;
@@ -12,6 +14,7 @@ const CreateInvoiceContext = createContext<
 >(undefined);
 
 export function CreateInvoiceProvider({ children }: { children: ReactNode }) {
+  const { dueDate } = useInvoiceDetailsContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // customerId    String

@@ -20,6 +20,11 @@ interface CustomerOption {
   primaryAddress?: Address;
 }
 
+type CustomerWithRelations = Customer & {
+  addresses: Address[];
+  contacts: Contact[];
+};
+
 function FormattedAddress({ address }: { address?: Address }) {
   if (!address) return "";
   const streets = [address.street1, address.street2, address.street3].filter(
@@ -167,7 +172,8 @@ function CustomerSelection() {
       try {
         const customersResponse = await getCustomers();
         if (customersResponse.ok) {
-          const customersData: Customer[] = await customersResponse.json();
+          const customersData: CustomerWithRelations[] =
+            await customersResponse.json();
           const customerOptions: CustomerOption[] = customersData.map(
             (customer) => ({
               id: customer.id,

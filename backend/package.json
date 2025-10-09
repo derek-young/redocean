@@ -17,6 +17,8 @@
     "db:seed": "npx tsx prisma/seed.ts",
     "db:restore-readonly": "./scripts/restore-readonly-access.sh",
     "generate:embeddings": "tsx scripts/generateEmbeddings.ts",
+    "//": "This can only be ran locally. It saves the generated types to the frontend dir and the backend is deployed without knowledge of the frontend",
+    "generate:types": "tsx scripts/generatePrismaTypes.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -29,7 +31,8 @@
     "morgan": "^1.10.0",
     "openai": "^5.19.1",
     "path": "^0.12.7",
-    "prisma": "^6.14.0"
+    "prisma": "^6.14.0",
+    "url": "^0.11.4"
   },
   "devDependencies": {
     "@babel/parser": "^7.28.3",

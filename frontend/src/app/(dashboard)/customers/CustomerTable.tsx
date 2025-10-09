@@ -1,15 +1,15 @@
 import Link from "next/link";
 
-import { Address, Contact, ContactType, Customer, Status } from "@/types";
+import { Address, Contact, ContactType, Customer, ActiveStatus } from "@/types";
 
 type CustomerWithRelations = Customer & {
   contacts: Contact[];
   addresses: Address[];
 };
 
-function getStatusBadge(status: Status) {
+function getStatusBadge(status: ActiveStatus) {
   const badgeColor =
-    status === Status.ACTIVE
+    status === ActiveStatus.ACTIVE
       ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
       : "bg-muted text-muted-foreground";
 
