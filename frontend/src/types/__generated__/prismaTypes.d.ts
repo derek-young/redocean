@@ -1,7 +1,7 @@
 // This file is auto-generated. Do not edit manually.
 // Generated from schema.prisma by running `npm run generate:types` in the backend directory
 
-import type { AccountType, ActiveStatus, BankAccountType, BillStatus, ContactType, DocStatus, IdentityProvider, InvoiceStatus, PaymentMethod, Role, TransactionType } from "./prismaEnums";
+import type { AccountType, ActiveStatus, BankAccountType, BillStatus, ContactType, DocStatus, IdentityProvider, ItemType, InvoiceStatus, PaymentMethod, Role, TransactionType } from "./prismaEnums";
 
 export interface UserModel {
   id: string;
@@ -169,7 +169,9 @@ export interface InvoiceModel {
   currency: string;
   customerId: string;
   date: Date;
+  discount: number;
   dueDate?: Date;
+  salesTax: number;
   invoiceNumber: string;
   memo?: string;
   status: InvoiceStatus;
@@ -187,7 +189,21 @@ export interface InvoiceLineModel {
   quantity: number;
   unitAmount: number;
   lineAmount: number;
+  itemId?: string;
   taxRateId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ItemModel {
+  id: string;
+  name: string;
+  sku?: string;
+  tenantId: string;
+  category?: string;
+  type: ItemType;
+  price?: number;
+  cost?: number;
   createdAt: Date;
   updatedAt: Date;
 }

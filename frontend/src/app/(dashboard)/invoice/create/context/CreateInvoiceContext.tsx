@@ -22,7 +22,7 @@ export function CreateInvoiceProvider({ children }: { children: ReactNode }) {
   const { createInvoice } = useTenantApi();
   const { params } = useInvoiceParams();
   const { lines } = useInvoiceLinesContext();
-  const { totalAmount } = useInvoiceTotalsContext();
+  const { discountAmount, salesTax, totalAmount } = useInvoiceTotalsContext();
   const { dueDate, invoiceDate, invoiceNumber } = useInvoiceDetailsContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -37,12 +37,16 @@ export function CreateInvoiceProvider({ children }: { children: ReactNode }) {
         invoice: {
           customerId: params.get("customer-id") ?? "",
           date: new Date(invoiceDate),
+          discount: discountAmount,
           dueDate: new Date(dueDate),
           invoiceNumber,
           lines,
-          total: 0,
+          total: totalAmount,
+          salesTax: salesTax,
         },
       });
+
+      console.log("response", response);
     } catch (error) {
       console.error("Error creating invoice:", error);
       alert("Error creating invoice. Please try again.");

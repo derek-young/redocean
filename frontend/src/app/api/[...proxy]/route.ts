@@ -54,11 +54,14 @@ async function handler(
     const apiPath = pathSegments.join("/");
     const backendApiUrl = `${backendUrl}/api/${apiPath}`;
 
-    const apiServiceResponse = await fetch(backendApiUrl, {
+    const requestInit: RequestInit = {
       method: request.method,
       headers: apiReqHeaders,
       body,
-    });
+      redirect: "manual",
+    };
+
+    const apiServiceResponse = await fetch(backendApiUrl, requestInit);
 
     const response = new NextResponse(apiServiceResponse.body, {
       status: apiServiceResponse.status,

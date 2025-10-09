@@ -8,7 +8,7 @@ async function createInvoice(
   res: Response
 ) {
   try {
-    const { total, lines, ...invoiceData } = req.body;
+    const { customerId, lines, total, ...invoiceData } = req.body;
     const { tenantMembership, user } = req;
 
     if (!tenantMembership) {
@@ -20,7 +20,7 @@ async function createInvoice(
 
     const customer = await prisma.customer.findUnique({
       where: {
-        id: invoiceData.customerId,
+        id: customerId,
         tenantId: tenantId,
       },
     });
@@ -32,8 +32,13 @@ async function createInvoice(
 
     const invoice = await prisma.invoice.create({
       data: {
-        ...invoiceData,
         createdById: user.id,
+        customerId: customerId,
+        date: invoiceData.date,
+        discount: invoiceData.discount,
+        dueDate: invoiceData.dueDate,
+        invoiceNumber: invoiceData.invoiceNumber,
+        salesTax: invoiceData.salesTax,
         tenantId: tenantId,
         total: new Prisma.Decimal(total),
         lines: {

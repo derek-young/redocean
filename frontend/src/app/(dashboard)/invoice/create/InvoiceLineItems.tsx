@@ -77,9 +77,9 @@ function InvoiceLine({
       <TableCell>
         <Input
           name="invoice-line-item"
-          onChange={(e) => updateLine(line.id, "item", e.target.value)}
+          onChange={(e) => updateLine(line.id, "itemId", e.target.value)}
           placeholder="Enter item or service"
-          value={line.item}
+          value={line.itemId}
         />
       </TableCell>
       <TableCell>

@@ -23,6 +23,9 @@ export function createInvoice({
   invoice: Partial<InvoiceModel> & InvoiceRequired;
 }) {
   return fetchClient(`/api/v1/tenants/${tenantId}/invoices`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
     method: "POST",
     body: JSON.stringify(invoice),
   });

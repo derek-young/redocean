@@ -48,6 +48,11 @@ export enum IdentityProvider {
   SAML = "SAML",
 }
 
+export enum ItemType {
+  PRODUCT = "PRODUCT",
+  SERVICE = "SERVICE",
+}
+
 export enum InvoiceStatus {
   DRAFT = "DRAFT",
   SENT = "SENT",

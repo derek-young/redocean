@@ -61,7 +61,7 @@ function CreateInvoiceContextInner({ children }: { children: ReactNode }) {
     {
       id: "1",
       type: "item",
-      item: "",
+      itemId: "",
       description: "",
       quantity: 1,
       unitAmount: 0,

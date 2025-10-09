@@ -1,18 +1,8 @@
 "use client";
+
 import { createContext, useContext, useState, useMemo, ReactNode } from "react";
 
-import { InvoiceLineModel } from "@/types";
-
-import { LineItemType } from "../types";
-
-type InvoiceLine = {
-  description: InvoiceLineModel["description"];
-  itemId: InvoiceLineModel["itemId"];
-  lineAmount: InvoiceLineModel["lineAmount"];
-  quantity: InvoiceLineModel["quantity"];
-  unitAmount: InvoiceLineModel["unitAmount"];
-  type: LineItemType;
-};
+import { InvoiceLine } from "../types";
 
 interface InvoiceLinesContextType {
   lines: InvoiceLine[];
@@ -26,6 +16,7 @@ const InvoiceLinesContext = createContext<InvoiceLinesContextType | undefined>(
 export function InvoiceLinesProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<InvoiceLine[]>([
     {
+      id: "1",
       type: "item",
       itemId: "",
       description: "",
