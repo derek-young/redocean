@@ -1,18 +1,32 @@
 "use client";
 
 import Link from "next/link";
+import { useCallback } from "react";
 
+import CustomerSelection from "@/components/CustomerSelection";
 import { Button } from "@/components/ui/button";
 
 import { useCreateInvoiceContext } from "./context/CreateInvoiceContext";
-import CustomerSelection from "./CustomerSelection";
+import { useInvoiceParams } from "./context/InvoiceParamsContext";
 import InvoiceDetails from "./InvoiceDetails";
 import InvoiceLineItems from "./InvoiceLineItems";
 import InvoiceNotes from "./InvoiceNotes";
 import InvoiceTotals from "./InvoiceTotals";
 
 function CreateInvoice() {
+  const { deleteParam, setParam } = useInvoiceParams();
   const { handleSubmit, isSubmitting } = useCreateInvoiceContext();
+
+  const onSelectedCustomerChange = useCallback(
+    (customer: { id: string } | null) => {
+      if (customer) {
+        setParam("customer-id", customer.id);
+      } else {
+        deleteParam("customer-id");
+      }
+    },
+    [deleteParam, setParam]
+  );
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -27,7 +41,9 @@ function CreateInvoice() {
       </div>
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <CustomerSelection />
+          <CustomerSelection
+            onSelectedCustomerChange={onSelectedCustomerChange}
+          />
           <InvoiceDetails />
         </div>
         <InvoiceLineItems />

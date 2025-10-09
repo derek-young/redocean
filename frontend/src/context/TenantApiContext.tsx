@@ -3,27 +3,33 @@
 import { createContext, useContext, useMemo } from "react";
 
 import Initializing from "@/components/Initializing";
-import {
-  getCustomers,
-  getCustomer,
-  getInvoiceSequenceNumber,
-  getVendor,
-  getVendors,
-  getTaxRates,
-} from "@/services/api/scoped";
+import * as scopedApi from "@/services/api/scoped";
 
 import { useTenantContext } from "./TenantContext";
 
+type ArgsWithoutTenantId<T> = T extends (args: infer A) => unknown
+  ? A extends { tenantId: string }
+    ? Omit<A, "tenantId">
+    : never
+  : never;
+
+type CreateInvoiceArgs = ArgsWithoutTenantId<typeof scopedApi.createInvoice>;
+type GetCustomerArgs = ArgsWithoutTenantId<typeof scopedApi.getCustomer>;
+type GetVendorArgs = ArgsWithoutTenantId<typeof scopedApi.getVendor>;
+
 function createTenantApi(tenantId: string) {
   return {
-    getCustomer: ({ customerId }: { customerId: string }) =>
-      getCustomer({ tenantId, customerId }),
-    getCustomers: () => getCustomers(tenantId),
-    getInvoiceSequenceNumber: () => getInvoiceSequenceNumber(tenantId),
-    getVendor: ({ vendorId }: { vendorId: string }) =>
-      getVendor({ tenantId, vendorId }),
-    getVendors: () => getVendors(tenantId),
-    getTaxRates: () => getTaxRates(tenantId),
+    createInvoice: ({ invoice }: CreateInvoiceArgs) =>
+      scopedApi.createInvoice({ tenantId, invoice }),
+    getCustomer: ({ customerId }: GetCustomerArgs) =>
+      scopedApi.getCustomer({ tenantId, customerId }),
+    getCustomers: () => scopedApi.getCustomers({ tenantId }),
+    getInvoiceSequenceNumber: () =>
+      scopedApi.getInvoiceSequenceNumber({ tenantId }),
+    getVendor: ({ vendorId }: GetVendorArgs) =>
+      scopedApi.getVendor({ tenantId, vendorId }),
+    getVendors: () => scopedApi.getVendors({ tenantId }),
+    getTaxRates: () => scopedApi.getTaxRates({ tenantId }),
   };
 }
 

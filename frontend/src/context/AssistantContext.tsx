@@ -86,7 +86,10 @@ export function AssistantContextProvider({
     async (message: string) => {
       if (!message.trim()) return;
 
-      if (message.toLowerCase().includes("thanks")) {
+      if (
+        message.toLowerCase().includes("thanks") ||
+        message.toLowerCase().includes("thank you")
+      ) {
         replyAndClose(message);
         return;
       }

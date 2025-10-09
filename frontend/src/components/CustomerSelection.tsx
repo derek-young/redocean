@@ -10,20 +10,12 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { useTenantApi } from "@/context/TenantApiContext";
-import { Customer, Contact, ContactType, Address } from "@/types";
-
-interface CustomerOption {
-  id: string;
-  name: string;
-  primaryContact?: Contact;
-  primaryAddress?: Address;
-}
-
-type CustomerWithRelations = Customer & {
-  addresses: Address[];
-  contacts: Contact[];
-};
+import {
+  type CustomerOption,
+  CustomerSelectionProvider,
+  useCustomerSelectionContext,
+} from "@/context/CustomerSelectionContext";
+import { Address } from "@/types";
 
 function FormattedAddress({ address }: { address?: Address }) {
   if (!address) return "";
@@ -151,11 +143,9 @@ function CustomerInformation({
 }
 
 function CustomerSelection() {
-  const { getCustomers } = useTenantApi();
-  const [customers, setCustomers] = useState<CustomerOption[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedCustomer, setSelectedCustomer] =
-    useState<CustomerOption | null>(null);
+  const { customers, selectedCustomer, setSelectedCustomer } =
+    useCustomerSelectionContext();
+
   const customerInputRef = useRef<HTMLInputElement>(null);
   const focusTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -166,37 +156,6 @@ function CustomerSelection() {
       }
     };
   }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const customersResponse = await getCustomers();
-        if (customersResponse.ok) {
-          const customersData: CustomerWithRelations[] =
-            await customersResponse.json();
-          const customerOptions: CustomerOption[] = customersData.map(
-            (customer) => ({
-              id: customer.id,
-              name: customer.name,
-              primaryContact:
-                customer.contacts.find((c) => c.type === ContactType.PRIMARY) ||
-                customer.contacts[0],
-              primaryAddress:
-                customer.addresses.find((a) => a.isPrimary) ||
-                customer.addresses[0],
-            })
-          );
-          setCustomers(customerOptions);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [getCustomers]);
 
   return (
     <div className="bg-card rounded-lg shadow p-6 border border-border">
@@ -223,4 +182,20 @@ function CustomerSelection() {
   );
 }
 
-export default CustomerSelection;
+function CustomerSelectionProviderWrapper({
+  onSelectedCustomerChange,
+}: {
+  onSelectedCustomerChange?: React.ComponentProps<
+    typeof CustomerSelectionProvider
+  >["onSelectedCustomerChange"];
+}) {
+  return (
+    <CustomerSelectionProvider
+      onSelectedCustomerChange={onSelectedCustomerChange}
+    >
+      <CustomerSelection />
+    </CustomerSelectionProvider>
+  );
+}
+
+export default CustomerSelectionProviderWrapper;

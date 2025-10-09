@@ -1,7 +1,7 @@
 "use client";
 import { createContext, useContext, useState, useMemo, ReactNode } from "react";
 
-import { InvoiceLine } from "../types";
+import { InvoiceLine } from "@/types";
 
 interface InvoiceLinesContextType {
   lines: InvoiceLine[];
@@ -15,7 +15,6 @@ const InvoiceLinesContext = createContext<InvoiceLinesContextType | undefined>(
 export function InvoiceLinesProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<InvoiceLine[]>([
     {
-      id: "1",
       type: "item",
       item: "",
       description: "",

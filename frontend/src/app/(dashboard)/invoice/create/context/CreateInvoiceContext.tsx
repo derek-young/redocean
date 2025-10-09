@@ -2,7 +2,12 @@
 
 import { createContext, ReactNode, useContext, useState } from "react";
 
+import { useTenantApi } from "@/context/TenantApiContext";
+
 import { useInvoiceDetailsContext } from "./InvoiceDetailsContext";
+import { useInvoiceLinesContext } from "./InvoiceLinesContext";
+import { useInvoiceParams } from "./InvoiceParamsContext";
+import { useInvoiceTotalsContext } from "./InvoiceTotalsContext";
 
 interface CreateInvoiceContextType {
   handleSubmit: (e: React.FormEvent) => void;
@@ -14,24 +19,30 @@ const CreateInvoiceContext = createContext<
 >(undefined);
 
 export function CreateInvoiceProvider({ children }: { children: ReactNode }) {
-  const { dueDate } = useInvoiceDetailsContext();
+  const { createInvoice } = useTenantApi();
+  const { params } = useInvoiceParams();
+  const { lines } = useInvoiceLinesContext();
+  const { totalAmount } = useInvoiceTotalsContext();
+  const { dueDate, invoiceDate, invoiceNumber } = useInvoiceDetailsContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // customerId    String
-  // date          DateTime
-  // dueDate       DateTime?
-  // invoiceNumber String // Sequence
-  // memo          String?
-  // status        InvoiceStatus @default(DRAFT)
-  // tenantId      String
-  // total         Decimal       @db.Decimal(12, 2)
+  console.log("lines", lines);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      console.log("TODO");
+      const response = await createInvoice({
+        invoice: {
+          customerId: params.get("customer-id") ?? "",
+          date: new Date(invoiceDate),
+          dueDate: new Date(dueDate),
+          invoiceNumber,
+          lines,
+          total: 0,
+        },
+      });
     } catch (error) {
       console.error("Error creating invoice:", error);
       alert("Error creating invoice. Please try again.");

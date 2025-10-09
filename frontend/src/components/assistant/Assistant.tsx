@@ -3,8 +3,8 @@
 import { useAssistantContext } from "@/context/AssistantContext";
 import { cn } from "@/lib/utils";
 
-import AssistantPanel from "./assistant/AssistantPanel";
-import AssistantToggle from "./assistant/AssistantToggle";
+import AssistantPanel from "./AssistantPanel";
+import AssistantToggle from "./AssistantToggle";
 
 export default function Assistant() {
   const { isOpen, setIsOpen } = useAssistantContext();

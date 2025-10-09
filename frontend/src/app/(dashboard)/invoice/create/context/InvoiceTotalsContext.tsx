@@ -41,6 +41,8 @@ export function InvoiceTotalsProvider({ children }: { children: ReactNode }) {
   const salesTax = taxableSubtotal * (salesTaxRate / 100);
   const totalAmount = taxableSubtotal + salesTax;
 
+  console.log("subtotal", subtotal);
+
   const value = useMemo(
     () => ({
       discount,

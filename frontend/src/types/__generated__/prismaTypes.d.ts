@@ -3,7 +3,7 @@
 
 import type { AccountType, ActiveStatus, BankAccountType, BillStatus, ContactType, DocStatus, IdentityProvider, InvoiceStatus, PaymentMethod, Role, TransactionType } from "./prismaEnums";
 
-export interface User {
+export interface UserModel {
   id: string;
   email?: string;
   firstName?: string;
@@ -14,14 +14,14 @@ export interface User {
   updatedAt: Date;
 }
 
-export interface Identity {
+export interface IdentityModel {
   id: string;
   provider: IdentityProvider;
   externalUid: string;
   userId: string;
 }
 
-export interface Tenant {
+export interface TenantModel {
   id: string;
   name: string;
   subdomain: string;
@@ -31,7 +31,7 @@ export interface Tenant {
   updatedAt: Date;
 }
 
-export interface UserTenantMembership {
+export interface UserTenantMembershipModel {
   id: string;
   tenantId: string;
   userId: string;
@@ -40,7 +40,7 @@ export interface UserTenantMembership {
   updatedAt: Date;
 }
 
-export interface Customer {
+export interface CustomerModel {
   id: string;
   name: string;
   status: ActiveStatus;
@@ -50,7 +50,7 @@ export interface Customer {
   updatedAt: Date;
 }
 
-export interface Vendor {
+export interface VendorModel {
   id: string;
   name: string;
   status: ActiveStatus;
@@ -60,7 +60,7 @@ export interface Vendor {
   updatedAt: Date;
 }
 
-export interface Address {
+export interface AddressModel {
   id: string;
   customerId?: string;
   isPrimary: boolean;
@@ -76,7 +76,7 @@ export interface Address {
   updatedAt: Date;
 }
 
-export interface Contact {
+export interface ContactModel {
   id: string;
   customerId?: string;
   email: string;
@@ -91,7 +91,7 @@ export interface Contact {
   updatedAt: Date;
 }
 
-export interface Account {
+export interface AccountModel {
   id: string;
   code: string;
   description?: string;
@@ -105,7 +105,7 @@ export interface Account {
   parentId?: string;
 }
 
-export interface JournalEntry {
+export interface JournalEntryModel {
   id: string;
   createdById?: string;
   date: Date;
@@ -125,7 +125,7 @@ export interface JournalEntry {
   sourceType?: string;
 }
 
-export interface Transaction {
+export interface TransactionModel {
   id: string;
   accountId: string;
   amount?: number;
@@ -138,7 +138,7 @@ export interface Transaction {
   updatedAt: Date;
 }
 
-export interface FixedAsset {
+export interface FixedAssetModel {
   id: string;
   accountId: string;
   accumulatedAccountId: string;
@@ -153,7 +153,7 @@ export interface FixedAsset {
   updatedAt: Date;
 }
 
-export interface FiscalYear {
+export interface FiscalYearModel {
   id: string;
   isClosed: boolean;
   startDate: Date;
@@ -163,7 +163,7 @@ export interface FiscalYear {
   updatedAt: Date;
 }
 
-export interface Invoice {
+export interface InvoiceModel {
   id: string;
   createdById: string;
   currency: string;
@@ -180,7 +180,7 @@ export interface Invoice {
   updatedAt: Date;
 }
 
-export interface InvoiceLine {
+export interface InvoiceLineModel {
   id: string;
   invoiceId: string;
   description?: string;
@@ -192,7 +192,7 @@ export interface InvoiceLine {
   updatedAt: Date;
 }
 
-export interface Bill {
+export interface BillModel {
   id: string;
   createdById: string;
   tenantId: string;
@@ -207,7 +207,7 @@ export interface Bill {
   updatedAt: Date;
 }
 
-export interface BillLine {
+export interface BillLineModel {
   id: string;
   billId: string;
   description: string;
@@ -217,7 +217,7 @@ export interface BillLine {
   taxRateId?: string;
 }
 
-export interface Payment {
+export interface PaymentModel {
   id: string;
   amount: number;
   bankAccountId?: string;
@@ -232,7 +232,7 @@ export interface Payment {
   updatedAt: Date;
 }
 
-export interface PaymentAllocation {
+export interface PaymentAllocationModel {
   id: string;
   amount: number;
   billId?: string;
@@ -242,7 +242,7 @@ export interface PaymentAllocation {
   updatedAt: Date;
 }
 
-export interface TaxRate {
+export interface TaxRateModel {
   id: string;
   name: string;
   rate: number;
@@ -251,7 +251,7 @@ export interface TaxRate {
   updatedAt: Date;
 }
 
-export interface BankAccount {
+export interface BankAccountModel {
   id: string;
   name: string;
   tenantId: string;
@@ -260,7 +260,7 @@ export interface BankAccount {
   updatedAt: Date;
 }
 
-export interface BankStatement {
+export interface BankStatementModel {
   id: string;
   bankAccountId: string;
   statementDate: Date;
@@ -271,7 +271,7 @@ export interface BankStatement {
   updatedAt: Date;
 }
 
-export interface BankStatementLine {
+export interface BankStatementLineModel {
   id: string;
   amount: number;
   date: Date;
@@ -281,7 +281,7 @@ export interface BankStatementLine {
   updatedAt: Date;
 }
 
-export interface Reconciliation {
+export interface ReconciliationModel {
   id: string;
   bankAccountId: string;
   clearedBalance: number;
@@ -294,7 +294,7 @@ export interface Reconciliation {
   updatedAt: Date;
 }
 
-export interface Attachment {
+export interface AttachmentModel {
   id: string;
   createdById: string;
   filename: string;
@@ -309,7 +309,7 @@ export interface Attachment {
   updatedAt: Date;
 }
 
-export interface AuditLog {
+export interface AuditLogModel {
   id: string;
   action: string;
   objectType: string;
@@ -321,7 +321,7 @@ export interface AuditLog {
   createdAt: Date;
 }
 
-export interface Sequence {
+export interface SequenceModel {
   id: string;
   name: string;
   nextValue: number;

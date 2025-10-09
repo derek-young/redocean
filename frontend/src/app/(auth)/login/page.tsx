@@ -21,7 +21,7 @@ export default function LoginPage() {
   }
 
   if (isLoading) {
-    return <Initializing message="Loading User Information..." />;
+    return <Initializing />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
