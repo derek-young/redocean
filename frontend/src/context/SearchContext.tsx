@@ -12,7 +12,7 @@ import {
 
 import useDebounce from "@/hooks/useDebounce";
 import { postSearchQuick } from "@/services/api";
-import { Customer, Vendor } from "@/types";
+import { CustomerModel, VendorModel } from "@/types";
 
 import { useAssistantContext } from "./AssistantContext";
 import { useTenantContext } from "./TenantContext";
@@ -29,8 +29,8 @@ export type HelpItem = {
 
 export type SearchResults = {
   type: string;
-  customers?: Customer[];
-  vendors?: Vendor[];
+  customers?: CustomerModel[];
+  vendors?: VendorModel[];
   routes?: Route[];
   help: HelpItem[];
   searchTerm: string;

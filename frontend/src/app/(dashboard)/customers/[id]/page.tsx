@@ -7,11 +7,17 @@ import { useState, useEffect } from "react";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
 import { useTenantApi } from "@/context/TenantApiContext";
-import { Customer, Contact, Address, ActiveStatus, ContactType } from "@/types";
+import {
+  CustomerModel,
+  ContactModel,
+  AddressModel,
+  ActiveStatus,
+  ContactType,
+} from "@/types";
 
-type CustomerWithRelations = Customer & {
-  contacts: Contact[];
-  addresses: Address[];
+type CustomerWithRelations = CustomerModel & {
+  contacts: ContactModel[];
+  addresses: AddressModel[];
 };
 
 function getStatusBadge(status: ActiveStatus) {
@@ -44,7 +50,7 @@ function getContactTypeBadge(type: ContactType) {
   );
 }
 
-function formatAddress(address: Address) {
+function formatAddress(address: AddressModel) {
   const parts = [
     address.street1,
     address.street2,

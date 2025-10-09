@@ -137,7 +137,7 @@ function generateTypes(models: ModelDef[], enumNames: Set<string>): string {
   output += ' } from "./prismaEnums";\n\n';
 
   for (const model of models) {
-    output += `export interface ${model.name} {\n`;
+    output += `export interface ${model.name}Model {\n`;
     for (const field of model.fields) {
       const tsType = typeMapping[field.type] || field.type;
       const arrayNotation = field.isArray ? "[]" : "";

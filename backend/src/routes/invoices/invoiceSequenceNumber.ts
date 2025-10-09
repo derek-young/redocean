@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { getCurrentSequenceValue } from "@/utils/sequences";
 
-export const getInvoiceSequenceNumber = async (req: Request, res: Response) => {
+export const getInvoiceSequenceValue = async (req: Request, res: Response) => {
   try {
     const { tenantId } = req.params;
 

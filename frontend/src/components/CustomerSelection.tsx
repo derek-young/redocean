@@ -15,9 +15,9 @@ import {
   CustomerSelectionProvider,
   useCustomerSelectionContext,
 } from "@/context/CustomerSelectionContext";
-import { Address } from "@/types";
+import { AddressModel } from "@/types";
 
-function FormattedAddress({ address }: { address?: Address }) {
+function FormattedAddress({ address }: { address?: AddressModel }) {
   if (!address) return "";
   const streets = [address.street1, address.street2, address.street3].filter(
     Boolean

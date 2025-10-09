@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 
 import { CommandGroup, CommandItem } from "@/components/ui/command";
 import { Route } from "@/context/SearchContext";
-import { Customer, Vendor } from "@/types";
+import { CustomerModel, VendorModel } from "@/types";
 
 interface SearchResultsProps {
   onSelect: () => void;
@@ -13,10 +13,10 @@ export function CustomerResults({
   customers,
   onSelect,
 }: SearchResultsProps & {
-  customers: Customer[];
+  customers: CustomerModel[];
 }) {
   const router = useRouter();
-  const handleSelect = (customer: Customer) => {
+  const handleSelect = (customer: CustomerModel) => {
     onSelect();
     router.push(`/customers/${customer.id}`);
   };
@@ -36,10 +36,10 @@ export function VendorResults({
   vendors,
   onSelect,
 }: SearchResultsProps & {
-  vendors: Vendor[];
+  vendors: VendorModel[];
 }) {
   const router = useRouter();
-  const handleSelect = (vendor: Vendor) => {
+  const handleSelect = (vendor: VendorModel) => {
     onSelect();
     router.push(`/vendors/${vendor.id}`);
   };

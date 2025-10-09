@@ -11,14 +11,14 @@ import React, {
 } from "react";
 
 import { getTenants } from "@/services/api";
-import { Tenant } from "@/types";
+import { TenantModel } from "@/types";
 
 interface TenantContextType {
   isLoading: boolean;
-  selectedTenant: Tenant | null;
+  selectedTenant: TenantModel | null;
   selectedTenantId?: string;
   onSelectedTenantIdChange: (tenantId: string) => void;
-  tenants: Tenant[];
+  tenants: TenantModel[];
 }
 
 const TenantContext = createContext<TenantContextType | undefined>(undefined);
@@ -26,7 +26,7 @@ const TenantContext = createContext<TenantContextType | undefined>(undefined);
 const SELECTED_TENANT_KEY = "redocean_selected_tenant_id";
 
 export function TenantContextProvider({ children }: { children: ReactNode }) {
-  const [tenants, setTenants] = useState<Tenant[]>([]);
+  const [tenants, setTenants] = useState<TenantModel[]>([]);
   const [selectedTenantId, setSelectedTenantId] = useState<string>();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -39,7 +39,7 @@ export function TenantContextProvider({ children }: { children: ReactNode }) {
           throw new Error("Failed to fetch tenants");
         }
 
-        const data: Tenant[] = await response.json();
+        const data: TenantModel[] = await response.json();
 
         setTenants(data);
 

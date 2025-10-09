@@ -14,14 +14,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTenantApi } from "@/context/TenantApiContext";
-import { Customer, Contact, Address, ActiveStatus } from "@/types";
+import {
+  CustomerModel,
+  ContactModel,
+  AddressModel,
+  ActiveStatus,
+} from "@/types";
 
 import CustomerEmpty from "./CustomerEmpty";
 import CustomerTable from "./CustomerTable";
 
-type CustomerWithRelations = Customer & {
-  contacts: Contact[];
-  addresses: Address[];
+type CustomerWithRelations = CustomerModel & {
+  contacts: ContactModel[];
+  addresses: AddressModel[];
 };
 
 export default function Customers() {

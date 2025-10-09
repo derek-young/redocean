@@ -1,18 +1,18 @@
 import fetchClient from "@/fetch";
-import { Invoice, InvoiceLine } from "@/types";
+import { InvoiceModel, InvoiceLineModel } from "@/types";
 
 type InvoiceLineRequired = {
-  quantity: InvoiceLine["quantity"];
-  unitAmount: InvoiceLine["unitAmount"];
-  lineAmount: InvoiceLine["lineAmount"];
+  quantity: InvoiceLineModel["quantity"];
+  unitAmount: InvoiceLineModel["unitAmount"];
+  lineAmount: InvoiceLineModel["lineAmount"];
 };
 
 type InvoiceRequired = {
-  customerId: Invoice["customerId"];
-  date: Invoice["date"];
-  invoiceNumber: Invoice["invoiceNumber"];
-  total: Invoice["total"];
-  lines: (Partial<InvoiceLine> & InvoiceLineRequired)[];
+  customerId: InvoiceModel["customerId"];
+  date: InvoiceModel["date"];
+  invoiceNumber: InvoiceModel["invoiceNumber"];
+  total: InvoiceModel["total"];
+  lines: (Partial<InvoiceLineModel> & InvoiceLineRequired)[];
 };
 
 export function createInvoice({
@@ -20,7 +20,7 @@ export function createInvoice({
   invoice,
 }: {
   tenantId: string;
-  invoice: Partial<Invoice> & InvoiceRequired;
+  invoice: Partial<InvoiceModel> & InvoiceRequired;
 }) {
   return fetchClient(`/api/v1/tenants/${tenantId}/invoices`, {
     method: "POST",

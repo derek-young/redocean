@@ -2,20 +2,25 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { Address, Contact, ContactType, Customer } from "@/types";
+import {
+  AddressModel,
+  ContactModel,
+  ContactType,
+  CustomerModel,
+} from "@/types";
 
 import { useTenantApi } from "./TenantApiContext";
 
 export interface CustomerOption {
   id: string;
   name: string;
-  primaryContact?: Contact;
-  primaryAddress?: Address;
+  primaryContact?: ContactModel;
+  primaryAddress?: AddressModel;
 }
 
-type CustomerWithRelations = Customer & {
-  addresses: Address[];
-  contacts: Contact[];
+type CustomerWithRelations = CustomerModel & {
+  addresses: AddressModel[];
+  contacts: ContactModel[];
 };
 
 type SelectedCustomer = CustomerOption | null;

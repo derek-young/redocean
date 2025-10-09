@@ -1,10 +1,16 @@
 import Link from "next/link";
 
-import { Address, Contact, ContactType, Customer, ActiveStatus } from "@/types";
+import {
+  AddressModel,
+  ContactModel,
+  ContactType,
+  CustomerModel,
+  ActiveStatus,
+} from "@/types";
 
-type CustomerWithRelations = Customer & {
-  contacts: Contact[];
-  addresses: Address[];
+type CustomerWithRelations = CustomerModel & {
+  contacts: ContactModel[];
+  addresses: AddressModel[];
 };
 
 function getStatusBadge(status: ActiveStatus) {
@@ -22,14 +28,14 @@ function getStatusBadge(status: ActiveStatus) {
   );
 }
 
-function getPrimaryContact(contacts: Contact[]) {
+function getPrimaryContact(contacts: ContactModel[]) {
   const primaryContact = contacts.find(
     (contact) => contact.type === ContactType.PRIMARY
   );
   return primaryContact ?? contacts[0];
 }
 
-function getPrimaryAddress(addresses: Address[]) {
+function getPrimaryAddress(addresses: AddressModel[]) {
   const primaryAddress = addresses.find((address) => address.isPrimary);
   return primaryAddress ?? addresses[0];
 }

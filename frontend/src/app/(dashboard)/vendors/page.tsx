@@ -6,11 +6,11 @@ import { useState, useEffect } from "react";
 
 import Loading from "@/components/Loading";
 import { useTenantApi } from "@/context/TenantApiContext";
-import { Vendor, Contact, Address } from "@/types";
+import { VendorModel, ContactModel, AddressModel } from "@/types";
 
-type VendorWithRelations = Vendor & {
-  contacts: Contact[];
-  addresses: Address[];
+type VendorWithRelations = VendorModel & {
+  contacts: ContactModel[];
+  addresses: AddressModel[];
 };
 
 export default function Vendors() {
@@ -75,14 +75,14 @@ export default function Vendors() {
     );
   };
 
-  const getPrimaryContact = (contacts: Contact[]) => {
+  const getPrimaryContact = (contacts: ContactModel[]) => {
     const primaryContact = contacts.find(
       (contact) => contact.type === "PRIMARY"
     );
     return primaryContact || contacts[0];
   };
 
-  const getPrimaryAddress = (addresses: Address[]) => {
+  const getPrimaryAddress = (addresses: AddressModel[]) => {
     const primaryAddress = addresses.find((address) => address.isPrimary);
     return primaryAddress || addresses[0];
   };

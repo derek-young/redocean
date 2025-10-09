@@ -1,11 +1,11 @@
 import { Router } from "express";
 
 import createInvoice from "./createInvoice";
-import { getInvoiceSequenceNumber } from "./invoiceSequenceNumber";
+import { getInvoiceSequenceValue } from "./invoiceSequenceNumber";
 
 const invoicesRouter = Router({ mergeParams: true });
 
 invoicesRouter.post("/", createInvoice);
-invoicesRouter.get("/sequence-number", getInvoiceSequenceNumber);
+invoicesRouter.get("/sequence-number", getInvoiceSequenceValue);
 
 export default invoicesRouter;
